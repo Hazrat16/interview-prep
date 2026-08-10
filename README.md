@@ -11,6 +11,7 @@ interview-prep/
 ├── database/     # SQL, transactions, locking, performance
 ├── javascript/   # JS core, async, Node.js runtime
 ├── career/       # Recruiter screens, ORC, STAR stories, LinkedIn
+├── companies/    # Questions asked at specific companies
 ├── frontend/     # Coming soon (React, CSS, etc.)
 └── backend/      # Coming soon
 ```
@@ -64,3 +65,10 @@ See [database/README.md](database/README.md) for the DB roadmap.
 | Questions to ask | [career/questions-to-ask.md](career/questions-to-ask.md) |
 | LinkedIn profile | [career/linkedin-profile.md](career/linkedin-profile.md) |
 | Interview tips | [career/interview-tips.md](career/interview-tips.md) |
+
+## Company interviews
+
+| Company | File |
+|---------|------|
+| Overview | [companies/README.md](companies/README.md) |
+| Techzu | [companies/techzu.md](companies/techzu.md) |
