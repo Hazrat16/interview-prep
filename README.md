@@ -9,8 +9,9 @@ Use these as quick revision sheets: concept → example → interview Q&A (or po
 ```text
 interview-prep/
 ├── database/     # SQL, transactions, locking, performance
+├── javascript/   # JS core, async, Node.js runtime
 ├── career/       # Recruiter screens, ORC, STAR stories, LinkedIn
-├── frontend/     # Coming soon
+├── frontend/     # Coming soon (React, CSS, etc.)
 └── backend/      # Coming soon
 ```
 
@@ -34,6 +35,22 @@ interview-prep/
 | Deadlocks | [database/deadlocks.md](database/deadlocks.md) |
 
 See [database/README.md](database/README.md) for the DB roadmap.
+
+## JavaScript core
+
+| Topic | File |
+|-------|------|
+| Overview & study order | [javascript/README.md](javascript/README.md) |
+| Variables, Scope & Hoisting | [javascript/variables-scope-hoisting.md](javascript/variables-scope-hoisting.md) |
+| Types & Coercion | [javascript/types-and-coercion.md](javascript/types-and-coercion.md) |
+| Closures | [javascript/closures.md](javascript/closures.md) |
+| `this` & Arrow Functions | [javascript/this-and-arrow-functions.md](javascript/this-and-arrow-functions.md) |
+| Event Loop | [javascript/event-loop.md](javascript/event-loop.md) |
+| Promises & async/await | [javascript/promises-async-await.md](javascript/promises-async-await.md) |
+| Arrays, Objects & ES6 | [javascript/arrays-objects-es6.md](javascript/arrays-objects-es6.md) |
+| Debounce & Throttle | [javascript/debounce-throttle.md](javascript/debounce-throttle.md) |
+| Prototypes & Classes | [javascript/prototypes-and-classes.md](javascript/prototypes-and-classes.md) |
+| Node.js Runtime | [javascript/nodejs-runtime.md](javascript/nodejs-runtime.md) |
 
 ## Career / recruiter screens
 
