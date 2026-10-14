@@ -12,8 +12,8 @@ interview-prep/
 ├── javascript/   # JS core, async, Node.js runtime
 ├── career/       # Recruiter screens, ORC, STAR stories, LinkedIn
 ├── companies/    # Questions asked at specific companies
-├── frontend/     # Coming soon (React, CSS, etc.)
-└── backend/      # Coming soon
+├── frontend/     # React, Next.js, TypeScript question bank
+└── backend/      # Node/Express APIs, system design, DevOps
 ```
 
 ## How to use
@@ -52,6 +52,23 @@ See [database/README.md](database/README.md) for the DB roadmap.
 | Debounce & Throttle | [javascript/debounce-throttle.md](javascript/debounce-throttle.md) |
 | Prototypes & Classes | [javascript/prototypes-and-classes.md](javascript/prototypes-and-classes.md) |
 | Node.js Runtime | [javascript/nodejs-runtime.md](javascript/nodejs-runtime.md) |
+| Coding round (JS tasks, DSA, take-home) | [javascript/coding-round-questions.md](javascript/coding-round-questions.md) |
+| Coding round solutions | [javascript/coding-round-solutions.md](javascript/coding-round-solutions.md) |
+
+## Frontend
+
+| Topic | File |
+|-------|------|
+| React, Next.js & TypeScript questions | [frontend/react-interview-questions.md](frontend/react-interview-questions.md) |
+| React live-coding solutions | [frontend/react-live-coding-solutions.md](frontend/react-live-coding-solutions.md) |
+
+## Backend, system design & DevOps
+
+| Topic | File |
+|-------|------|
+| Node.js, Express & API questions | [backend/node-api-questions.md](backend/node-api-questions.md) |
+| System design questions | [backend/system-design-questions.md](backend/system-design-questions.md) |
+| DevOps & cloud questions | [backend/devops-questions.md](backend/devops-questions.md) |
 
 ## Career / recruiter screens
 
@@ -62,6 +79,9 @@ See [database/README.md](database/README.md) for the DB roadmap.
 | SmartCrowd deep dive | [career/smartcrowd.md](career/smartcrowd.md) |
 | STAR story bank | [career/star-stories.md](career/star-stories.md) |
 | HR & career questions | [career/hr-and-career-questions.md](career/hr-and-career-questions.md) |
+| Behavioral & HR question bank | [career/behavioral-questions.md](career/behavioral-questions.md) |
+| CV deep-dive questions | [career/cv-deep-dive-questions.md](career/cv-deep-dive-questions.md) |
+| Complex bug / critical work stories | [career/complex-bug-and-critical-work.md](career/complex-bug-and-critical-work.md) |
 | Questions to ask | [career/questions-to-ask.md](career/questions-to-ask.md) |
 | LinkedIn profile | [career/linkedin-profile.md](career/linkedin-profile.md) |
 | Interview tips | [career/interview-tips.md](career/interview-tips.md) |

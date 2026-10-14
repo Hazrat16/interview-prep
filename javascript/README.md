@@ -14,6 +14,8 @@ Core JavaScript + Node.js runtime concepts for frontend and full-stack interview
 8. [Debounce & Throttle](debounce-throttle.md)
 9. [Prototypes & Classes](prototypes-and-classes.md)
 10. [Node.js Runtime](nodejs-runtime.md)
+11. [Coding Round Questions](coding-round-questions.md) — JS implement-it tasks, output prediction, DSA patterns, take-home tips
+12. [Coding Round Solutions](coding-round-solutions.md)
 
 ## Suggested study order
 

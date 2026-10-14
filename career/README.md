@@ -32,6 +32,9 @@ Recruiters silently ask:
 | SmartCrowd deep dive | [smartcrowd.md](smartcrowd.md) |
 | STAR story bank | [star-stories.md](star-stories.md) |
 | HR & career questions | [hr-and-career-questions.md](hr-and-career-questions.md) |
+| Behavioral & HR question bank | [behavioral-questions.md](behavioral-questions.md) |
+| CV deep-dive questions | [cv-deep-dive-questions.md](cv-deep-dive-questions.md) |
+| Complex bug / critical work stories | [complex-bug-and-critical-work.md](complex-bug-and-critical-work.md) |
 | Questions to ask them | [questions-to-ask.md](questions-to-ask.md) |
 | LinkedIn profile | [linkedin-profile.md](linkedin-profile.md) |
 | Interview tips | [interview-tips.md](interview-tips.md) |
