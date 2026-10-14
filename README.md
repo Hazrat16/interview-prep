@@ -82,6 +82,7 @@ See [database/README.md](database/README.md) for the DB roadmap.
 | Behavioral & HR question bank | [career/behavioral-questions.md](career/behavioral-questions.md) |
 | CV deep-dive questions | [career/cv-deep-dive-questions.md](career/cv-deep-dive-questions.md) |
 | Complex bug / critical work stories | [career/complex-bug-and-critical-work.md](career/complex-bug-and-critical-work.md) |
+| PriceEstimator real contributions & stories | [career/priceestimator-real-stories.md](career/priceestimator-real-stories.md) |
 | Questions to ask | [career/questions-to-ask.md](career/questions-to-ask.md) |
 | LinkedIn profile | [career/linkedin-profile.md](career/linkedin-profile.md) |
 | Interview tips | [career/interview-tips.md](career/interview-tips.md) |

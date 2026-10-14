@@ -2,6 +2,8 @@
 
 Interviewers ask this to check **how you think**: how you find the root cause, whether you understand the system, and whether you prevent it from happening again.
 
+> ✅ **Real stories from your PriceEstimator commits are in [priceestimator-real-stories.md](priceestimator-real-stories.md). Use those first.**
+>
 > ⚠️ **Use only stories that really happened.** Below are story drafts built from your CV and notes. Keep the parts that are true, replace or remove the rest, and fill in the `[brackets]`. One follow-up question ("what did the logs show?") will expose a made-up story.
 
 ---

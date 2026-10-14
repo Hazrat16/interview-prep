@@ -35,6 +35,7 @@ Recruiters silently ask:
 | Behavioral & HR question bank | [behavioral-questions.md](behavioral-questions.md) |
 | CV deep-dive questions | [cv-deep-dive-questions.md](cv-deep-dive-questions.md) |
 | Complex bug / critical work stories | [complex-bug-and-critical-work.md](complex-bug-and-critical-work.md) |
+| PriceEstimator real contributions & stories | [priceestimator-real-stories.md](priceestimator-real-stories.md) |
 | Questions to ask them | [questions-to-ask.md](questions-to-ask.md) |
 | LinkedIn profile | [linkedin-profile.md](linkedin-profile.md) |
 | Interview tips | [interview-tips.md](interview-tips.md) |
