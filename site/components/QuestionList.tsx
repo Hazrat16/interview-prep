@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
 import type { QuestionSummary } from '@/lib/content/site-types';
 import { FREQUENCY_LABELS, PERSPECTIVE_LABELS, TYPE_LABELS, tagLabel } from '@/lib/labels';
-import { DifficultyBadge, OriginBadge, Badge } from './Badges';
+import { Badge } from './Badges';
 import { FavoriteButton } from './FavoriteButton';
 import { Icon } from './Icons';
 
@@ -188,17 +188,28 @@ export function QuestionList({
       {filtered.length === 0 ? (
         <p className="rounded-2xl border border-dashed border-line p-8 text-center text-muted">{emptyText}</p>
       ) : (
-        <ul className="overflow-hidden rounded-2xl border border-line bg-surface">
+        <ul className="space-y-2">
           {filtered.slice(0, limit).map((i) => (
-            <li key={i.id} className="border-b border-line last:border-b-0">
-              <Link href={`/q/${i.id}/`} className="flex items-start gap-2 px-4 py-3 hover:bg-surface-2 active:bg-surface-2">
+            <li key={i.id}>
+              <Link
+                href={`/q/${i.id}/`}
+                className="flex items-start gap-3 rounded-2xl border border-line bg-surface py-3.5 pl-4 pr-2 transition hover:border-accent active:scale-[0.99]"
+              >
+                <span className={`mt-[7px] size-2 shrink-0 rounded-full ${i.o === 'curated' ? 'bg-curated' : 'bg-collected'}`} aria-hidden />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[15px] leading-snug">{i.t}</div>
-                  <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-                    <OriginBadge origin={i.o} />
-                    <Badge>{categoryLabels[i.c] ?? i.c}</Badge>
-                    <Badge>{i.p ? PERSPECTIVE_LABELS[i.p] : TYPE_LABELS[i.y]}</Badge>
-                    <DifficultyBadge difficulty={i.d} />
+                  <div className="text-[15px] font-medium leading-snug sm:text-base">{i.t}</div>
+                  <div className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-xs text-muted">
+                    <span className={i.o === 'curated' ? 'text-curated' : 'text-collected'}>{i.o === 'curated' ? 'Curated' : 'My notes'}</span>
+                    <span aria-hidden>·</span>
+                    <span>{categoryLabels[i.c] ?? i.c}</span>
+                    <span aria-hidden>·</span>
+                    <span>{i.p ? PERSPECTIVE_LABELS[i.p] : TYPE_LABELS[i.y]}</span>
+                    {i.d && (
+                      <>
+                        <span aria-hidden>·</span>
+                        <span className={{ easy: 'text-easy', medium: 'text-medium', hard: 'text-hard' }[i.d]}>{i.d[0].toUpperCase() + i.d.slice(1)}</span>
+                      </>
+                    )}
                     {i.f === 'very-high' && <Badge tone="accent">{FREQUENCY_LABELS[i.f]}</Badge>}
                     {!i.a && <Badge tone="warn">No answer yet</Badge>}
                     {collapse && i.n > 1 && <Badge tone="accent">{i.n} answers</Badge>}

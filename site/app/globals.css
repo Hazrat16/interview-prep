@@ -19,7 +19,22 @@
   --easy: #157a5a;
   --medium: #a86400;
   --hard: #c0362c;
-  --code-bg: #f4f4f1;
+  --code-bg: #f6f6f3;
+  /* section tones */
+  --answer: #2f5bd3;
+  --answer-soft: #f3f6ff;
+  --analogy: #b45309;
+  --analogy-soft: #fff8eb;
+  --revise: #15803d;
+  --revise-soft: #effaf2;
+  --follow: #6d3fd0;
+  --follow-soft: #f5f1ff;
+  --variant: #0f766e;
+  --variant-soft: #ecfaf8;
+  --avoid: #be123c;
+  --avoid-soft: #fff1f3;
+  --deep: #475569;
+  --deep-soft: #f4f6f9;
   color-scheme: light;
 }
 
@@ -39,7 +54,21 @@
   --easy: #5fcca4;
   --medium: #f0b45a;
   --hard: #ff8a80;
-  --code-bg: #1e1f24;
+  --code-bg: #17181c;
+  --answer: #8fb0ff;
+  --answer-soft: #182033;
+  --analogy: #f6c066;
+  --analogy-soft: #2a2215;
+  --revise: #6ee7a0;
+  --revise-soft: #142a1d;
+  --follow: #c4a7ff;
+  --follow-soft: #231c38;
+  --variant: #5eead4;
+  --variant-soft: #12292a;
+  --avoid: #fda4af;
+  --avoid-soft: #2e171c;
+  --deep: #a5b4c8;
+  --deep-soft: #1d2129;
   color-scheme: dark;
 }
 
@@ -59,8 +88,22 @@
   --color-easy: var(--easy);
   --color-medium: var(--medium);
   --color-hard: var(--hard);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
-  --font-mono: ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
+  --color-answer: var(--answer);
+  --color-answer-soft: var(--answer-soft);
+  --color-analogy: var(--analogy);
+  --color-analogy-soft: var(--analogy-soft);
+  --color-revise: var(--revise);
+  --color-revise-soft: var(--revise-soft);
+  --color-follow: var(--follow);
+  --color-follow-soft: var(--follow-soft);
+  --color-variant: var(--variant);
+  --color-variant-soft: var(--variant-soft);
+  --color-avoid: var(--avoid);
+  --color-avoid-soft: var(--avoid-soft);
+  --color-deep: var(--deep);
+  --color-deep-soft: var(--deep-soft);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
 }
 
 html {
@@ -89,14 +132,38 @@ body {
   --tw-prose-td-borders: var(--border);
   --tw-prose-captions: var(--muted);
   max-width: none;
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
+  font-size: 1rem;
+  line-height: 1.75;
 }
+@media (min-width: 640px) {
+  .md { font-size: 1.0625rem; }
+}
+.md :where(p, ul, ol) { margin-top: 0.75em; margin-bottom: 0.75em; }
+.md > :first-child { margin-top: 0; }
+.md > :last-child { margin-bottom: 0; }
+.md :where(li) { margin-top: 0.3em; margin-bottom: 0.3em; }
+.md :where(strong) { font-weight: 650; }
+/* Spoken answers are written as quotes: make them read like a script, not an aside. */
 .md :where(blockquote) {
   font-style: normal;
-  font-weight: 450;
-  background: var(--surface-2);
-  border-radius: 0 0.5rem 0.5rem 0;
-  padding: 0.25rem 1rem;
+  font-weight: 400;
+  background: transparent;
+  border-left: 3px solid color-mix(in oklab, var(--accent) 45%, transparent);
+  border-radius: 0;
+  padding: 0 0 0 1rem;
+  margin: 1em 0;
+}
+.md :where(blockquote p) { margin: 0.6em 0; }
+mark.ph {
+  background: color-mix(in oklab, var(--analogy) 22%, transparent);
+  color: inherit;
+  border-radius: 0.3rem;
+  padding: 0 0.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
 }
 .md :where(blockquote p:first-of-type)::before,
 .md :where(blockquote p:last-of-type)::after {

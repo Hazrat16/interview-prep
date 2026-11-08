@@ -11,19 +11,21 @@ export const NAV: { href: string; label: string; short: string; icon: IconName }
   { href: '/questions/', label: 'All Questions', short: 'Questions', icon: 'list' },
   { href: '/collected/', label: 'My Collected', short: 'My notes', icon: 'notes' },
   { href: '/faq/', label: 'Frequently Asked', short: 'FAQ', icon: 'faq' },
+  { href: '/career/', label: 'Career Prep', short: 'Career', icon: 'briefcase' },
   { href: '/categories/', label: 'Categories', short: 'Topics', icon: 'grid' },
   { href: '/favorites/', label: 'Favorites', short: 'Saved', icon: 'heart' },
   { href: '/revision/', label: 'Quick Revision', short: 'Revise', icon: 'bolt' },
 ];
 
-const MOBILE_TABS = ['/', '/questions/', '/faq/', '/revision/', '/favorites/'];
+const MOBILE_TABS = ['/', '/questions/', '/career/', '/revision/', '/favorites/'];
 
 function useActive() {
   const pathname = usePathname() || '/';
   const norm = pathname.endsWith('/') ? pathname : pathname + '/';
   return (href: string) => {
     if (href === '/') return norm === '/';
-    if (href === '/questions/') return norm.startsWith('/questions/') || norm.startsWith('/q/');
+    if (href === '/questions/') return norm.startsWith('/questions/') || (norm.startsWith('/q/') && !norm.startsWith('/q/faq/career-') && !norm.startsWith('/q/faq/behavioral-'));
+    if (href === '/career/') return norm.startsWith('/career/') || norm.startsWith('/q/faq/career-') || norm.startsWith('/q/faq/behavioral-');
     if (href === '/collected/') return norm.startsWith('/collected/') || norm.startsWith('/source/');
     if (href === '/categories/') return norm.startsWith('/categories/') || norm.startsWith('/tags/');
     return norm.startsWith(href);
@@ -126,11 +128,13 @@ export function BottomTabs() {
             key={n.href}
             href={n.href}
             aria-current={isActive(n.href) ? 'page' : undefined}
-            className={`flex h-14 flex-col items-center justify-center gap-0.5 text-[11px] ${
-              isActive(n.href) ? 'font-medium text-accent' : 'text-muted'
+            className={`flex h-16 flex-col items-center justify-center gap-1 text-[11px] ${
+              isActive(n.href) ? 'font-semibold text-accent' : 'text-muted'
             }`}
           >
-            <Icon name={n.icon} size={21} filled={isActive(n.href) && n.icon === 'heart'} />
+            <span className={`grid h-7 w-14 place-items-center rounded-full transition-colors ${isActive(n.href) ? 'bg-accent-soft' : ''}`}>
+              <Icon name={n.icon} size={20} filled={isActive(n.href) && n.icon === 'heart'} strokeWidth={isActive(n.href) ? 2.2 : 1.8} />
+            </span>
             {n.short}
           </Link>
         ))}

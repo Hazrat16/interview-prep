@@ -220,7 +220,7 @@ export function RevisionDeck({ categoryLabels }: { categoryLabels: Record<string
 
           {/* Card */}
           <article
-            className="rounded-2xl border border-line bg-surface shadow-sm"
+            className="overflow-hidden rounded-3xl border border-line bg-surface shadow-sm"
             onTouchStart={(e) => (touch.current = { x: e.touches[0].clientX, y: e.touches[0].clientY })}
             onTouchEnd={(e) => {
               const t = touch.current;
@@ -244,14 +244,17 @@ export function RevisionDeck({ categoryLabels }: { categoryLabels: Record<string
                     </Badge>
                   )}
                 </div>
-                <h2 className="text-lg font-semibold leading-snug sm:text-xl" dangerouslySetInnerHTML={{ __html: card.q }} />
+                <h2 className="text-xl font-semibold leading-snug tracking-tight text-balance sm:text-2xl" dangerouslySetInnerHTML={{ __html: card.q }} />
               </div>
               <FavoriteButton id={card.id} compact />
             </div>
 
             {revealed ? (
-              <div className="border-t border-line px-5 py-4 sm:px-6">
-                <div className="md prose prose-sm max-w-none sm:prose-base" dangerouslySetInnerHTML={{ __html: card.a }} />
+              <div className={`border-t px-5 py-4 sm:px-6 ${card.kind === 'qa' ? 'border-answer/20 bg-answer-soft/60' : 'border-revise/20 bg-revise-soft/60'}`}>
+                <div className={`mb-2 text-[12px] font-semibold uppercase tracking-wider ${card.kind === 'qa' ? 'text-answer' : 'text-revise'}`}>
+                  {card.kind === 'qa' ? 'Answer from my notes' : card.kind === 'points' ? 'Quick revision points' : 'Key takeaways'}
+                </div>
+                <div className="md prose max-w-none" dangerouslySetInnerHTML={{ __html: card.a }} />
                 {card.id.includes('/') && (
                   <Link href={`/q/${card.id}/`} className="mt-3 inline-flex items-center gap-1 text-sm text-accent">
                     Open full question <Icon name="right" size={14} />

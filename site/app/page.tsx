@@ -18,7 +18,7 @@ export default function Dashboard() {
     .filter((d) => !d.isIndex && d.lastModified)
     .sort((a, b) => (b.lastModified ?? '').localeCompare(a.lastModified ?? ''))
     .slice(0, 5);
-  const mustKnow = curated.filter((q) => q.frequency === 'very-high').slice(0, 6);
+  const mustKnow = curated.filter((q) => q.frequency === 'very-high' && q.category !== 'career').slice(0, 6);
 
   const stats = [
     { label: 'Questions', value: all.length, href: '/questions/' },
@@ -42,7 +42,7 @@ export default function Dashboard() {
         ))}
       </div>
 
-      <div className="mb-10 grid gap-3 sm:grid-cols-2">
+      <div className="mb-10 grid gap-3 sm:grid-cols-3">
         <Link href="/revision/" className="group flex items-center gap-4 rounded-2xl bg-accent p-5 text-white">
           <Icon name="bolt" size={28} />
           <div className="flex-1">
@@ -51,7 +51,15 @@ export default function Dashboard() {
           </div>
           <Icon name="right" className="transition-transform group-hover:translate-x-0.5" />
         </Link>
-        <Link href="/faq/" className="group flex items-center gap-4 rounded-2xl border border-line bg-surface p-5">
+        <Link href="/career/" className="group flex items-center gap-4 rounded-2xl border border-line bg-surface p-5 hover:border-accent">
+          <Icon name="briefcase" size={28} className="text-analogy" />
+          <div className="flex-1">
+            <div className="font-semibold">Career prep</div>
+            <div className="text-sm text-muted">Intro & HR answers for my situation</div>
+          </div>
+          <Icon name="right" className="text-muted transition-transform group-hover:translate-x-0.5" />
+        </Link>
+        <Link href="/faq/" className="group flex items-center gap-4 rounded-2xl border border-line bg-surface p-5 hover:border-accent">
           <Icon name="faq" size={28} className="text-curated" />
           <div className="flex-1">
             <div className="font-semibold">Frequently asked</div>

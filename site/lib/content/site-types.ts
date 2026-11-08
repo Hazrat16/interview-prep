@@ -28,6 +28,10 @@ export interface SiteQuestion {
     quickRevisionHtml: string[];
     followUpsHtml: string[];
     deepDiveHtml?: string;
+    section?: string;
+    order: number;
+    variantsHtml?: { label: string; html: string }[];
+    avoidHtml?: string[];
   };
   revisionItemsHtml?: string[];
   duplicateGroup?: string;

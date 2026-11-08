@@ -43,12 +43,18 @@ export async function buildSite(opts: {
     ...index.categories.map((c) => c.slug),
     ...curated.map((q) => q.category),
   ]);
-  const render = createRenderer({
+  const renderer = createRenderer({
     basePath,
     githubBlob,
     publishedDocs: new Set(index.documents.map((d) => d.path)),
     categories: categorySlugs,
   });
+  // Salary placeholders (XXXX/YYYY/ZZZZ) are highlighted so they're obviously "fill me in".
+  const mark = (html: string) => html.replace(/(?<![\w-])(XXXX|YYYY|ZZZZ)(?![\w-])/g, '<mark class="ph">$1</mark>');
+  const render = {
+    block: async (md: string, from?: string, frag?: boolean) => mark(await renderer.block(md, from, frag)),
+    inline: async (md: string, from?: string) => mark(await renderer.inline(md, from)),
+  };
 
   // ---- documents ----------------------------------------------------------
   const documents: SiteDocument[] = [];
@@ -95,7 +101,7 @@ export async function buildSite(opts: {
   }
 
   // ---- curated --------------------------------------------------------------
-  for (const q of curated) {
+  for (const [order, q] of curated.entries()) {
     questions.push({
       id: `faq/${q.id}`,
       origin: 'curated',
@@ -118,6 +124,12 @@ export async function buildSite(opts: {
         quickRevisionHtml: await Promise.all(q.quickRevision.map((x) => render.inline(x))),
         followUpsHtml: await Promise.all(q.followUps.map((x) => render.inline(x))),
         deepDiveHtml: q.deepDive ? await render.block(q.deepDive) : undefined,
+        section: q.section,
+        order,
+        variantsHtml: q.variants
+          ? await Promise.all(q.variants.map(async (v) => ({ label: v.label, html: await render.block(v.answer) })))
+          : undefined,
+        avoidHtml: q.avoid ? await Promise.all(q.avoid.map((x) => render.inline(x))) : undefined,
       },
       relatedIds: [],
     });
@@ -238,7 +250,10 @@ export async function buildSite(opts: {
   const raw = new Map<string, string>();
   for (const r of index.records) raw.set(r.id, r.bodyMarkdown);
   for (const q of curated)
-    raw.set(`faq/${q.id}`, [q.answer, q.analogy, q.quickRevision.join(' '), q.followUps.join(' ')].join('\n'));
+    raw.set(
+      `faq/${q.id}`,
+      [q.answer, q.analogy, q.quickRevision.join(' '), q.followUps.join(' '), ...(q.variants ?? []).map((v) => v.answer)].join('\n'),
+    );
   for (const q of questions) {
     if (q.kind === 'revision') continue;
     searchDocs.push({

@@ -39,6 +39,12 @@ export const CuratedQuestionSchema = z.object({
   followUps: z.array(z.string().min(8)).min(2).max(6),
   /** Optional code sample or deeper detail shown below the answer. Markdown. */
   deepDive: z.string().optional(),
+  /** Group heading on topic pages such as Career (e.g. "Introduction"). */
+  section: z.string().optional(),
+  /** Alternative answers for different roles or lengths (e.g. "Frontend role", "60-second version"). */
+  variants: z.array(z.object({ label: z.string().min(2), answer: z.string().min(40) })).optional(),
+  /** Things not to say. Markdown (inline). */
+  avoid: z.array(z.string().min(5)).optional(),
   /** Collected record ids to link explicitly (auto-linking also happens). */
   relatedCollected: z.array(z.string()).optional(),
 });
