@@ -63,6 +63,8 @@ export interface SiteCategory {
   order: number;
   introHtml?: string;
   documentPaths: string[];
+  /** Also lists questions from other folders tagged with this slug. */
+  includeTagged: boolean;
   questionCount: number;
   collectedCount: number;
   curatedCount: number;

@@ -51,3 +51,9 @@ export function duplicateSiblings(q: SiteQuestion) {
   const g = site().duplicateGroups.find((x) => x.id === q.duplicateGroup);
   return (g?.recordIds ?? []).filter((id) => id !== q.id).map((id) => question(id)!).filter(Boolean);
 }
+
+/** Questions in a category, plus questions from other folders tagged with the same slug. */
+export const inCategory = (slug: string) => {
+  const includeTagged = !!category(slug)?.includeTagged;
+  return (q: SiteQuestion) => q.category === slug || (includeTagged && q.tags.includes(slug));
+};

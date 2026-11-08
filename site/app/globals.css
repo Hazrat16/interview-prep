@@ -219,11 +219,18 @@ mark.ph {
 .md pre [data-line] {
   padding: 0 1rem;
 }
+/* Plain-text blocks (diagrams) have no token colours, so fall back to the page text colour. */
+.md pre {
+  color: var(--text);
+}
 .md pre code span {
-  color: var(--shiki-light);
+  color: var(--shiki-light, inherit);
 }
 .dark .md pre code span {
-  color: var(--shiki-dark);
+  color: var(--shiki-dark, inherit);
+}
+.md pre[data-language='text'] {
+  line-height: 1.45;
 }
 
 /* ---- Utilities ----------------------------------------------------------- */

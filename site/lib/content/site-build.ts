@@ -193,7 +193,10 @@ export async function buildSite(opts: {
   const categories: SiteCategory[] = [];
   for (const slug of categorySlugs) {
     const src = index.categories.find((c) => c.slug === slug);
-    const qs = questions.filter((q) => q.category === slug && q.kind === 'question');
+    const includeTagged = !!config.categories[slug]?.includeTagged;
+    const qs = questions.filter(
+      (q) => q.kind === 'question' && (q.category === slug || (includeTagged && q.tags.includes(slug))),
+    );
     const intro = intros.get(slug);
     categories.push({
       slug,
@@ -201,6 +204,7 @@ export async function buildSite(opts: {
       order: catOrder(slug),
       introHtml: intro ? await render.inline(intro, `${slug}/README.md`) : undefined,
       documentPaths: src?.documentPaths ?? [],
+      includeTagged,
       questionCount: qs.length,
       collectedCount: qs.filter((q) => q.origin === 'collected').length,
       curatedCount: qs.filter((q) => q.origin === 'curated').length,

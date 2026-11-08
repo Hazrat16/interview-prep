@@ -69,6 +69,25 @@ export default function Dashboard() {
         </Link>
       </div>
 
+      <div className="-mt-6 mb-10 grid grid-cols-2 gap-3">
+        {[
+          { slug: 'system-design', icon: 'layers' as const, blurb: 'Fundamentals + design walkthroughs' },
+          { slug: 'dsa', icon: 'code' as const, blurb: 'Patterns, problems & JS solutions' },
+        ].map((c) => {
+          const cat = s.categories.find((x) => x.slug === c.slug);
+          if (!cat) return null;
+          return (
+            <Link key={c.slug} href={`/categories/${c.slug}/`} className="group flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 hover:border-accent">
+              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent"><Icon name={c.icon} /></span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold">{cat.label}</span>
+                <span className="block truncate text-xs text-muted">{cat.questionCount} · {c.blurb}</span>
+              </span>
+            </Link>
+          );
+        })}
+      </div>
+
       <Section title="Your progress">
         <DashboardProgress totalCards={cards} />
       </Section>

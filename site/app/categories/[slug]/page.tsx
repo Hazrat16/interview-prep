@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { site, category, summaries, categoryLabels } from '@/lib/data';
+import { site, category, summaries, categoryLabels, inCategory } from '@/lib/data';
 import { PageHeader } from '@/components/Page';
 import { QuestionList } from '@/components/QuestionList';
 import { Icon } from '@/components/Icons';
@@ -29,7 +29,7 @@ export default async function CategoryPage({ params }: Props) {
       <nav className="mb-2 text-sm text-muted"><Link href="/categories/" className="hover:text-accent">Categories</Link> /</nav>
       <PageHeader title={c.label} description={c.introHtml ? <span dangerouslySetInnerHTML={{ __html: c.introHtml }} /> : undefined}>
         <div className="mt-4 flex flex-wrap gap-2">
-          <Link href={`/revision/?cat=${slug}`} className="inline-flex h-10 items-center gap-2 rounded-xl bg-accent px-4 text-sm font-medium text-white">
+          <Link href={c.includeTagged ? `/revision/?tag=${slug}` : `/revision/?cat=${slug}`} className="inline-flex h-10 items-center gap-2 rounded-xl bg-accent px-4 text-sm font-medium text-white">
             <Icon name="bolt" size={16} /> Revise {c.label}
           </Link>
           {readme && (
@@ -49,7 +49,12 @@ export default async function CategoryPage({ params }: Props) {
           ))}
         </div>
       )}
-      <QuestionList items={summaries((q) => q.category === slug)} categoryLabels={categoryLabels()} showCategoryFilter={false} />
+      <QuestionList
+        items={summaries(inCategory(slug))}
+        categoryLabels={categoryLabels()}
+        showCategoryFilter={summaries(inCategory(slug)).some((q) => q.c !== slug)}
+        showPerspective={summaries(inCategory(slug)).every((q) => q.o === 'curated')}
+      />
     </>
   );
 }

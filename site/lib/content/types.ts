@@ -9,7 +9,7 @@ export interface ContentConfig {
   bankOverviewHeadings: RegExp[];
   practicePromptHeadings: RegExp[];
   revisionHeadings: RegExp[];
-  categories: Record<string, { label: string; order?: number }>;
+  categories: Record<string, { label: string; order?: number; includeTagged?: boolean }>;
   privacy: { flagTerms: string[] };
 }
 

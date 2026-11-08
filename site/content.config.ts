@@ -90,14 +90,21 @@ const config: ContentConfig = {
   /** Sections whose list items become Quick Revision cards. */
   revisionHeadings: [/^key takeaways/i, /^takeaways/i, /^tl;?dr/i, /cheat ?sheet/i],
 
-  /** Pretty labels for top-level folders. Unknown folders are auto title-cased. */
+  /**
+   * Pretty labels for categories (top-level folders or curated `category`).
+   * Unknown ones are auto title-cased. `includeTagged: true` also lists
+   * questions from other folders tagged with the same slug (e.g. the DSA
+   * solutions in javascript/ appear under DSA & Algorithms).
+   */
   categories: {
     javascript: { label: 'JavaScript', order: 1 },
     frontend: { label: 'Frontend', order: 2 },
     backend: { label: 'Backend', order: 3 },
     database: { label: 'Database', order: 4 },
-    companies: { label: 'Company Interviews', order: 5 },
-    career: { label: 'Career & HR', order: 6 },
+    'system-design': { label: 'System Design', order: 5, includeTagged: true },
+    dsa: { label: 'DSA & Algorithms', order: 6, includeTagged: true },
+    companies: { label: 'Company Interviews', order: 7 },
+    career: { label: 'Career & HR', order: 8 },
   },
 
   privacy: {
