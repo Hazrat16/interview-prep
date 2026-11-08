@@ -1,6 +1,6 @@
 'use client';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStored } from '@/lib/client/storage';
 import { Icon } from './Icons';
 import { FavoriteButton } from './FavoriteButton';
@@ -22,13 +22,35 @@ export function SectionNav({ items }: { items: { id: string; label: string; dot:
     els.forEach((el) => io.observe(el));
     return () => io.disconnect();
   }, [items]);
+  // Keep the active chip visible by scrolling ONLY the chip strip sideways, and
+  // only once page scrolling has settled. (scrollIntoView would also scroll the
+  // page and cancels touch momentum on phones, so the page "stops" mid-swipe.)
+  const stripRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    document.querySelector(`[data-chip="${active}"]`)?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    const strip = stripRef.current;
+    if (!strip) return;
+    let timer: ReturnType<typeof setTimeout>;
+    const center = () => {
+      const chip = strip.querySelector<HTMLElement>(`[data-chip="${active}"]`);
+      if (!chip) return;
+      const left = chip.offsetLeft - (strip.clientWidth - chip.offsetWidth) / 2;
+      strip.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+    };
+    const schedule = () => {
+      clearTimeout(timer);
+      timer = setTimeout(center, 180);
+    };
+    schedule();
+    window.addEventListener('scroll', schedule, { passive: true });
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', schedule);
+    };
   }, [active]);
   if (items.length < 2) return null;
   return (
     <nav aria-label="On this page" className="sticky top-14 z-20 -mx-4 mb-5 border-b border-line bg-bg/90 px-4 py-2 backdrop-blur lg:top-0 lg:mx-0 lg:rounded-b-2xl lg:border-x lg:px-3">
-      <div className="no-scrollbar flex gap-1.5 overflow-x-auto">
+      <div ref={stripRef} className="no-scrollbar flex gap-1.5 overflow-x-auto overscroll-x-contain">
         {items.map((i) => (
           <a
             key={i.id}
