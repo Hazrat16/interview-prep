@@ -47,3 +47,56 @@ export async function loadCurated(siteDir: string): Promise<LoadedCurated[]> {
   if (errors.length) throw new Error(`Curated question validation failed:\n  ${errors.join('\n  ')}`);
   return out;
 }
+
+// ---------------------------------------------------------------------------
+import { EnrichmentEntrySchema, type Enrichment } from './enrich-schema';
+
+export interface LoadedEnrichments {
+  /** full question id → enrichment (sameAs already resolved) */
+  byId: Map<string, Enrichment & { file: string }>;
+  warnings: string[];
+  files: number;
+}
+
+/**
+ * Discover site/content/enrichments/**\/*.ts. Schema errors fail the build;
+ * ids that don't match a collected question only warn (a heading may have been
+ * renamed in the notes).
+ */
+export async function loadEnrichments(siteDir: string, knownIds: Set<string>): Promise<LoadedEnrichments> {
+  const dir = path.join(siteDir, 'content', 'enrichments');
+  const byId = new Map<string, Enrichment & { file: string }>();
+  const warnings: string[] = [];
+  if (!fs.existsSync(dir)) return { byId, warnings, files: 0 };
+  const files = (fs.readdirSync(dir, { recursive: true }) as string[]).filter((f) => /\.ts$/.test(f)).sort();
+  const errors: string[] = [];
+  const pending: [string, string, string][] = []; // id, sameAs, file
+  for (const f of files) {
+    const rel = path.posix.join('content/enrichments', f.split(path.sep).join('/'));
+    const mod = await import(pathToFileURL(path.join(dir, f)).href);
+    const file = mod.default as { source?: string; entries?: Record<string, unknown> };
+    if (!file?.source || !file.entries) {
+      errors.push(`${rel}: default export must be defineEnrichments('<path>.md', { … })`);
+      continue;
+    }
+    const base = file.source.replace(/\.(md|markdown)$/i, '');
+    for (const [key, value] of Object.entries(file.entries)) {
+      const id = `${base}/${key}`;
+      const res = EnrichmentEntrySchema.safeParse(value);
+      if (!res.success) {
+        for (const issue of res.error.issues) errors.push(`${rel} [${key}] ${issue.path.join('.')}: ${issue.message}`);
+        continue;
+      }
+      if (!knownIds.has(id)) warnings.push(`${rel}: "${key}" doesn't match any question in ${file.source} (heading renamed or file excluded?)`);
+      if ('sameAs' in res.data) pending.push([id, res.data.sameAs, rel]);
+      else byId.set(id, { ...res.data, file: rel });
+    }
+  }
+  if (errors.length) throw new Error(`Enrichment validation failed:\n  ${errors.join('\n  ')}`);
+  for (const [id, target, rel] of pending) {
+    const t = byId.get(target);
+    if (!t) warnings.push(`${rel}: sameAs "${target}" has no enrichment`);
+    else byId.set(id, t);
+  }
+  return { byId, warnings, files: files.length };
+}

@@ -21,21 +21,25 @@ export interface SiteQuestion {
   detector?: Detector | 'curated';
   /** Collected only: where the text came from. */
   source?: SourceRef & { docSlug: string };
-  /** Curated only. */
-  curated?: {
-    file: string;
-    analogyHtml: string;
-    quickRevisionHtml: string[];
-    followUpsHtml: string[];
-    deepDiveHtml?: string;
-    section?: string;
-    order: number;
-    variantsHtml?: { label: string; html: string }[];
-    avoidHtml?: string[];
-  };
+  /** Curated only: authoring metadata + prep sections. */
+  curated?: Prep & { file: string; section?: string; order: number };
+  /** Collected only: prep sections from content/enrichments (the note stays the source). */
+  prep?: Prep & { file: string };
   revisionItemsHtml?: string[];
   duplicateGroup?: string;
   relatedIds: string[];
+}
+
+/** The curated-style sections shared by curated questions and enriched notes. */
+export interface Prep {
+  /** Polished interview answer (enriched notes only; curated use bodyHtml). */
+  answerHtml?: string;
+  analogyHtml: string;
+  quickRevisionHtml: string[];
+  followUpsHtml: string[];
+  deepDiveHtml?: string;
+  variantsHtml?: { label: string; html: string }[];
+  avoidHtml?: string[];
 }
 
 export interface SiteDocument {

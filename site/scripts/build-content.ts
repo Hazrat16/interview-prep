@@ -10,7 +10,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import config from '../content.config';
 import { buildContentIndex } from '../lib/content/build';
-import { loadCurated } from '../lib/content/curated';
+import { loadCurated, loadEnrichments } from '../lib/content/curated';
 import { buildSite } from '../lib/content/site-build';
 import type { CollectedRecord, ContentIndex } from '../lib/content/types';
 
@@ -23,7 +23,9 @@ const basePath = (process.env.PAGES_BASE_PATH ?? '').replace(/\/$/, '');
 
 const { index, nearDuplicates } = buildContentIndex(root, config);
 const curated = await loadCurated(siteDir); // throws → build fails on invalid curated data
-const { site, summaries, cards, searchIndex, warnings } = await buildSite({ index, curated, config, basePath });
+const enrichments = await loadEnrichments(siteDir, new Set(index.records.filter((r) => r.kind === 'question').map((r) => r.id)));
+const { site, summaries, cards, searchIndex, warnings } = await buildSite({ index, curated, enrichments, config, basePath });
+warnings.push(...enrichments.warnings);
 
 fs.mkdirSync(outDir, { recursive: true });
 fs.writeFileSync(path.join(outDir, 'site.json'), JSON.stringify(site));
@@ -36,6 +38,19 @@ fs.writeFileSync(path.join(publicData, 'search-index.json'), searchIndex);
 let report = renderReport(index, nearDuplicates);
 report += `\n\n## Curated questions\n\n- ${curated.length} questions from ${new Set(curated.map((q) => q.file)).size} files\n`;
 for (const w of warnings) report += `- ⚠️ ${w}\n`;
+{
+  const qs = index.records.filter((r) => r.kind === 'question');
+  const done = qs.filter((r) => enrichments.byId.has(r.id)).length;
+  report += `\n## Enrichment coverage (curated-style sections for my notes)\n\n${done} of ${qs.length} collected questions enriched.\n\n| File | Enriched |\n|---|--:|\n`;
+  const byFile = new Map<string, [number, number]>();
+  for (const r of qs) {
+    const c = byFile.get(r.source.path) ?? [0, 0];
+    c[1]++;
+    if (enrichments.byId.has(r.id)) c[0]++;
+    byFile.set(r.source.path, c);
+  }
+  for (const [f, [d, t]] of byFile) report += `| ${f} | ${d}/${t}${d === t ? ' ✅' : ''} |\n`;
+}
 fs.writeFileSync(path.join(outDir, 'parse-report.md'), report);
 
 // ---- console summary --------------------------------------------------------
@@ -49,6 +64,11 @@ console.log(
   `site:    ${curated.length} curated questions, ${summaries.length} questions total, ${cards.length} revision cards, ` +
     `${site.duplicateGroups.length} duplicate groups (collected + curated)`,
 );
+{
+  const total = index.records.filter((r) => r.kind === 'question').length;
+  const done = index.records.filter((r) => r.kind === 'question' && enrichments.byId.has(r.id)).length;
+  console.log(`enrich:  ${done}/${total} collected questions have curated-style sections (${enrichments.files} files)`);
+}
 for (const w of warnings) console.warn(`warning: ${w}`);
 console.log(`report:  ${path.relative(process.cwd(), path.join(outDir, 'parse-report.md'))}`);
 if (verbose) console.log('\n' + report);

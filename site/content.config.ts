@@ -75,10 +75,11 @@ const config: ContentConfig = {
 
   /**
    * Leaf headings in question-bank files that are overviews / checklists
-   * (a list of tasks), not a single question. Their list items may still be
+   * (a list of tasks), not a single question. Matched against the heading
+   * with numbering and any trailing "(…)" removed, e.g. "SQL round (often included)". Their list items may still be
    * picked up as practice prompts.
    */
-  bankOverviewHeadings: [/\b(questions|tasks|patterns|prompts|checklist)\b/i, /\bround\b/i],
+  bankOverviewHeadings: [/\b(questions|tasks|patterns|prompts|checklist|round)$/i],
 
   /**
    * Under headings matching these, plain list items ending in "?" become

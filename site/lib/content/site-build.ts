@@ -1,7 +1,7 @@
 import matter from 'gray-matter';
 import MiniSearch from 'minisearch';
 import type { ContentConfig, ContentIndex, ContentType } from './types';
-import type { LoadedCurated } from './curated';
+import type { LoadedCurated, LoadedEnrichments } from './curated';
 import type { Perspective } from './curated-schema';
 import type {
   QuestionSummary,
@@ -33,10 +33,11 @@ const FREQ_RANK = { 'very-high': 0, high: 1, medium: 2 } as const;
 export async function buildSite(opts: {
   index: ContentIndex;
   curated: LoadedCurated[];
+  enrichments: LoadedEnrichments;
   config: ContentConfig;
   basePath: string;
 }) {
-  const { index, curated, config, basePath } = opts;
+  const { index, curated, enrichments, config, basePath } = opts;
   const warnings: string[] = [];
   const githubBlob = `https://github.com/${config.github.repo}/blob/${config.github.branch}`;
   const categorySlugs = new Set([
@@ -78,6 +79,7 @@ export async function buildSite(opts: {
   // ---- collected records ----------------------------------------------------
   const questions: SiteQuestion[] = [];
   for (const r of index.records) {
+    const e = r.kind === 'question' ? enrichments.byId.get(r.id) : undefined;
     questions.push({
       id: r.id,
       origin: 'collected',
@@ -87,10 +89,22 @@ export async function buildSite(opts: {
       bodyHtml: await render.block(r.bodyMarkdown, r.source.path, true),
       category: r.category,
       contentType: r.contentType,
-      difficulty: r.difficulty,
-      tags: r.tags,
-      hasAnswer: r.hasAnswer,
-      revisionEligible: r.revisionEligible,
+      difficulty: r.difficulty ?? e?.difficulty,
+      frequency: e?.frequency,
+      tags: e?.tags ? [...new Set([...r.tags, ...e.tags])] : r.tags,
+      hasAnswer: r.hasAnswer || !!e?.answer,
+      revisionEligible: r.revisionEligible || !!e,
+      prep: e
+        ? {
+            file: e.file,
+            answerHtml: e.answer ? await render.block(e.answer) : undefined,
+            analogyHtml: await render.block(e.analogy),
+            quickRevisionHtml: await Promise.all(e.quickRevision.map((x) => render.inline(x))),
+            followUpsHtml: await Promise.all(e.followUps.map((x) => render.inline(x))),
+            deepDiveHtml: e.deepDive ? await render.block(e.deepDive) : undefined,
+            avoidHtml: e.avoid ? await Promise.all(e.avoid.map((x) => render.inline(x))) : undefined,
+          }
+        : undefined,
       detector: r.detector,
       source: { ...r.source, docSlug: docSlug(r.source.path) },
       revisionItemsHtml: r.revisionItems
@@ -229,12 +243,13 @@ export async function buildSite(opts: {
         o: q.origin,
         g: q.tags,
       });
-    } else if (q.kind === 'question' && q.curated) {
+    } else if (q.kind === 'question' && (q.curated || q.prep)) {
+      const p = (q.curated ?? q.prep)!;
       cards.push({
         id: q.id,
         kind: 'points',
         q: q.titleHtml,
-        a: `<ul>${q.curated.quickRevisionHtml.map((x) => `<li>${x}</li>`).join('')}</ul>`,
+        a: `<ul>${p.quickRevisionHtml.map((x) => `<li>${x}</li>`).join('')}</ul>`,
         c: q.category,
         o: q.origin,
         g: q.tags,
@@ -248,7 +263,10 @@ export async function buildSite(opts: {
   const catLabel = new Map(categories.map((c) => [c.slug, c.label]));
   const searchDocs: SearchDoc[] = [];
   const raw = new Map<string, string>();
-  for (const r of index.records) raw.set(r.id, r.bodyMarkdown);
+  for (const r of index.records) {
+    const e = enrichments.byId.get(r.id);
+    raw.set(r.id, [r.bodyMarkdown, e?.answer, e?.analogy, e?.quickRevision.join(' '), e?.followUps.join(' ')].filter(Boolean).join('\n'));
+  }
   for (const q of curated)
     raw.set(
       `faq/${q.id}`,

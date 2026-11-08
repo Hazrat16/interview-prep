@@ -374,7 +374,7 @@ export function parseDocument({ path, raw, config, lastModified }: ParseInput) {
       if (config.structuralHeadings.some((re) => re.test(clean))) continue;
       const isLeaf = h.firstChildHeading >= h.end;
       const endsQ = ENDS_WITH_QUESTION_RE.test(h.text);
-      const isOverview = config.bankOverviewHeadings.some((re) => re.test(clean));
+      const isOverview = config.bankOverviewHeadings.some((re) => re.test(clean.replace(/\s*\([^)]*\)\s*$/, '')));
       if (!endsQ && !(isBankFile && isLeaf && !isOverview)) continue;
 
       // Prefer the whole subtree; fall back to direct content if parts are claimed.

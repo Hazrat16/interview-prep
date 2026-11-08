@@ -68,11 +68,13 @@ export default async function QuestionPage({ params }: Props) {
   const related = q.relatedIds.map((id) => question(id)).filter(Boolean) as SiteQuestion[];
   const doc = q.source ? documentByPath(q.source.path) : undefined;
   const { prev, next } = neighbours(q);
-  const c = q.curated;
+  const c = q.curated ?? q.prep;
+  const notesAndPolished = !!q.prep?.answerHtml && !!q.bodyHtml;
   const isCareer = q.category === 'career';
 
   const nav = [
     { id: 'answer', label: 'Answer', dot: 'bg-answer', show: true },
+    { id: 'notes', label: 'My notes', dot: 'bg-collected', show: notesAndPolished },
     { id: 'versions', label: 'Versions', dot: 'bg-variant', show: !!c?.variantsHtml?.length },
     { id: 'analogy', label: isCareer ? 'Framing' : 'Analogy', dot: 'bg-analogy', show: !!c },
     { id: 'revise', label: 'Revise', dot: 'bg-revise', show: !!c || q.kind === 'revision' },
@@ -97,7 +99,7 @@ export default async function QuestionPage({ params }: Props) {
           {q.source ? (
             <Link href={`/source/${q.source.docSlug}/`} className="hover:text-accent">{doc?.title ?? q.source.path}</Link>
           ) : (
-            <span>{c?.section ?? 'Frequently asked'}</span>
+            <span>{q.curated?.section ?? 'Frequently asked'}</span>
           )}
         </nav>
         <h1
@@ -113,7 +115,7 @@ export default async function QuestionPage({ params }: Props) {
         </div>
         <div className="mt-4 hidden items-center gap-2 lg:flex">
           <FavoriteButton id={q.id} />
-          {q.hasAnswer && <PracticeToggle />}
+          {(q.hasAnswer || !!c) && <PracticeToggle />}
         </div>
         {q.source && (
           <div className="mt-3">
@@ -126,7 +128,7 @@ export default async function QuestionPage({ params }: Props) {
 
       <div className="space-y-5">
         {/* ---- Answer ---- */}
-        {c ? (
+        {q.curated ? (
           <Block id="answer" tone="answer" icon="mic" title={isCareer ? 'Your answer' : 'Interview answer'} hint="say this in your own words">
             <Reveal>
               <Html html={q.bodyHtml} />
@@ -136,24 +138,41 @@ export default async function QuestionPage({ params }: Props) {
           <Block id="revise" tone="revise" icon="check" title="Key takeaways" hint="from my notes">
             <NumberedList items={q.revisionItemsHtml ?? []} tone="revise" />
           </Block>
-        ) : q.hasAnswer ? (
-          <Block
-            id="answer"
-            tone="answer"
-            icon="notes"
-            title="My notes"
-            hint={q.source?.sectionPath.join(' › ')}
-          >
-            <Reveal>
-              <Html html={q.bodyHtml} />
-            </Reveal>
-          </Block>
         ) : (
-          <Block id="answer" tone="neutral" icon="mic" title="Practice prompt">
-            <p className="text-muted">
-              There's no written answer in my notes yet. Answer it out loud, then compare with the related questions below.
-            </p>
-          </Block>
+          <>
+            {q.prep?.answerHtml && (
+              <Block id="answer" tone="answer" icon="mic" title="Interview answer" hint="say this in your own words">
+                <Reveal>
+                  <Html html={q.prep.answerHtml} />
+                </Reveal>
+              </Block>
+            )}
+            {q.bodyHtml ? (
+              <Block
+                id={notesAndPolished ? 'notes' : 'answer'}
+                tone={notesAndPolished ? 'neutral' : 'answer'}
+                icon="notes"
+                title="My notes"
+                hint={q.source?.sectionPath.join(' › ') || 'original Markdown'}
+              >
+                {notesAndPolished ? (
+                  <Html html={q.bodyHtml} />
+                ) : (
+                  <Reveal>
+                    <Html html={q.bodyHtml} />
+                  </Reveal>
+                )}
+              </Block>
+            ) : (
+              !q.prep?.answerHtml && (
+                <Block id="answer" tone="neutral" icon="mic" title="Practice prompt">
+                  <p className="text-muted">
+                    There's no written answer in my notes yet. Answer it out loud, then compare with the related questions below.
+                  </p>
+                </Block>
+              )
+            )}
+          </>
         )}
 
         {c?.variantsHtml && c.variantsHtml.length > 0 && (
