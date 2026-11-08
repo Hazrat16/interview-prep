@@ -63,7 +63,11 @@ export interface LoadedEnrichments {
  * ids that don't match a collected question only warn (a heading may have been
  * renamed in the notes).
  */
-export async function loadEnrichments(siteDir: string, knownIds: Set<string>): Promise<LoadedEnrichments> {
+export async function loadEnrichments(
+  siteDir: string,
+  knownIds: Set<string>,
+  curated: LoadedCurated[] = [],
+): Promise<LoadedEnrichments> {
   const dir = path.join(siteDir, 'content', 'enrichments');
   const byId = new Map<string, Enrichment & { file: string }>();
   const warnings: string[] = [];
@@ -93,8 +97,26 @@ export async function loadEnrichments(siteDir: string, knownIds: Set<string>): P
     }
   }
   if (errors.length) throw new Error(`Enrichment validation failed:\n  ${errors.join('\n  ')}`);
+  // `sameAs: 'faq/<id>'` reuses a curated question, so a note and its curated twin stay identical.
+  const faq = new Map(
+    curated.map((q) => [
+      `faq/${q.id}`,
+      {
+        difficulty: q.difficulty,
+        frequency: q.frequency,
+        answer: q.answer,
+        analogy: q.analogy,
+        quickRevision: q.quickRevision,
+        followUps: q.followUps,
+        deepDive: q.deepDive,
+        avoid: q.avoid,
+        tags: q.tags,
+        file: q.file,
+      },
+    ]),
+  );
   for (const [id, target, rel] of pending) {
-    const t = byId.get(target);
+    const t = byId.get(target) ?? faq.get(target);
     if (!t) warnings.push(`${rel}: sameAs "${target}" has no enrichment`);
     else byId.set(id, t);
   }

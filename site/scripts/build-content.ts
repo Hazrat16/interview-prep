@@ -23,7 +23,7 @@ const basePath = (process.env.PAGES_BASE_PATH ?? '').replace(/\/$/, '');
 
 const { index, nearDuplicates } = buildContentIndex(root, config);
 const curated = await loadCurated(siteDir); // throws → build fails on invalid curated data
-const enrichments = await loadEnrichments(siteDir, new Set(index.records.filter((r) => r.kind === 'question').map((r) => r.id)));
+const enrichments = await loadEnrichments(siteDir, new Set(index.records.filter((r) => r.kind === 'question').map((r) => r.id)), curated);
 const { site, summaries, cards, searchIndex, warnings } = await buildSite({ index, curated, enrichments, config, basePath });
 warnings.push(...enrichments.warnings);
 
