@@ -12,6 +12,7 @@ A static Next.js site built from the Markdown notes in this repository. It's dep
 | Hide a file | Add its path or a glob to `exclude` in `content.config.ts`, or put `publish: false` in the file's frontmatter. |
 | Publish `career/` | Remove `'career/**'` from `exclude` in `content.config.ts`. Story files listed in `notesOnly` show as notes only. |
 | Add curated questions | Add entries to any file in `content/curated/`, or create a new `content/curated/<topic>.ts` that default-exports `defineQuestions([...])`. New files are picked up automatically, and the build fails with a clear message if a field is missing. |
+| Give a note's questions the curated layout | Add or extend `content/enrichments/<same path as the note>.ts` using `defineEnrichments('<note>.md', { '<question-key>': { difficulty, analogy, quickRevision, followUps, answer? } })`. The key is the last part of the question's URL. Use `{ sameAs: '<other id>' }` or `{ sameAs: 'faq/<id>' }` to reuse an existing one. The note itself is never changed, and the build warns if a key no longer matches a question (for example, after a heading is renamed). |
 | Override how a file is read | Optional frontmatter: `title`, `category`, `tags: [react]`, `difficulty: medium`, `type: note`. |
 | See how files were parsed | `npm run content`, then open `.generated/parse-report.md`. It shows every extracted question, duplicates and privacy flags. In CI, the summary appears on the workflow run page. |
 

@@ -115,10 +115,18 @@ export async function loadEnrichments(
       },
     ]),
   );
-  for (const [id, target, rel] of pending) {
-    const t = byId.get(target) ?? faq.get(target);
-    if (!t) warnings.push(`${rel}: sameAs "${target}" has no enrichment`);
-    else byId.set(id, t);
+  // Resolve sameAs chains in any order (a → b → c); unresolved targets warn.
+  let left = pending;
+  for (let pass = 0; left.length && pass < 10; pass++) {
+    const next: typeof pending = [];
+    for (const item of left) {
+      const t = byId.get(item[1]) ?? faq.get(item[1]);
+      if (t) byId.set(item[0], t);
+      else next.push(item);
+    }
+    if (next.length === left.length) break;
+    left = next;
   }
+  for (const [, target, rel] of left) warnings.push(`${rel}: sameAs "${target}" has no enrichment`);
   return { byId, warnings, files: files.length };
 }

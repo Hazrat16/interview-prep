@@ -1,0 +1,34 @@
+import { defineEnrichments } from '../../../lib/content/enrich-schema';
+
+/** Company log: mostly the same topics covered elsewhere, so reuse those. */
+export default defineEnrichments('companies/techzu.md', {
+  'react-lifecycle': {
+    difficulty: 'easy',
+    frequency: 'high',
+    answer: `Class components had explicit lifecycle methods for three phases:
+
+- **mounting**: \`constructor\`, \`render\`, \`componentDidMount\`;
+- **updating**: \`render\`, then \`componentDidUpdate(prevProps, prevState)\`;
+- **unmounting**: \`componentWillUnmount\`.
+
+With hooks, I think in terms of **synchronising effects** rather than lifecycle events:
+
+- \`useEffect(fn, [])\` behaves like **mount**, and its **cleanup** like **unmount**;
+- \`useEffect(fn, [dep])\` runs after renders where \`dep\` changed, like a targeted \`componentDidUpdate\`;
+- \`useLayoutEffect\` runs before paint, for DOM measurements.
+
+Error boundaries are still class-only (\`componentDidCatch\`), so I use a small library or write one class for them.`,
+    analogy: 'A shop\'s day: opening up (mount), serving customers as things change (update), and closing and locking up (unmount). Hooks let you attach a routine to each change instead of to the time of day.',
+    quickRevision: ['Mount: componentDidMount ≈ useEffect(…, [])', 'Update: componentDidUpdate ≈ useEffect with deps', 'Unmount: componentWillUnmount ≈ effect cleanup', 'Error boundaries still need a class'],
+    followUps: ['Why does useEffect run twice in StrictMode?', 'How do you run code only on updates, not on mount?'],
+  },
+  middleware: { sameAs: 'faq/express-middleware-error-handling' },
+  indexing: { sameAs: 'faq/db-indexes-composite' },
+  'node--event-loop-with-example': { sameAs: 'javascript/coding-round-solutions/event-loop-order' },
+  debouncing: { sameAs: 'javascript/debounce-throttle/debounce-vs-throttle' },
+  'useeffect-vs-uselayouteffect': { sameAs: 'frontend/react-interview-questions/useeffect-vs-uselayouteffect' },
+  'isr-ssr-ssg-nextjs': { sameAs: 'faq/nextjs-rendering-strategies' },
+  'usememo--usecallback': { sameAs: 'faq/react-memo-usememo-usecallback' },
+  'mongodb--pipeline-aggregation': { sameAs: 'backend/node-api-questions/aggregation-pipeline' },
+  'req--res--ressend-express': { sameAs: 'backend/node-api-questions/ressend-vs-resjson-vs-resend' },
+});
