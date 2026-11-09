@@ -41,7 +41,7 @@ The catch is **CPU-bound work**. A big \`JSON.parse\`, image resizing, a synchro
     },
     {
       id: 'how-do-you-handle-cpu-heavy-work',
-      question: 'How do you handle CPU-heavy work?',
+      question: 'How do you handle CPU-heavy work in a Node.js API?',
       section: 'Core APIs',
       perspective: 'concept',
       difficulty: 'medium',
@@ -72,7 +72,7 @@ Also: use async versions of crypto and zlib, and stream large data instead of bu
     },
     {
       id: 'streams',
-      question: 'Streams?',
+      question: 'What are streams in Node.js, and when do you use them?',
       section: 'Core APIs',
       perspective: 'concept',
       difficulty: 'medium',
@@ -130,7 +130,7 @@ Why it matters in practice:
     },
     {
       id: 'unhandled-rejections',
-      question: 'Unhandled rejections?',
+      question: 'What happens with unhandled promise rejections in Node.js, and how do you handle them?',
       section: 'Core APIs',
       perspective: 'concept',
       difficulty: 'medium',
@@ -162,7 +162,7 @@ Never swallow errors and keep running.`,
     },
     {
       id: 'graceful-shutdown',
-      question: 'Graceful shutdown?',
+      question: 'How do you implement graceful shutdown in a Node.js server?',
       section: 'Core APIs',
       perspective: 'concept',
       difficulty: 'medium',
@@ -193,7 +193,7 @@ This is what makes rolling deployments on ECS or Kubernetes **zero-downtime**: u
     },
     {
       id: 'clustering',
-      question: 'Clustering?',
+      question: 'What is clustering in Node.js, and how does it compare to running multiple containers?',
       section: 'Core APIs',
       perspective: 'concept',
       difficulty: 'medium',
@@ -219,40 +219,56 @@ In **containers**, the usual practice is **one process per container**, and you 
     },
     {
       id: 'what-is-nodejs',
-      question: 'What is Node.js?',
+      question: 'What is Node.js, and how is it different from JavaScript in the browser?',
       section: 'Runtime internals',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
       tags: ['nodejs'],
-      answer: `> Node.js is a JavaScript runtime built on V8 that lets us run JS on the server. It provides APIs for filesystem, networking, and processes, and uses an event-driven non-blocking I/O model through libuv.`,
+      answer: `Node.js is a **JavaScript runtime** for running JS outside the browser. It combines Google's **V8** engine (which compiles and runs the JavaScript) with **libuv**, a C library that provides the **event loop** and **non-blocking I/O**, plus built-in modules for the file system, networking, processes, crypto and streams.
+
+Its model is **event-driven, non-blocking I/O** on a single JS thread: you start an operation (read a file, query a database, call an API), Node hands the waiting to the OS or libuv's thread pool, and your callback runs when the result is ready. That lets one process handle **thousands of concurrent connections** with little memory.
+
+Compared with the browser it's the same language but a **different environment**:
+
+- **No DOM, \`window\` or \`document\`**, but there's \`process\`, \`Buffer\`, \`fs\`, \`http\` and \`globalThis\`.
+- **Full system access**: files, network sockets, environment variables, child processes. There's no sandbox, so security is your job.
+- **Modules**: CommonJS (\`require\`) and ES modules (\`import\`).
+- **You control the version**, so you can use modern features without worrying about users' browsers.`,
       analogy: `Node takes the JavaScript engine out of the browser and puts it in a server room, adding tools for files, networks and processes.`,
       quickRevision: [
-        'JS runtime built on V8 + libuv',
-        'Event-driven, non-blocking I/O',
-        'Great for APIs, real-time, tooling',
-        'Not ideal for heavy CPU work on the main thread',
+        'V8 (runs JS) + libuv (event loop, async I/O) + core modules',
+        'Event-driven, non-blocking I/O on one JS thread',
+        'Great for I/O-heavy APIs and real-time; weak for CPU-heavy work',
+        'No DOM/window; has process, fs, http, Buffer',
+        'Full system access, no browser sandbox',
       ],
       followUps: [
         'What does libuv do?',
-        'Node vs browser JavaScript?',
+        'CommonJS vs ES modules?',
+        'When would you not choose Node?',
       ],
     },
     {
       id: 'node-is-single-threaded-how-does-it-handle-many-requests',
-      question: 'Node is single-threaded — how does it handle many requests?',
+      question: 'If Node.js is single-threaded, how does it handle thousands of concurrent requests?',
       section: 'Runtime internals',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'very-high',
       tags: ['nodejs'],
-      answer: `> JavaScript on the main thread is single-threaded, so only one JS callback runs at a time. Node still handles many concurrent requests because I/O operations are non-blocking: while one request waits on a database or network, the event loop can process other requests. libuv and the OS handle the waiting work in the background, and some tasks use a thread pool.`,
+      answer: `Because a typical request spends almost all its time **waiting**, not computing. It waits for the database, another API, the file system or the network. Node never makes the JS thread do that waiting.
+
+When a request handler calls \`await db.query(…)\`, Node **hands the I/O to libuv**, which uses the OS's async mechanisms (\`epoll\`/\`kqueue\`) for network sockets and its **thread pool** for things like file access. The handler's function is suspended, the call stack is free, and the **event loop picks up the next ready callback**, often a different request. When the database answers, the continuation is queued and runs. So one thread interleaves thousands of requests, each using a few milliseconds of actual CPU time.
+
+That's **concurrency, not parallelism**, and it has a clear limit: if a handler does **heavy synchronous CPU work** (big loops, image processing, \`bcrypt.hashSync\`), it holds the only JS thread and every other request waits. So for CPU-heavy work I use worker threads or a job queue, and to use **all CPU cores** I run several Node processes (\`cluster\`, PM2, or more containers behind a load balancer).`,
       analogy: `One waiter takes orders and hands them to the kitchen instead of cooking each meal personally, so they can serve many tables while food cooks.`,
       quickRevision: [
         'Requests mostly wait on I/O (DB, network)',
-        'I/O is delegated to the OS / libuv thread pool',
-        'Callbacks resume on the event loop when ready',
-        'CPU-heavy work blocks everyone → workers or queues',
+        'I/O delegated to the OS / libuv; the JS thread moves on',
+        'Event loop runs whichever callback is ready → interleaving',
+        'Concurrency, not parallelism',
+        'CPU-heavy work blocks everyone → workers/queues; cores → more processes',
       ],
       followUps: [
         'What blocks the event loop?',
@@ -262,107 +278,176 @@ In **containers**, the usual practice is **one process per container**, and you 
     },
     {
       id: 'is-nodejs-single-threaded-completely',
-      question: 'Is Node.js single-threaded completely?',
+      question: 'Is Node.js completely single-threaded? What does the libuv thread pool do?',
       section: 'Runtime internals',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
       tags: ['nodejs'],
-      answer: `> The JavaScript execution is single-threaded, but Node is not literally one OS thread overall. libuv maintains a thread pool for certain operations, and the OS may use multiple threads for I/O. Worker threads and child processes can add more parallelism when needed.`,
+      answer: `No. **Your JavaScript runs on one main thread**, but Node itself uses several threads:
+
+- **Network I/O** (HTTP, TCP sockets, database connections) doesn't use extra threads at all. libuv uses the **OS's async mechanisms** (\`epoll\` on Linux, \`kqueue\` on macOS, IOCP on Windows), so one thread can watch thousands of sockets.
+- Operations the OS can't do asynchronously go to libuv's **thread pool**, **4 threads by default**: most **\`fs\`** operations, **\`dns.lookup\`**, **\`crypto\`** functions like \`pbkdf2\`, \`scrypt\` and \`randomBytes\`, and **\`zlib\`** compression.
+- V8 also has background threads for garbage collection and compilation.
+
+The practical consequence: the pool is **shared and small**. If you fire off many expensive \`bcrypt\`/\`pbkdf2\` hashes, they occupy all four threads and unrelated **file reads queue behind them**. You can raise it with **\`UV_THREADPOOL_SIZE\`** (set before startup), but for real CPU-heavy work the answer is **\`worker_threads\`**, a separate job-queue worker, or scaling out with multiple processes.`,
       analogy: `The manager (your JS) works alone at the front desk, but there's a back office (libuv thread pool + OS) quietly doing file, DNS and crypto work.`,
       quickRevision: [
         'Your JS: one main thread',
-        'libuv thread pool (default 4): fs, dns.lookup, crypto, zlib',
-        'Network I/O uses OS async APIs (epoll/kqueue)',
-        'Worker Threads give you extra JS threads',
+        'Network I/O: OS async APIs (epoll/kqueue), no extra threads',
+        'libuv pool (default 4): fs, dns.lookup, crypto, zlib',
+        'Heavy crypto can starve file I/O in the shared pool',
+        '`UV_THREADPOOL_SIZE`, worker_threads, or more processes',
       ],
       followUps: [
         'What is `UV_THREADPOOL_SIZE`?',
         'Why can heavy `bcrypt` calls slow down file reads?',
+        'Why doesn\'t network I/O need the thread pool?',
       ],
     },
     {
       id: 'what-blocks-the-node-event-loop',
-      question: 'What blocks the Node event loop?',
+      question: 'What blocks the Node.js event loop, and how do you detect and fix it?',
       section: 'Runtime internals',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
       tags: ['javascript', 'nodejs'],
-      answer: `> Synchronous CPU-heavy code, \`*Sync\` I/O methods, and long loops block the event loop. While blocked, Node can’t process other callbacks, so latency spikes for all clients on that process.`,
+      answer: `Anything that keeps the **main thread busy with synchronous work**. While it runs, Node can't accept connections, run callbacks or respond to any other request, so **latency spikes for every user** of that process, not just the one who triggered it.
+
+Common culprits:
+
+- **\`*Sync\` APIs** in request paths: \`fs.readFileSync\`, \`crypto.pbkdf2Sync\`, \`bcrypt.hashSync\`, \`execSync\`.
+- **CPU-heavy JavaScript**: big loops, sorting or transforming large arrays, image or PDF work, complex calculations.
+- **Huge \`JSON.parse\`/\`JSON.stringify\`** of multi-megabyte payloads.
+- **Catastrophic regex backtracking** (ReDoS) on user input.
+
+To **detect** it: measure event-loop lag with \`perf_hooks.monitorEventLoopDelay\` (or your APM), watch for p99 latency spikes alongside high CPU, and profile with \`node --cpu-prof\` or clinic.js to find the hot function.
+
+To **fix** it: use the async APIs; **stream** large data instead of loading it whole; **paginate** big queries; split long loops into chunks with \`setImmediate\`; and move genuinely CPU-bound work to **\`worker_threads\`** or a **background job queue** (BullMQ) so the API thread only does I/O.`,
       analogy: `One person hogging the only checkout counter: big loops, sync file reads or giant JSON parsing make everyone else in the queue wait.`,
       quickRevision: [
-        'Sync APIs: `readFileSync`, `bcrypt.hashSync`, `crypto.*Sync`',
-        'Large `JSON.parse`/`stringify`, heavy loops, regex backtracking',
-        'Fix: async APIs, streaming, chunking with `setImmediate`',
-        'CPU work → Worker Threads or a job queue',
+        'Blocking = sync work on the main thread → every request waits',
+        'Culprits: *Sync APIs, heavy loops, giant JSON, ReDoS',
+        'Detect: event-loop delay metrics, CPU profiles',
+        'Fix: async APIs, streaming, pagination, chunking',
+        'CPU work → worker_threads or a job queue',
       ],
+      deepDive: `\`\`\`js
+const { monitorEventLoopDelay } = require('node:perf_hooks');
+const h = monitorEventLoopDelay({ resolution: 20 });
+h.enable();
+setInterval(() => {
+  console.log('event loop p99 delay (ms):', h.percentile(99) / 1e6);
+  h.reset();
+}, 10_000);
+\`\`\``,
       followUps: [
         'How would you measure event-loop delay?',
         'What is ReDoS?',
+        'Worker threads vs a job queue?',
       ],
     },
     {
       id: 'difference-between-setimmediate-and-settimeoutfn-0',
-      question: 'Difference between `setImmediate` and `setTimeout(fn, 0)`?',
+      question: `What are the phases of the Node.js event loop, and where do \`setTimeout\`, \`setImmediate\` and \`process.nextTick\` run?`,
       section: 'Runtime internals',
       perspective: 'trade-off',
       difficulty: 'hard',
       frequency: 'medium',
       tags: ['nodejs'],
-      answer: `> Both schedule a callback soon, but they queue in different phases. In many I/O callback contexts, \`setImmediate\` runs before \`setTimeout(..., 0)\`. Exact ordering can depend on context; the key interview point is they are different timers with different event-loop phases.`,
+      answer: `Each turn of Node's event loop goes through phases in order:
+
+1. **Timers**: callbacks from \`setTimeout\`/\`setInterval\` whose time has passed.
+2. **Pending callbacks**: some deferred system-level I/O callbacks.
+3. **Poll**: wait for new I/O events and run their callbacks (most of your I/O callbacks run here).
+4. **Check**: \`setImmediate\` callbacks.
+5. **Close callbacks**: \`'close'\` events, like a socket closing.
+
+Separately, after **every callback** (between and within phases), Node drains two queues: first **\`process.nextTick\`**, then **promise microtasks**.
+
+So \`setTimeout(fn, 0)\` runs in the timers phase and \`setImmediate\` in the check phase. From the main module, which fires first **isn't guaranteed**: it depends on whether the timer's 1 ms minimum has elapsed when the loop starts. **Inside an I/O callback**, \`setImmediate\` **always** wins, because check comes right after poll.
+
+I use \`setImmediate\` to **yield** after I/O so other work can run, and keep \`nextTick\` for rare cases, since a recursive \`nextTick\` can **starve** the loop.`,
       analogy: `Two buses from different stops: in the main script it depends on timing which arrives first; inside an I/O callback, the \`setImmediate\` stop (check phase) always comes next.`,
       quickRevision: [
-        '`setTimeout(0)` → timers phase; `setImmediate` → check phase',
-        'Main module: order is not guaranteed',
-        'Inside an I/O callback: `setImmediate` always first',
-        '`process.nextTick` and promises run before both',
+        'Phases: timers → pending → poll → check → close',
+        '`setTimeout` → timers; `setImmediate` → check',
+        'nextTick queue, then promises, after every callback',
+        'Main module: timeout vs immediate order not guaranteed',
+        'Inside I/O callback: setImmediate first',
       ],
       followUps: [
         'Name the Node event-loop phases.',
         'Why can `nextTick` starve I/O?',
+        'When would you use `setImmediate`?',
       ],
     },
     {
       id: 'when-would-you-use-worker-threads',
-      question: 'When would you use Worker Threads?',
+      question: 'When would you use Worker Threads in Node, and what are the alternatives?',
       section: 'Runtime internals',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'medium',
       tags: ['nodejs'],
-      answer: `> When work is CPU-bound — image processing, heavy encryption, large JSON transforms — and would otherwise freeze the event loop. I/O-bound workloads usually don’t need workers; the event loop already handles those well.`,
+      answer: `When there's **CPU-bound work** that would otherwise block the event loop: resizing images, generating PDFs, hashing or encryption in bulk, parsing or transforming very large files, heavy calculations. Each worker runs JavaScript on its **own thread with its own event loop and V8 isolate**, so the main thread keeps serving requests.
+
+I **don't** use workers for I/O: database queries, HTTP calls and file reads are already non-blocking, and workers would only add overhead.
+
+Things to know when using them:
+
+- Communication is by **message passing** (\`postMessage\`), which copies data. Large binary data can be **transferred** (\`ArrayBuffer\`) or shared via \`SharedArrayBuffer\`.
+- Starting a worker is relatively expensive, so use a **pool** (e.g. Piscina) rather than one worker per request.
+
+Alternatives, depending on the job:
+
+- A **job queue** (BullMQ + Redis) with **separate worker processes**, when the work can be **asynchronous** (send the result later) and should survive restarts, be retried and scale independently. This is my usual choice for things like report generation.
+- **\`cluster\`** or multiple containers behind a load balancer, to use **all CPU cores for request handling**, which is a different goal from offloading one heavy task.`,
       analogy: `Hiring a specialist for the heavy lifting so the receptionist (main thread) can keep answering the phone.`,
       quickRevision: [
-        'CPU-bound tasks: image processing, PDF generation, hashing, big parsing',
-        'Not for I/O (async already handles it)',
-        'Communicate via messages; share memory only with SharedArrayBuffer',
-        'Alternatives: job queue + separate worker process',
+        'Workers for CPU-bound tasks, not I/O',
+        'Own thread, event loop and isolate; message passing',
+        'Use a pool (Piscina); transfer/share buffers for big data',
+        'Async, retryable work → job queue (BullMQ) + worker processes',
+        '`cluster`/containers = more cores for requests, different goal',
       ],
       followUps: [
         'Worker Threads vs `cluster`?',
         'Worker Threads vs a BullMQ queue?',
+        'How do workers share memory?',
       ],
     },
     {
       id: 'why-is-node-popular-for-apis',
-      question: 'Why is Node popular for APIs?',
+      question: 'Why is Node.js a popular choice for APIs, and when would you not choose it?',
       section: 'Runtime internals',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'medium',
       tags: ['nodejs'],
-      answer: `> It’s strong for I/O-heavy, concurrent workloads like APIs and real-time apps, uses one language across stack with JavaScript/TypeScript, has a huge package ecosystem, and non-blocking I/O helps serve many connections efficiently on a single process.`,
+      answer: `Most API work is **I/O**: wait for the database, call another service, return JSON. Node's **non-blocking, event-driven model** handles that very efficiently: one process can keep thousands of requests in flight while they wait, using little memory per connection.
+
+Other reasons teams pick it:
+
+- **One language across the stack**: JavaScript/TypeScript on frontend and backend, so you can **share types and validation schemas** (Zod) and move between layers easily.
+- **Huge npm ecosystem** and fast development of JSON APIs with Express, Fastify or NestJS.
+- **Real-time**: WebSockets and server-sent events are natural in its event model.
+- It powers **SSR frameworks** like Next.js, so the same team can run the BFF.
+
+When I **wouldn't** choose it: **CPU-heavy** services (video encoding, ML inference, heavy numeric work), where Go, Rust, Java or Python with native libraries fit better; or teams with strong expertise and libraries in another ecosystem. Node can offload CPU work to workers, but if that's the core of the service, it's fighting the model.`,
       analogy: `A switchboard operator who connects many calls quickly: perfect when most of the job is waiting and routing, not heavy thinking.`,
       quickRevision: [
-        'Non-blocking I/O handles many concurrent connections',
-        'One language across frontend and backend; shared types',
-        'Huge npm ecosystem; fast to build JSON APIs',
-        'Great for real-time (WebSockets)',
+        'Non-blocking I/O → many concurrent requests cheaply',
+        'One language + shared types/schemas across the stack',
+        'Big ecosystem; Express/Fastify/NestJS',
+        'Natural fit for real-time and SSR/BFF',
+        'Avoid for CPU-heavy core workloads',
       ],
       followUps: [
         'When would you not choose Node?',
         'Express vs Fastify vs NestJS?',
+        'How do you scale a Node API across cores?',
       ],
     },
   ],

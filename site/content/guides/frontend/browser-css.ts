@@ -6,7 +6,7 @@ export default defineGuide({
   questions: [
     {
       id: 'event-bubbling-vs-capturing',
-      question: 'Event bubbling vs capturing?',
+      question: 'What is the difference between event bubbling and capturing?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'high',
@@ -34,7 +34,7 @@ Bubbling is what makes **event delegation** possible.`,
     },
     {
       id: 'event-delegation',
-      question: 'Event delegation?',
+      question: 'What is event delegation, and why is it useful?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -117,7 +117,7 @@ Key points:
     },
     {
       id: 'critical-rendering-path',
-      question: 'Critical rendering path?',
+      question: 'What is the critical rendering path?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
@@ -149,7 +149,7 @@ Key points:
     },
     {
       id: 'reflow-vs-repaint',
-      question: 'Reflow vs repaint?',
+      question: 'What is the difference between reflow and repaint?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'medium',
@@ -176,7 +176,7 @@ Also avoid **layout thrashing**: reading layout values (\`offsetHeight\`) betwee
     },
     {
       id: 'defer-vs-async-scripts',
-      question: '`defer` vs `async` scripts?',
+      question: 'What is the difference between `defer` and `async` on script tags?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'medium',
@@ -204,7 +204,7 @@ A plain \`<script>\` blocks parsing while it downloads and runs. ES module scrip
     },
     {
       id: 'flexbox-vs-grid',
-      question: 'Flexbox vs Grid?',
+      question: 'Flexbox vs Grid: when do you use each?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'high',
@@ -230,7 +230,7 @@ They work well together: Grid for the page skeleton, Flexbox inside each cell.`,
     },
     {
       id: 'box-model',
-      question: 'Box model?',
+      question: 'Explain the CSS box model and `box-sizing`.',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -255,7 +255,7 @@ With \`box-sizing: border-box\`, \`width\` **includes padding and border**, so a
     },
     {
       id: 'position-values',
-      question: '`position` values?',
+      question: 'What are the CSS `position` values and how do they differ?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -283,7 +283,7 @@ With \`box-sizing: border-box\`, \`width\` **includes padding and border**, so a
     },
     {
       id: 'css-specificity',
-      question: 'CSS specificity?',
+      question: 'How does CSS specificity work?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -365,7 +365,7 @@ For content that should be hidden visually but **available to screen readers**, 
     },
     {
       id: 'responsive-design',
-      question: 'Responsive design?',
+      question: 'How do you build a responsive layout?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -397,7 +397,7 @@ And I test on real devices, not just DevTools. At SmartCrowd I improved responsi
     },
     {
       id: 'rem-vs-em-vs-px',
-      question: '`rem` vs `em` vs `px`?',
+      question: 'What is the difference between `rem`, `em` and `px`?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'medium',
@@ -424,7 +424,7 @@ My default: \`rem\` for font sizes and spacing, \`em\` for component-internal sp
     },
     {
       id: 'xss-and-how-react-protects-against-it',
-      question: 'XSS and how React protects against it',
+      question: 'What is XSS, and how does React protect against it?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -455,7 +455,7 @@ Defence in depth: a **Content Security Policy** header, **httpOnly cookies** so 
     },
     {
       id: 'csrf',
-      question: 'CSRF?',
+      question: 'What is CSRF, and how do you prevent it?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -518,7 +518,7 @@ I adjust the depth to the interviewer: network-heavy for backend roles, renderin
     },
     {
       id: 'service-workers-pwa',
-      question: 'Service workers / PWA?',
+      question: 'What are service workers, and what makes an app a PWA?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',

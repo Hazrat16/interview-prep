@@ -43,7 +43,7 @@ It's in-memory, so I treat it as a **cache or coordination layer**, not the sour
     },
     {
       id: 'cache-stampede',
-      question: 'Cache stampede?',
+      question: 'What is a cache stampede, and how do you prevent it?',
       perspective: 'concept',
       difficulty: 'hard',
       frequency: 'medium',
@@ -73,7 +73,7 @@ Fixes:
     },
     {
       id: 'why-a-job-queue-bullmq',
-      question: 'Why a job queue (BullMQ)?',
+      question: 'Why use a job queue like BullMQ instead of doing the work in the request?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -140,7 +140,7 @@ Workers **scale independently** of the API. At Firmwide, batch proposal uploads 
     },
     {
       id: 'socket-auth',
-      question: 'Socket auth?',
+      question: 'How do you authenticate WebSocket connections?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',

@@ -103,7 +103,7 @@ Others I use often: a paginated response \`Paginated<T> = { items: T[]; total: n
     },
     {
       id: 'utility-types',
-      question: 'Utility types?',
+      question: 'Which TypeScript utility types do you use most, and for what?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -133,7 +133,7 @@ Others I use often: a paginated response \`Paginated<T> = { items: T[]; total: n
     },
     {
       id: 'typing-props-and-events',
-      question: 'Typing props and events?',
+      question: 'How do you type React props and events in TypeScript?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -159,7 +159,7 @@ Others I use often: a paginated response \`Paginated<T> = { items: T[]; total: n
     },
     {
       id: 'zod-with-typescript',
-      question: 'Zod with TypeScript?',
+      question: 'Why use Zod alongside TypeScript?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',

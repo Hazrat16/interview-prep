@@ -128,7 +128,7 @@ function threeSum(nums) {
     },
     {
       id: 'dsa-top-k-frequent',
-      question: 'Top K Frequent Elements.',
+      question: 'Top K Frequent Elements: return the k most frequent numbers.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',

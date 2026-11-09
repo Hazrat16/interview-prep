@@ -37,7 +37,7 @@ Key cases: happy path, validation errors, **auth and authorisation failures**, e
     },
     {
       id: 'mocking-external-apis',
-      question: 'Mocking external APIs?',
+      question: 'How do you mock external APIs in tests?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
@@ -65,7 +65,7 @@ I keep fixtures realistic (recorded from the real API, with secrets removed), an
     },
     {
       id: 'logging',
-      question: 'Logging?',
+      question: 'What makes good logging in a backend service?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',

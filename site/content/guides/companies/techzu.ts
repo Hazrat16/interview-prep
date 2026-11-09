@@ -18,7 +18,7 @@ export default defineGuide({
   questions: [
     {
       id: 'react-lifecycle',
-      question: 'React lifecycle',
+      question: 'Explain the React component lifecycle, and how hooks map to it.',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',

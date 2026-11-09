@@ -6,7 +6,7 @@ export default defineGuide({
   questions: [
     {
       id: 'two-sum-hash-map-on',
-      question: 'Two Sum (hash map) — O(n)',
+      question: 'Two Sum: find two numbers that add up to a target in O(n).',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'very-high',
@@ -37,7 +37,7 @@ function twoSum(nums, target) {
     },
     {
       id: 'contains-duplicate-first-unique-character',
-      question: 'Contains Duplicate / First unique character',
+      question: 'Contains Duplicate, and First Unique Character in a string.',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'high',
@@ -68,7 +68,7 @@ function firstUniqChar(s) {
     },
     {
       id: 'group-anagrams-on-k-log-k',
-      question: 'Group Anagrams — O(n · k log k)',
+      question: 'Group Anagrams: group words that are anagrams of each other.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -98,7 +98,7 @@ function groupAnagrams(words) {
     },
     {
       id: 'valid-anagram-valid-palindrome-two-pointers',
-      question: 'Valid Anagram / Valid Palindrome (two pointers)',
+      question: 'Valid Anagram and Valid Palindrome (two pointers).',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'high',
@@ -139,7 +139,7 @@ function isPalindrome(s) {
     },
     {
       id: 'container-with-most-water-two-pointers-on',
-      question: 'Container With Most Water (two pointers) — O(n)',
+      question: 'Container With Most Water: find the max area in O(n).',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'medium',
@@ -169,7 +169,7 @@ function maxArea(height) {
     },
     {
       id: 'longest-substring-without-repeating-characters-sliding-window-on',
-      question: 'Longest substring without repeating characters (sliding window) — O(n)',
+      question: 'Longest Substring Without Repeating Characters (sliding window).',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'very-high',
@@ -202,7 +202,7 @@ function lengthOfLongestSubstring(s) {
     },
     {
       id: 'max-sum-subarray-kadane-on',
-      question: 'Max sum subarray (Kadane) — O(n)',
+      question: 'Maximum Subarray: find the largest sum of a contiguous subarray (Kadane).',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -232,7 +232,7 @@ function maxSubArray(nums) {
     },
     {
       id: 'valid-parentheses-stack-on',
-      question: 'Valid Parentheses (stack) — O(n)',
+      question: 'Valid Parentheses: check that brackets are balanced.',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'very-high',
@@ -264,7 +264,7 @@ function isValid(s) {
     },
     {
       id: 'binary-search-olog-n',
-      question: 'Binary search — O(log n)',
+      question: 'Implement binary search, and explain the off-by-one pitfalls.',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'high',
@@ -295,7 +295,7 @@ function binarySearch(nums, target) {
     },
     {
       id: 'reverse-linked-list-detect-cycle-merge-two-sorted-lists',
-      question: 'Reverse linked list / detect cycle / merge two sorted lists',
+      question: 'Linked lists: reverse a list, detect a cycle, merge two sorted lists.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -351,7 +351,7 @@ function mergeTwoLists(a, b) {
     },
     {
       id: 'trees-max-depth-invert-level-order-validate-bst',
-      question: 'Trees: max depth, invert, level order, validate BST',
+      question: 'Trees: max depth, invert, level-order traversal, validate a BST.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -407,7 +407,7 @@ function isValidBST(node, min = -Infinity, max = Infinity) {
     },
     {
       id: 'number-of-islands-grid-dfs-orows-cols',
-      question: 'Number of Islands (grid DFS) — O(rows · cols)',
+      question: 'Number of Islands: count connected land cells in a grid.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -443,7 +443,7 @@ function numIslands(grid) {
     },
     {
       id: 'merge-intervals-on-log-n',
-      question: 'Merge Intervals — O(n log n)',
+      question: 'Merge Intervals: merge all overlapping intervals.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -475,7 +475,7 @@ function merge(intervals) {
     },
     {
       id: 'dynamic-programming-climbing-stairs-house-robber-coin-change',
-      question: 'Dynamic programming: Climbing Stairs, House Robber, Coin Change',
+      question: 'Dynamic programming: Climbing Stairs, House Robber and Coin Change.',
       perspective: 'coding',
       difficulty: 'hard',
       frequency: 'high',
@@ -523,7 +523,7 @@ function coinChange(coins, amount) {
     },
     {
       id: 'strings-reverse-words-compression',
-      question: 'Strings: reverse words, compression',
+      question: 'Strings: reverse the words in a sentence, and compress repeated characters.',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'medium',

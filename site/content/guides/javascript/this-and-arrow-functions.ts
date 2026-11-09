@@ -9,7 +9,7 @@ export default defineGuide({
       question: 'How is `this` determined in JavaScript, and why does it get lost in callbacks?',
       perspective: 'concept',
       difficulty: 'medium',
-      frequency: 'high',
+      frequency: 'very-high',
       tags: ['javascript'],
       answer: `For normal functions, \`this\` depends on **how the function is called**, not where it is defined. The rules, by priority:
 
@@ -29,88 +29,144 @@ It gets lost in callbacks because \`setTimeout(obj.method)\` or \`onClick={this.
         'Fix with `bind`, a wrapper arrow, or an arrow class field',
         'Don\'t use arrows as object methods that need `this`',
       ],
+      deepDive: `\`\`\`js
+'use strict';
+const user = {
+  name: 'Ana',
+  greet() { return \`hi \${this?.name}\`; },
+};
+
+user.greet();                 // 'hi Ana'   (implicit)
+const fn = user.greet;
+fn();                         // 'hi undefined' (default: this is undefined)
+fn.call({ name: 'Bo' });      // 'hi Bo'    (explicit)
+const bound = fn.bind(user);
+bound.call({ name: 'Cy' });   // 'hi Ana'   (bind wins over call)
+setTimeout(user.greet, 0);    // loses user
+setTimeout(() => user.greet(), 0); // keeps user
+\`\`\``,
       followUps: [
         'What does `bind` return, and can you re-bind a bound function?',
-        'Why can\'t arrow functions be used as constructors?',
+        'What is `this` inside a `setTimeout` callback?',
         'Implement `Function.prototype.bind` yourself.',
       ],
     },
     {
-      id: 'how-is-this-determined',
-      question: 'How is `this` determined?',
-      perspective: 'concept',
-      difficulty: 'medium',
-      frequency: 'very-high',
-      tags: ['javascript'],
-      answer: `> For regular functions, \`this\` depends on the call site — whether it was called as a method, a plain function, with \`new\`, or with \`call\`/\`apply\`/\`bind\`. Arrow functions don’t bind their own \`this\`; they use the surrounding lexical \`this\`.`,
-      analogy: `\`this\` is like the word "me" in a phone call: it means whoever is holding the phone **when the call happens**, not who bought it.`,
-      quickRevision: [
-        'Priority: `new` > `call/apply/bind` > `obj.fn()` > default',
-        'Default: `undefined` in strict mode, global otherwise',
-        'Arrow functions take `this` from the outer scope',
-        'Decided at call time, not definition time (except arrows)',
-      ],
-      followUps: [
-        'What does `bind` return?',
-        'What is `this` inside a `setTimeout` callback?',
-      ],
-    },
-    {
       id: 'difference-between-arrow-and-regular-functions',
-      question: 'Difference between arrow and regular functions?',
+      question: 'What are the differences between arrow functions and regular functions?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'very-high',
       tags: ['javascript'],
-      answer: `> Arrow functions are shorter, have lexical \`this\`, no own \`arguments\`, and cannot be used with \`new\`. Regular functions have dynamic \`this\`, their own \`arguments\`, and can be constructors.`,
+      answer: `Beyond the shorter syntax, the differences that matter:
+
+- **\`this\`**: an arrow function has **no own \`this\`**; it uses the \`this\` of the surrounding scope, and \`call\`, \`apply\` and \`bind\` can't change it. A regular function's \`this\` depends on how it's called.
+- **\`arguments\`**: arrows don't have their own \`arguments\` object. Use rest parameters (\`...args\`) instead.
+- **Constructors**: arrows have **no \`prototype\`** and **can't be called with \`new\`**.
+- **Implicit return**: \`x => x * 2\` returns without \`return\`. To return an object literal, wrap it: \`() => ({ id: 1 })\`.
+- Arrows can't be generators and have no \`super\` or \`new.target\` of their own.
+
+So I use arrows for **callbacks** (\`map\`, promises, event handlers inside methods) where inheriting \`this\` is exactly what I want, and regular functions or method shorthand for **object methods, constructors and prototype methods** that need their own \`this\`.`,
       analogy: `An arrow function is a recorded voicemail: "me" always means the person who recorded it. A regular function is a live call: "me" is whoever picks up.`,
       quickRevision: [
-        'Arrow: lexical `this`, no own `arguments`, can\'t be `new`-ed',
-        'Regular: dynamic `this`, has `arguments` and `prototype`',
-        'Arrows are great for callbacks; avoid as object methods',
-        'Implicit return with concise body',
+        'Arrow: lexical `this`, can\'t be rebound',
+        'Arrow: no `arguments`, no `prototype`, can\'t be `new`-ed',
+        'Implicit return; wrap object literals in `()`',
+        'Arrows for callbacks; method shorthand for methods that need `this`',
       ],
+      deepDive: `\`\`\`js
+const timer = {
+  seconds: 0,
+  start() {
+    setInterval(() => this.seconds++, 1000);          // arrow keeps timer's this
+    // setInterval(function () { this.seconds++ }, 1000); // this would be undefined/global
+  },
+};
+
+const Foo = () => {};
+new Foo();            // TypeError: Foo is not a constructor
+
+const makeUser = () => ({ id: 1 }); // parentheses for an object literal
+\`\`\``,
       followUps: [
         'Can you rebind an arrow function with `call`?',
-        'Why use arrow class fields in React class components?',
-      ],
-    },
-    {
-      id: 'why-does-this-get-lost-when-you-pass-a-method-as-a-callback',
-      question: 'Why does `this` get lost when you pass a method as a callback?',
-      perspective: 'concept',
-      difficulty: 'medium',
-      frequency: 'high',
-      tags: ['javascript'],
-      answer: `> Because the method is detached from its object. Calling \`const fn = obj.method; fn()\` is a plain function call, so \`this\` is no longer \`obj\`. Fix with \`bind\`, an arrow wrapper, or calling it as \`obj.method()\`.`,
-      analogy: `Handing someone your phone number without your name: when they call later, there's no "obj." in front, so they don't know who they're talking to.`,
-      quickRevision: [
-        'Passing `obj.method` passes only the function',
-        'Called later as plain `fn()` → default binding',
-        'Fix: `.bind(obj)`, wrapper arrow, or arrow class field',
-      ],
-      followUps: [
-        'Show three ways to fix it.',
-        'Why did old React class components bind in the constructor?',
+        'Why did React class components use arrow class fields?',
+        'Can arrow functions be used as object methods?',
       ],
     },
     {
       id: 'can-arrow-functions-be-used-as-object-methods',
-      question: 'Can arrow functions be used as object methods?',
-      perspective: 'concept',
+      question: 'Should you use an arrow function as an object method? What goes wrong?',
+      perspective: 'debugging',
       difficulty: 'easy',
       frequency: 'medium',
       tags: ['javascript'],
-      answer: `> Usually avoid defining object methods as arrows if you need \`this\` to refer to the object. An arrow method would capture the outer \`this\` (often \`window\`/undefined), not the object.`,
+      answer: `You *can*, but usually shouldn't if the method needs \`this\`. An arrow takes \`this\` from the scope where the **object literal is written**, not from the object. At the top of a module that's \`undefined\` (or \`window\` in an old script), so \`this.name\` inside the method isn't the object's name.
+
+An object literal doesn't create a scope for \`this\`, which is the part people miss. The fix is method shorthand, \`greet() { … }\`, which gets the object as \`this\` when called as \`obj.greet()\`.
+
+Arrows **inside** a method are great, though: a \`map\` callback or \`setTimeout\` inside \`greet()\` keeps the method's \`this\`. And in classes, an arrow **class field** (\`handle = () => {}\`) is fine: it captures the instance, which is why React class components used them for event handlers.`,
       analogy: `You can, but it's like wearing someone else's name badge: the arrow's \`this\` belongs to the surrounding scope, not the object.`,
       quickRevision: [
-        'Allowed, but `this` won\'t be the object',
-        'Use method shorthand `method() {}` instead',
-        'Arrows inside methods are fine (they keep the method\'s `this`)',
+        'Arrow method → `this` is the outer scope, not the object',
+        'Object literals don\'t create a `this` scope',
+        'Use method shorthand `method() {}`',
+        'Arrows inside methods are fine; arrow class fields bind to the instance',
       ],
+      deepDive: `\`\`\`js
+const user = {
+  name: 'Ana',
+  arrow: () => this?.name,          // undefined: outer this
+  method() { return this.name; },   // 'Ana'
+  later() {
+    setTimeout(() => console.log(this.name), 0); // 'Ana': arrow inside a method
+  },
+};
+\`\`\``,
       followUps: [
         'What does `obj.arrow()` return if it uses `this.name`?',
         'When is an arrow inside a method useful?',
+        'Why do arrow class fields work for event handlers?',
+      ],
+    },
+    {
+      id: 'call-apply-bind',
+      question: 'What is the difference between `call`, `apply` and `bind`?',
+      perspective: 'trade-off',
+      difficulty: 'easy',
+      frequency: 'high',
+      tags: ['javascript'],
+      answer: `All three let you **set \`this\` explicitly** for a regular function. The difference is **when the function runs** and **how arguments are passed**:
+
+- **\`call(thisArg, a, b)\`** runs the function **immediately**, arguments listed one by one.
+- **\`apply(thisArg, [a, b])\`** runs it **immediately**, arguments as an **array**. It used to be the way to spread an array into a call; today \`fn(...args)\` does that.
+- **\`bind(thisArg, a)\`** **doesn't run it**. It returns a **new function** with \`this\` permanently set, and optionally some arguments pre-filled (partial application).
+
+A bound function **can't be re-bound**: calling \`bind\` or \`call\` on it again doesn't change \`this\`. The only thing that overrides it is \`new\`. None of the three affect arrow functions, which ignore the \`this\` you pass.`,
+      analogy: `\`call\` and \`apply\` are phoning someone now and saying who you are (one reads your details aloud, one hands over a list); \`bind\` is saving a contact with your name on it to call later.`,
+      quickRevision: [
+        '`call`: run now, args listed',
+        '`apply`: run now, args as an array',
+        '`bind`: return a new function with fixed `this` (+ preset args)',
+        'Bound functions can\'t be re-bound; only `new` overrides',
+        'No effect on arrow functions',
+      ],
+      deepDive: `\`\`\`js
+function intro(greeting, punct) {
+  return \`\${greeting}, I'm \${this.name}\${punct}\`;
+}
+const ana = { name: 'Ana' };
+
+intro.call(ana, 'Hi', '!');       // "Hi, I'm Ana!"
+intro.apply(ana, ['Hey', '.']);   // "Hey, I'm Ana."
+const hiAna = intro.bind(ana, 'Hi');
+hiAna('?');                       // "Hi, I'm Ana?"
+hiAna.call({ name: 'Bo' }, '?');  // still Ana
+\`\`\``,
+      followUps: [
+        'Implement `bind` yourself.',
+        'What is partial application?',
+        'Why does `new` override a bound `this`?',
       ],
     },
   ],

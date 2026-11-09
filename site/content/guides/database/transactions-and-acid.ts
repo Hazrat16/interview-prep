@@ -6,233 +6,278 @@ export default defineGuide({
   questions: [
     {
       id: 'what-is-a-transaction',
-      question: 'What is a transaction?',
+      question: 'What is a database transaction? Explain COMMIT and ROLLBACK with a real example.',
       section: 'Easy',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'very-high',
       tags: ['sql'],
-      answer: `> A transaction is a sequence of one or more database operations treated as a single unit of work. Either all operations succeed together or all fail together to maintain data consistency. For example, a bank transfer where money is deducted from one account and added to another.`,
+      answer: `A transaction is a group of database operations that the database treats as **one unit of work**: either **all of them take effect, or none do**.
+
+You start it with \`BEGIN\`, run your statements, and finish with:
+
+- **\`COMMIT\`**: make every change permanent and visible to other sessions.
+- **\`ROLLBACK\`**: throw every change away, as if the transaction never ran. The database also rolls back automatically if the connection drops or a statement fails mid-way.
+
+The classic example is a **bank transfer**: debit account A and credit account B. If the credit fails after the debit, a rollback puts the money back, so money is never lost or created. In e-commerce it's **checkout**: create the order, insert its line items and decrement stock together, so you never have an order without reserved stock or stock gone with no order.
+
+Outside an explicit transaction, most databases run in **autocommit** mode, where each statement is its own tiny transaction. Savepoints let you roll back part of a transaction without abandoning all of it.`,
       analogy: `A bank transfer slip: money leaves one account and arrives in the other as one action; if anything fails, the whole slip is cancelled.`,
       quickRevision: [
-        'Group of operations as one unit',
-        'All succeed (COMMIT) or none (ROLLBACK)',
-        'Protects consistency',
-        'BEGIN … COMMIT / ROLLBACK',
+        'Group of operations as one unit: all or nothing',
+        'BEGIN → work → COMMIT (permanent) or ROLLBACK (discard)',
+        'Auto-rollback on failure or dropped connection',
+        'Examples: bank transfer, checkout (order + items + stock)',
+        'Autocommit = each statement is its own transaction',
       ],
+      deepDive: `\`\`\`sql
+BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+-- any error above → ROLLBACK, nothing changed
+COMMIT;
+\`\`\`
+
+\`\`\`js
+// node-postgres
+const client = await pool.connect();
+try {
+  await client.query('BEGIN');
+  await client.query('UPDATE accounts SET balance = balance - $1 WHERE id = $2', [100, from]);
+  await client.query('UPDATE accounts SET balance = balance + $1 WHERE id = $2', [100, to]);
+  await client.query('COMMIT');
+} catch (e) {
+  await client.query('ROLLBACK');
+  throw e;
+} finally {
+  client.release();
+}
+\`\`\``,
       followUps: [
         'What are the ACID properties?',
         'What is autocommit?',
-      ],
-    },
-    {
-      id: 'why-are-transactions-needed',
-      question: 'Why are transactions needed?',
-      section: 'Easy',
-      perspective: 'concept',
-      difficulty: 'easy',
-      frequency: 'high',
-      tags: ['sql'],
-      answer: `> Transactions ensure data consistency when multiple related operations must happen together. If one operation fails, previous operations are rolled back so the database does not enter an invalid state. In a food ordering system, creating the order, deducting stock, deducting balance, and assigning a rider should all succeed together or fail together.`,
-      analogy: `Moving house with a checklist that's all-or-nothing: you never want half your furniture at the old flat and half at the new one with the old lease already cancelled.`,
-      quickRevision: [
-        'Multi-step changes must not half-complete',
-        'Failures, crashes, concurrent users',
-        'Examples: transfers, checkout, booking',
-        'Keeps data consistent',
-      ],
-      followUps: [
-        'What could go wrong in checkout without a transaction?',
-        'Do you need a transaction for a single insert?',
-      ],
-    },
-    {
-      id: 'what-does-atomicity-mean',
-      question: 'What does Atomicity mean?',
-      section: 'Easy',
-      perspective: 'concept',
-      difficulty: 'easy',
-      frequency: 'high',
-      tags: ['sql'],
-      answer: `> Atomicity means a transaction is indivisible. Either all operations succeed or none of the changes are kept. If any step fails, the database rolls back previous changes to prevent partial updates.`,
-      analogy: 'A light switch: it\'s either fully on or fully off, never half-way.',
-      quickRevision: [
-        'All or nothing',
-        'Failure mid-way → everything rolled back',
-        'No partial updates visible after failure',
-      ],
-      followUps: [
-        'How does the DB undo partial work (undo log)?',
-        'Atomicity vs isolation?',
-      ],
-    },
-    {
-      id: 'difference-between-commit-and-rollback',
-      question: 'Difference between COMMIT and ROLLBACK?',
-      section: 'Easy',
-      perspective: 'trade-off',
-      difficulty: 'easy',
-      frequency: 'medium',
-      tags: ['sql'],
-      answer: `> COMMIT permanently saves all changes made in the current transaction. After commit, those changes cannot be undone with rollback. ROLLBACK undoes uncommitted changes and restores the database to the consistent state before the transaction started.`,
-      analogy: `COMMIT is pressing "Send" on an email; ROLLBACK is "Discard draft". Until you choose, nobody else sees it.`,
-      quickRevision: [
-        'COMMIT: make changes permanent and visible',
-        'ROLLBACK: undo all changes since BEGIN',
-        'Savepoints allow partial rollback',
-      ],
-      followUps: [
         'What are savepoints?',
-        'What happens to locks on COMMIT/ROLLBACK?',
       ],
     },
     {
-      id: 'give-one-real-life-transaction-example',
-      question: 'Give one real-life example of a database transaction.',
+      id: 'acid-properties',
+      question: 'What does ACID stand for? Explain each property with an example.',
       section: 'Easy',
       perspective: 'concept',
       difficulty: 'easy',
-      frequency: 'medium',
+      frequency: 'very-high',
       tags: ['sql'],
-      answer: `> In an e-commerce checkout, confirming the order, reducing stock, deducting user balance, and initiating delivery should run in one transaction. If any step fails, everything rolls back so you don’t get unpaid orders or wrong inventory.`,
-      analogy: `Buying a ticket: the seat must be marked sold and the payment recorded together, or neither should happen.`,
+      answer: `ACID is the set of guarantees a transaction gives you:
+
+- **Atomicity**: all or nothing. If a transfer debits A and then crashes before crediting B, the debit is undone. The database uses an **undo log** to roll back partial work.
+- **Consistency**: a transaction moves the database from one **valid state to another**. Constraints, foreign keys and checks (\`balance >= 0\`, unique email) are never left violated after a commit. Your business rules are part of this too.
+- **Isolation**: concurrent transactions **don't see each other's half-finished work**. Two people buying the last ticket behave as if they ran one after the other, to the degree the **isolation level** promises.
+- **Durability**: once \`COMMIT\` returns, the change **survives crashes and power loss**, because it's in the **write-ahead log** on disk before the commit is acknowledged.
+
+A good way to keep them apart: atomicity is about **failure** inside one transaction, isolation is about **concurrency** between transactions, consistency is about **rules**, and durability is about **crashes after commit**.`,
+      analogy: `A bank vault's rules: every movement is complete (A), the books always balance (C), tellers don't trip over each other (I), and nothing is forgotten after a power cut (D).`,
       quickRevision: [
-        'Bank transfer: debit + credit',
-        'Checkout: order + stock + payment record',
-        'Invoice: invoice row + line items + proposal status',
+        'Atomicity: all or nothing (undo log)',
+        'Consistency: constraints and rules always hold after commit',
+        'Isolation: concurrent transactions don\'t see partial work',
+        'Durability: committed data survives crashes (WAL)',
+        'A = failure, I = concurrency, C = rules, D = crashes',
+      ],
+      avoid: [
+        `Mixing up consistency and isolation: "rules stay valid" is C, "concurrent users don't interfere" is I`,
       ],
       followUps: [
-        'Which steps of a checkout would you keep outside the transaction?',
-        'What would go wrong if the steps were separate commits?',
+        'How does the DB undo partial work?',
+        'Which isolation level is the Postgres default?',
+        'What is a write-ahead log?',
       ],
     },
     {
       id: 'what-problem-does-isolation-solve',
-      question: 'What problem does Isolation solve?',
+      question: 'What problem does isolation solve? Explain the isolation levels and the anomalies they prevent.',
       section: 'Medium',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
       tags: ['sql'],
-      answer: `> Isolation ensures concurrent transactions do not interfere with each other. It prevents issues like dirty reads, lost updates, and incorrect stock when multiple users operate at the same time. Each transaction behaves as if it is executing alone.
+      answer: `Isolation controls **what one transaction can see of others running at the same time**. Without it, concurrent users interfere and you get anomalies:
 
-Note: “rules stay valid” is **Consistency**, not Isolation. Isolation is about **concurrency control**.`,
+- **Dirty read**: reading another transaction's **uncommitted** change, which might be rolled back.
+- **Non-repeatable read**: reading the same row twice in one transaction and getting **different values** because someone committed in between.
+- **Phantom read**: running the same query twice and getting **different rows** because someone inserted or deleted matching rows.
+- **Lost update**: two transactions read-modify-write the same row and one silently overwrites the other.
+
+The SQL levels trade safety for concurrency: **Read Uncommitted** allows all of them; **Read Committed** (the **Postgres** default) stops dirty reads; **Repeatable Read** (the **MySQL InnoDB** default) also stops non-repeatable reads, and both engines prevent most phantoms there through snapshots and gap locks; **Serializable** behaves as if transactions ran one at a time, and may abort some with a serialization error you must retry.
+
+In practice I stay on the default and protect the specific hot spots: an **atomic conditional update**, \`SELECT … FOR UPDATE\`, or a version column. I raise the level only where the logic really needs it.`,
       analogy: `Two chefs working from the same recipe card: isolation makes sure one chef doesn't act on the other's half-written changes.`,
       quickRevision: [
-        'Concurrent transactions don\'t see each other\'s partial work',
-        'Prevents dirty reads, non-repeatable reads, phantoms',
-        'Levels: Read Committed → Repeatable Read → Serializable',
-        'Higher isolation = more safety, less concurrency',
+        'Dirty read: see uncommitted data',
+        'Non-repeatable read: same row, different value',
+        'Phantom: same query, different rows',
+        'Read Committed (PG default) → Repeatable Read (MySQL default) → Serializable',
+        'Higher level = safer but more blocking/retries',
       ],
+      deepDive: `| Level | Dirty read | Non-repeatable | Phantom |
+|---|---|---|---|
+| Read Uncommitted | possible | possible | possible |
+| Read Committed | — | possible | possible |
+| Repeatable Read | — | — | possible (mostly prevented in PG/InnoDB) |
+| Serializable | — | — | — |
+
+\`\`\`sql
+BEGIN ISOLATION LEVEL SERIALIZABLE;
+-- … may fail with: could not serialize access (SQLSTATE 40001) → retry the whole transaction
+COMMIT;
+\`\`\``,
       followUps: [
         'What is a dirty read?',
         'Which isolation level is the Postgres default?',
-        'What is a phantom read?',
+        'Does Repeatable Read prevent lost updates?',
       ],
     },
     {
       id: 'what-happens-if-a-transaction-fails-after-partial-update',
-      question: 'What happens if a transaction fails after partial update?',
+      question: 'What happens if a transaction fails halfway through, and how should the application handle it?',
       section: 'Medium',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
       tags: ['sql'],
-      answer: `> The database performs a rollback. All changes made by that transaction are undone, and the database returns to its previous consistent state. For example, if an account is debited and the next step fails, rollback restores the original balance.`,
+      answer: `The database **rolls back everything the transaction did**, using its undo information, so other sessions never see the partial change. If account A was debited and the credit to B fails, A's balance is restored. Locks the transaction held are released.
+
+The application's job is the part the database can't do:
+
+1. **Catch the error and roll back explicitly** if you're managing the transaction yourself (and always release the connection in \`finally\`), otherwise the connection may stay in an aborted state.
+2. **Decide whether to retry.** Deadlocks, serialization failures and timeouts are **transient**: retry the whole transaction with backoff. Constraint violations or bad input aren't: return a clear error.
+3. **Make retries safe** with an **idempotency key** so a retried request doesn't create a second order.
+
+Without a transaction, a failure halfway leaves the data **inconsistent**: an order with no stock reserved, or stock reduced with no order. That's exactly what transactions exist to prevent.`,
       analogy: `If the printer jams halfway through a contract, you shred the half-printed copy and start again rather than signing half a contract.`,
       quickRevision: [
-        'The DB rolls back all changes in the transaction',
-        'Nothing partial is committed',
-        'App gets an error → retry or report',
-        'Without a transaction: inconsistent data',
+        'DB rolls back all changes; locks released',
+        'App: catch, ROLLBACK, release the connection',
+        'Retry transient errors (deadlock, serialization, timeout) with backoff',
+        'Don\'t retry validation/constraint errors',
+        'Idempotency keys make retries safe',
       ],
       followUps: [
         'How should the app handle the error?',
         'What if the failure happens after COMMIT?',
+        'Which errors are safe to retry?',
       ],
     },
     {
       id: 'why-do-banking-systems-depend-on-acid',
-      question: 'Why do banking systems depend on ACID?',
+      question: 'Why do banking and payment systems depend on ACID, and how would you design a money transfer?',
       section: 'Medium',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
       tags: ['sql'],
-      answer: `> Banking systems handle sensitive money operations under high concurrency. ACID prevents incorrect balances, partial updates, duplicate deductions, and data loss. Even a small inconsistency can mean real financial loss, so correctness and durability are critical.`,
+      answer: `Because with money, **"mostly correct" is wrong**. Every ACID property maps to a real failure: a transfer that debits but doesn't credit (atomicity), a balance going negative against the rules (consistency), two simultaneous withdrawals both seeing enough funds (isolation), or a confirmed payment vanishing after a crash (durability).
+
+For a transfer, I would:
+
+- Run the debit and credit in **one transaction**.
+- Lock both accounts with \`SELECT … FOR UPDATE\` **in a consistent order** (lower id first) to avoid deadlocks, then check the balance and write.
+- Enforce rules in the database too: \`CHECK (balance >= 0)\`, and store amounts as **integers in minor units** (cents), never floats.
+- Prefer a **ledger**: an append-only \`entries\` table with one debit and one credit row per transfer, summing to zero. The balance is derived from (or cached alongside) the ledger, which gives a full audit trail.
+- Use an **idempotency key** per transfer request, so a retried API call can't move the money twice.`,
       analogy: `A bank vault's rules: every movement is complete (A), the books always balance (C), tellers don't trip over each other (I), and nothing is forgotten after a power cut (D).`,
       quickRevision: [
-        'Money must never be lost or created',
-        'A: transfer all-or-nothing',
-        'C: balances follow rules',
-        'I: concurrent transfers stay correct',
-        'D: committed = survives crashes',
+        'Each ACID letter prevents a real money bug',
+        'One transaction for debit + credit',
+        'Lock accounts in a consistent order (lower id first)',
+        'Integers in minor units; `CHECK (balance >= 0)`',
+        'Append-only ledger + idempotency keys',
       ],
+      deepDive: `\`\`\`sql
+BEGIN;
+SELECT id, balance FROM accounts WHERE id IN (1, 2) ORDER BY id FOR UPDATE;
+-- app checks balance of account 1 >= 5000
+INSERT INTO ledger_entries (transfer_id, account_id, amount) VALUES
+  ('tr_123', 1, -5000),
+  ('tr_123', 2,  5000);
+UPDATE accounts SET balance = balance - 5000 WHERE id = 1;
+UPDATE accounts SET balance = balance + 5000 WHERE id = 2;
+COMMIT;
+\`\`\``,
       followUps: [
         'How would you design a transfer between two accounts?',
         'Why use a ledger instead of updating balances?',
+        'How do you make the transfer API idempotent?',
       ],
     },
     {
       id: 'can-a-single-sql-query-need-a-transaction',
-      question: 'Can a single SQL query need a transaction?',
+      question: 'Does a single SQL statement need a transaction? Is a read-then-write safe on its own?',
       section: 'Medium',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
       tags: ['sql'],
-      answer: `> Yes. Most databases treat a single statement as an implicit transaction to guarantee atomicity and consistency. A transaction is about safe unit-of-work semantics, not the number of queries.`,
+      answer: `A single statement is **already atomic**. In autocommit mode the database wraps it in its own implicit transaction, so a multi-row \`UPDATE\` either changes every matching row or none, and a failure halfway is rolled back. You don't need an explicit \`BEGIN\` just for one statement.
+
+The trap is the **read-then-write** pattern across **two** statements:
+
+\`\`\`sql
+SELECT stock FROM products WHERE id = 1;      -- app sees 1
+UPDATE products SET stock = 0 WHERE id = 1;   -- another request did the same
+\`\`\`
+
+Each statement is atomic, but the **pair isn't**, and even wrapping them in a transaction at Read Committed doesn't stop two requests from both reading \`1\`.
+
+The fixes are to **make it one atomic statement** with the condition inside it, which is my default:
+
+\`\`\`sql
+UPDATE products SET stock = stock - 1 WHERE id = 1 AND stock > 0;
+-- 1 row updated = success, 0 rows = sold out
+\`\`\`
+
+or to **lock the row** with \`SELECT … FOR UPDATE\` inside a transaction, or to use **optimistic locking** with a version column.`,
       analogy: `One instruction can still involve many steps behind the scenes; the database wraps a single statement as a mini all-or-nothing action for you.`,
       quickRevision: [
-        'Each statement is already atomic (autocommit)',
-        'A multi-row UPDATE succeeds or fails as a whole',
-        'Explicit transactions needed for several statements',
-        'Read-then-write still needs locking/atomic update',
+        'One statement = atomic (implicit transaction)',
+        'Read-then-write across statements is a race',
+        'A transaction alone at Read Committed doesn\'t fix it',
+        'Best: conditional atomic UPDATE, check rows affected',
+        'Or `FOR UPDATE`, or a version column',
       ],
       followUps: [
         'Is `UPDATE stock = stock - 1 WHERE stock > 0` safe alone?',
         'What is autocommit mode?',
-      ],
-    },
-    {
-      id: 'what-is-data-inconsistency',
-      question: 'What is data inconsistency?',
-      section: 'Medium',
-      perspective: 'concept',
-      difficulty: 'medium',
-      frequency: 'medium',
-      tags: ['sql'],
-      answer: `> Data inconsistency means the database no longer reflects a correct real-world state, or related data no longer agrees across records. It often happens after partial updates, missing rollbacks, or concurrent interference — for example, an order exists but stock was never reduced.`,
-      analogy: 'Two copies of a recipe with different amounts of sugar: which one is right? Nobody knows anymore.',
-      quickRevision: [
-        'Data contradicts itself or business rules',
-        'Causes: partial updates, races, stale copies',
-        'Prevent: transactions, constraints, single source of truth',
-        'Detect: reconciliation jobs',
-      ],
-      followUps: [
-        'How do constraints help?',
-        'How would you detect inconsistency in production?',
+        'How does optimistic locking work?',
       ],
     },
     {
       id: 'balance-deducted-but-order-not-created-which-acid-property-failed',
-      question: 'Balance deducted but order not created. Which ACID property failed?',
+      question: `A customer's balance was deducted but no order was created. Which ACID property failed, and how do you fix it?`,
       section: 'Scenario-based',
       perspective: 'scenario',
       difficulty: 'medium',
       frequency: 'high',
       tags: ['sql'],
-      answer: `> Atomicity. Related operations should succeed together, but only part completed. The transaction should have rolled back so neither balance deduction nor incomplete order remained.`,
+      answer: `**Atomicity.** Deducting the balance and creating the order are one business action, but they ran as **separate commits**, so the first succeeded and the second failed, leaving a partial update.
+
+The fix depends on where the data lives:
+
+- **Same database**: put both writes in **one transaction**. If the order insert fails, the deduction rolls back automatically.
+- **Different services** (wallet service and order service), where one transaction isn't possible: use a **saga**. Each step commits locally and has a **compensating action**: if creating the order fails, issue a refund to the wallet. Use the **outbox pattern** so the "balance deducted" event is reliably published together with the local commit, and make every step **idempotent** so retries are safe.
+
+For the customers already affected, I'd run a **reconciliation** query (deductions with no matching order) and refund them, and add monitoring so it's caught automatically next time.`,
       analogy: `Paying at the till but walking out with no shopping: the "pay and receive" pair wasn't treated as one action.`,
       quickRevision: [
-        'Atomicity failed',
-        'Debit + order must be one transaction',
-        'Fix: same transaction or a saga with compensation',
+        'Atomicity failed: partial update',
+        'Same DB → one transaction',
+        'Different services → saga + compensating refund',
+        'Outbox pattern for reliable events; idempotent steps',
+        'Reconcile and refund affected users',
       ],
       followUps: [
         'What if the balance and orders live in different services?',
         'What is a compensating transaction?',
+        'What is the outbox pattern?',
       ],
     },
     {
@@ -268,44 +313,61 @@ Put the order creation and the stock decrement in **one transaction** so you nev
     },
     {
       id: 'power-failure-after-commit-which-property-guarantees-safety',
-      question: 'Power failure after COMMIT. Which property guarantees safety?',
+      question: 'The power fails right after COMMIT returns. Is the data safe? Which property guarantees it, and how?',
       section: 'Scenario-based',
       perspective: 'scenario',
       difficulty: 'easy',
       frequency: 'medium',
       tags: ['sql'],
-      answer: `> Durability. Once committed, changes are permanently stored and must survive crashes, typically via persistent storage and recovery logs.`,
+      answer: `Yes. That's **durability**: once \`COMMIT\` has returned success, the change must survive a crash.
+
+The mechanism is the **write-ahead log (WAL)** (the redo log in InnoDB). Before acknowledging a commit, the database **appends the change to the log and flushes it to disk with \`fsync\`**. The actual table and index pages can be written later, lazily. If the power fails, on restart the database **replays the log** to redo committed changes and discards uncommitted ones.
+
+So the guarantee is about the log reaching stable storage, which is why durability can be **tuned**: Postgres' \`synchronous_commit = off\` or InnoDB's \`innodb_flush_log_at_trx_commit = 2\` make commits faster but can lose the last moments of commits in a crash. I'd only accept that for data like analytics events.
+
+Durability on one machine doesn't protect against **disk loss**, so production adds **replication** (ideally synchronous for critical data) and **backups with point-in-time recovery**.`,
       analogy: `Once the notary stamps the document, it's recorded in the official register, even if the lights go out a second later.`,
       quickRevision: [
-        'Durability',
-        'Committed data is in the write-ahead log on disk',
-        'Replayed on restart',
-        'Replication adds safety',
+        'Durability: committed = survives crashes',
+        'WAL flushed to disk before COMMIT returns',
+        'Restart replays the log (redo committed, drop uncommitted)',
+        'Can be relaxed for speed (`synchronous_commit = off`)',
+        'Disk loss needs replication + backups',
       ],
       followUps: [
         'What is a write-ahead log?',
-        'Can durability be weakened for speed (synchronous_commit)?',
+        'Can durability be weakened for speed?',
+        'What is point-in-time recovery?',
       ],
     },
     {
       id: 'why-keep-order-creation-and-stock-reduction-in-the-same-transaction',
-      question: 'Why keep order creation and stock reduction in the same transaction?',
+      question: 'Why should order creation and stock reduction happen in the same transaction?',
       section: 'Scenario-based',
       perspective: 'scenario',
       difficulty: 'medium',
       frequency: 'high',
       tags: ['sql'],
-      answer: `> To preserve atomicity and consistency between business state and inventory state. If they run separately, you can create an order without reducing stock, or reduce stock without an order. In one transaction, both succeed together or fail together.`,
+      answer: `Because they describe **one fact**: "this stock now belongs to this order". If they commit separately, a failure between them leaves the two tables **disagreeing**:
+
+- **Stock reduced, no order**: inventory disappears, and the product may show as sold out when it isn't.
+- **Order created, no stock reduced**: you **oversell** and have to cancel on a customer.
+
+In one transaction both happen or neither does. Inside it, I'd decrement with a **conditional atomic update** (\`SET stock = stock - :qty WHERE id = :id AND stock >= :qty\`) and check the affected row count. That also handles concurrency: if two buyers race for the last item, only one update matches.
+
+What I keep **out** of the transaction is anything slow or external: the **payment gateway call**, emails and webhooks. Holding row locks while waiting on a third-party API blocks other buyers and invites deadlocks and timeouts. The usual flow is: reserve stock and create a \`pending\` order in one short transaction, take payment, then mark it \`paid\` (or release the reservation) in another.`,
       analogy: `Handing over the goods and writing the receipt at the same counter at the same moment, so the stock book and sales book always agree.`,
       quickRevision: [
-        'Otherwise: stock reduced without an order, or order without stock',
-        'Atomic: both or neither',
-        'Use a conditional decrement inside it',
-        'Keep it short',
+        'Separate commits → stock without order, or overselling',
+        'One transaction: both or neither',
+        'Conditional decrement + check rows affected',
+        'Keep payment calls and emails outside the transaction',
+        'Reserve (pending) → pay → confirm or release',
       ],
       followUps: [
         'Where does the payment call go?',
-        'What if payment is slow?',
+        'What if payment is slow or fails?',
+        'How do you release reservations that are never paid?',
       ],
     },
     {

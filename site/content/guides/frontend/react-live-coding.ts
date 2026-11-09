@@ -10,7 +10,7 @@ export default defineGuide({
   questions: [
     {
       id: 'fetch-a-list-debounced-search-loading-error-empty',
-      question: 'Fetch a list + debounced search (loading / error / empty)',
+      question: 'Build a list with debounced search that handles loading, error and empty states.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'very-high',
@@ -97,7 +97,7 @@ export default function UserSearch() {
     },
     {
       id: 'todo-app-add-toggle-delete-filter-persist',
-      question: 'Todo app (add, toggle, delete, filter, persist)',
+      question: 'Build a todo app with add, toggle, delete, filter and persistence.',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'very-high',
@@ -191,7 +191,7 @@ export default function TodoApp() {
     },
     {
       id: 'custom-hooks-usefetch-useprevious-uselocalstorage',
-      question: 'Custom hooks: `useFetch`, `usePrevious`, `useLocalStorage`',
+      question: 'Write the custom hooks `useFetch`, `usePrevious` and `useLocalStorage`.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -262,7 +262,7 @@ export function useLocalStorage<T>(key: string, initial: T) {
     },
     {
       id: 'infinite-scroll-with-intersectionobserver',
-      question: 'Infinite scroll with IntersectionObserver',
+      question: 'Build infinite scroll with IntersectionObserver.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -344,7 +344,7 @@ export default function InfinitePosts() {
     },
     {
       id: 'modal-outside-click-escape-focus',
-      question: 'Modal (outside click + Escape + focus)',
+      question: 'Build an accessible modal (outside click, Escape key, focus trap).',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -415,7 +415,7 @@ export function Modal({ open, onClose, title, children }: Props) {
     },
     {
       id: 'countdown-timer-like-the-60-second-hold-in-sneaker-drop',
-      question: 'Countdown timer (like the 60-second hold in Sneaker Drop)',
+      question: 'Build a countdown timer (like a 60-second checkout hold).',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'medium',
@@ -468,7 +468,7 @@ export function Countdown({ expiresAt, onExpire }: { expiresAt: number; onExpire
     },
     {
       id: 'accordion-and-tabs',
-      question: 'Accordion and Tabs',
+      question: 'Build an accessible accordion and tabs component.',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'high',

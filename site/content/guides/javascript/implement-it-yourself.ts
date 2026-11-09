@@ -6,7 +6,7 @@ export default defineGuide({
   questions: [
     {
       id: 'debounce-throttle',
-      question: 'debounce / throttle',
+      question: 'Implement `debounce` and `throttle` from scratch.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'very-high',
@@ -53,7 +53,7 @@ Debounce: run **after** the calls stop (search input). Throttle: run **at most o
     },
     {
       id: 'promiseall',
-      question: 'Promise.all',
+      question: 'Implement `Promise.all` from scratch.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'very-high',
@@ -93,7 +93,7 @@ function promiseAll(promises) {
     },
     {
       id: 'promiseallsettled-promiserace-promiseany',
-      question: 'Promise.allSettled / Promise.race / Promise.any',
+      question: 'Implement `Promise.allSettled`, `Promise.race` and `Promise.any`.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -148,7 +148,7 @@ function promiseAny(promises) {
     },
     {
       id: 'sleep-promisify',
-      question: 'sleep / promisify',
+      question: 'Implement `sleep(ms)` and `promisify(fn)`.',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'high',
@@ -180,7 +180,7 @@ function promisify(fn) {
     },
     {
       id: 'retry-with-exponential-backoff',
-      question: 'Retry with exponential backoff',
+      question: 'Implement a `retry` helper with exponential backoff.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -218,7 +218,7 @@ Say: only retry **idempotent** or safe operations. Jitter prevents all clients r
     },
     {
       id: 'concurrency-limit-run-n-async-tasks-at-a-time',
-      question: 'Concurrency limit (run N async tasks at a time)',
+      question: 'Run a list of async tasks with at most N running at a time (concurrency limit).',
       perspective: 'coding',
       difficulty: 'hard',
       frequency: 'high',
@@ -256,7 +256,7 @@ async function runWithLimit(tasks, limit) {
     },
     {
       id: 'deep-clone-handles-date-arrays-cycles',
-      question: 'Deep clone (handles Date, arrays, cycles)',
+      question: 'Implement a deep clone that handles Dates, arrays and circular references.',
       perspective: 'coding',
       difficulty: 'hard',
       frequency: 'high',
@@ -298,7 +298,7 @@ Mention that the built-in \`structuredClone(obj)\` exists now.`,
     },
     {
       id: 'flatten-array-with-depth',
-      question: 'Flatten array (with depth)',
+      question: 'Implement `flatten(arr, depth)` like `Array.prototype.flat`.',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'high',
@@ -329,7 +329,7 @@ function flatten(arr, depth = Infinity) {
     },
     {
       id: 'polyfills-map-filter-reduce',
-      question: 'Polyfills: map, filter, reduce',
+      question: 'Write polyfills for `Array.prototype.map`, `filter` and `reduce`.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -382,7 +382,7 @@ Array.prototype.myReduce = function (cb, initial) {
     },
     {
       id: 'polyfills-call-apply-bind',
-      question: 'Polyfills: call, apply, bind',
+      question: 'Write polyfills for `Function.prototype.call`, `apply` and `bind`.',
       perspective: 'coding',
       difficulty: 'hard',
       frequency: 'high',
@@ -427,7 +427,7 @@ Function.prototype.myBind = function (ctx, ...preset) {
     },
     {
       id: 'memoize-once-curry',
-      question: 'memoize / once / curry',
+      question: 'Implement `memoize`, `once` and `curry`.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -484,7 +484,7 @@ const sum = (a) => (b) => (b === undefined ? a : sum(a + b));
     },
     {
       id: 'event-emitter',
-      question: 'Event emitter',
+      question: 'Implement an event emitter with `on`, `off`, `emit` and `once`.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'high',
@@ -541,7 +541,7 @@ class EventEmitter {
     },
     {
       id: 'getobj-path-default',
-      question: 'get(obj, path, default)',
+      question: 'Implement `get(obj, path, defaultValue)` like lodash.get.',
       perspective: 'coding',
       difficulty: 'easy',
       frequency: 'medium',
@@ -573,7 +573,7 @@ function get(obj, path, defaultValue) {
     },
     {
       id: 'deep-equal',
-      question: 'Deep equal',
+      question: 'Implement `deepEqual(a, b)` to compare two values structurally.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'medium',
@@ -610,7 +610,7 @@ function deepEqual(a, b) {
     },
     {
       id: 'lru-cache',
-      question: 'LRU cache',
+      question: 'Implement an LRU cache with O(1) `get` and `put`.',
       perspective: 'coding',
       difficulty: 'medium',
       frequency: 'very-high',

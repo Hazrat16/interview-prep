@@ -39,7 +39,7 @@ export default defineGuide({
     },
     {
       id: 'put-vs-patch',
-      question: 'PUT vs PATCH?',
+      question: 'What is the difference between PUT and PATCH?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'high',
@@ -95,7 +95,7 @@ Layers I'd use:
     },
     {
       id: 'status-codes-to-know',
-      question: 'Status codes to know?',
+      question: 'Which HTTP status codes should an API use, and when?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'very-high',
@@ -131,7 +131,7 @@ Correct codes matter because clients, caches, monitoring and retries all behave 
     },
     {
       id: 'pagination',
-      question: 'Pagination?',
+      question: 'How do you paginate an API: offset or cursor?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -157,7 +157,7 @@ I use offset for small admin tables, and cursors for feeds, infinite scroll and 
     },
     {
       id: 'api-versioning',
-      question: 'API versioning?',
+      question: 'How do you version an API?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
@@ -187,7 +187,7 @@ Then run v1 and v2 side by side, **announce a deprecation timeline** (\`Deprecat
     },
     {
       id: 'rate-limiting',
-      question: 'Rate limiting?',
+      question: 'How do you implement rate limiting for an API?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -217,7 +217,7 @@ With **multiple instances**, the counters must be **shared**, so they live in **
     },
     {
       id: 'rest-vs-graphql',
-      question: 'REST vs GraphQL?',
+      question: 'REST vs GraphQL: when would you choose each?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',
@@ -244,7 +244,7 @@ I default to **REST** for most business APIs. I'd pick GraphQL when frontends co
     },
     {
       id: 'webhooks-how-to-handle-safely',
-      question: 'Webhooks: how to handle safely?',
+      question: 'How do you receive and process webhooks safely?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',

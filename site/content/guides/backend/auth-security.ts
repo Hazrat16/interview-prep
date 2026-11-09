@@ -10,7 +10,7 @@ export default defineGuide({
   questions: [
     {
       id: 'session-vs-jwt',
-      question: 'Session vs JWT?',
+      question: 'Session cookies vs JWTs: how do they differ, and which would you use?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'very-high',
@@ -68,7 +68,7 @@ Plus: hash passwords with bcrypt or argon2, rate-limit login, use CSRF protectio
     },
     {
       id: 'where-do-you-store-passwords',
-      question: 'Where do you store passwords?',
+      question: 'How do you store user passwords securely?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -95,7 +95,7 @@ Never use encryption (it's reversible) or fast hashes like MD5 or SHA-256 for pa
     },
     {
       id: 'oauth-20-vs-oidc',
-      question: 'OAuth 2.0 vs OIDC?',
+      question: 'What is the difference between OAuth 2.0 and OpenID Connect?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',
@@ -127,7 +127,7 @@ For "Sign in with Microsoft" at Firmwide we use **MSAL** with the **Authorizatio
     },
     {
       id: 'rbac-implementation',
-      question: 'RBAC implementation?',
+      question: 'How would you implement role-based access control (RBAC)?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -190,7 +190,7 @@ At Firmwide the roles are super_admin, admin, director and user, with middleware
     },
     {
       id: 'secrets',
-      question: 'Secrets?',
+      question: 'How do you manage secrets like API keys and database passwords?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -218,7 +218,7 @@ At Firmwide the roles are super_admin, admin, director and user, with middleware
     },
     {
       id: 'security-headers',
-      question: 'Security headers?',
+      question: 'Which HTTP security headers would you set, and why?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',

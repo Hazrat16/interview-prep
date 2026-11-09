@@ -12,7 +12,7 @@ export default defineGuide({
   questions: [
     {
       id: 'worked-example-flash-sale-inventory-your-sneaker-drop',
-      question: 'Worked example: Flash-sale inventory (your Sneaker Drop)',
+      question: 'Design flash-sale inventory for a limited sneaker drop.',
       perspective: 'design',
       difficulty: 'hard',
       frequency: 'high',
@@ -49,7 +49,7 @@ Trade-offs to mention: Redis as the fast gate vs the DB as source of truth (reco
     },
     {
       id: 'url-shortener-1',
-      question: 'URL shortener',
+      question: 'Design a URL shortener.',
       perspective: 'design',
       difficulty: 'medium',
       frequency: 'very-high',
@@ -79,7 +79,7 @@ Trade-offs to mention: Redis as the fast gate vs the DB as source of truth (reco
     },
     {
       id: 'chat-app-whatsapp-messenger-1',
-      question: 'Chat app (WhatsApp / Messenger)',
+      question: 'Design a chat app like WhatsApp or Messenger.',
       perspective: 'design',
       difficulty: 'hard',
       frequency: 'very-high',
@@ -108,7 +108,7 @@ Trade-offs to mention: Redis as the fast gate vs the DB as source of truth (reco
     },
     {
       id: 'notification-system-1',
-      question: 'Notification system',
+      question: 'Design a notification system (email, SMS, push, in-app).',
       perspective: 'design',
       difficulty: 'medium',
       frequency: 'high',
@@ -134,7 +134,7 @@ Trade-offs to mention: Redis as the fast gate vs the DB as source of truth (reco
     },
     {
       id: 'booking-system-doctor-hotel-movie-seats-1',
-      question: 'Booking system (doctor / hotel / movie seats)',
+      question: 'Design a booking system (doctor appointments, hotel rooms or movie seats).',
       perspective: 'design',
       difficulty: 'medium',
       frequency: 'high',
@@ -161,7 +161,7 @@ Trade-offs to mention: Redis as the fast gate vs the DB as source of truth (reco
     },
     {
       id: 'payment-invoicing-system-1',
-      question: 'Payment / invoicing system',
+      question: 'Design a payment and invoicing system.',
       perspective: 'design',
       difficulty: 'hard',
       frequency: 'high',
@@ -189,7 +189,7 @@ Trade-offs to mention: Redis as the fast gate vs the DB as source of truth (reco
     },
     {
       id: 'news-feed-timeline-1',
-      question: 'News feed / timeline',
+      question: 'Design a news feed / timeline.',
       perspective: 'design',
       difficulty: 'hard',
       frequency: 'high',
@@ -213,7 +213,7 @@ Trade-offs to mention: Redis as the fast gate vs the DB as source of truth (reco
     },
     {
       id: 'job-portal-search-1',
-      question: 'Job portal / search',
+      question: 'Design a job portal with search.',
       perspective: 'design',
       difficulty: 'medium',
       frequency: 'medium',
@@ -239,7 +239,7 @@ Trade-offs to mention: Redis as the fast gate vs the DB as source of truth (reco
     },
     {
       id: 'real-time-dashboard-live-prices',
-      question: 'Real-time dashboard / live prices',
+      question: 'Design a real-time dashboard showing live prices.',
       perspective: 'design',
       difficulty: 'medium',
       frequency: 'medium',

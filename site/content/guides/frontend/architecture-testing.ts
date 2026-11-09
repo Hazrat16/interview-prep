@@ -38,7 +38,7 @@ The result: features are easy to find, changes stay local, and new developers ca
     },
     {
       id: 'designing-a-reusable-component',
-      question: 'Designing a reusable component?',
+      question: 'How do you design a reusable component (for example, for a component library)?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -127,7 +127,7 @@ Because cookies are sent automatically, I protect state-changing requests agains
     },
     {
       id: 'testing-pyramid-for-frontend',
-      question: 'Testing pyramid for frontend?',
+      question: 'What does a testing pyramid look like for a frontend app?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',
@@ -156,7 +156,7 @@ Plus **static checks** (TypeScript, ESLint) and **accessibility checks** (axe). 
     },
     {
       id: 'accessibility-basics',
-      question: 'Accessibility basics?',
+      question: 'What accessibility basics do you make sure every UI has?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',

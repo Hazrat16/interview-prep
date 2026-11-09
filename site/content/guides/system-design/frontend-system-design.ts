@@ -12,7 +12,7 @@ export default defineGuide({
   questions: [
     {
       id: 'autocomplete-typeahead',
-      question: 'Autocomplete / typeahead',
+      question: 'Design an autocomplete / typeahead search box.',
       perspective: 'design',
       difficulty: 'medium',
       frequency: 'high',
@@ -37,25 +37,30 @@ export default defineGuide({
     },
     {
       id: 'real-time-notifications-ui',
-      question: 'Real-time notifications UI',
+      question: 'Design the frontend for real-time notifications (bell icon, unread count, live updates).',
       perspective: 'design',
       difficulty: 'medium',
       frequency: 'medium',
       tags: ['realtime', 'system-design'],
-      answer: `- One socket connection per app (in a context provider), authenticated in the handshake.
-- Reconnection with backoff. On reconnect, refetch missed notifications since the last ID.
-- Update the TanStack Query cache from socket events, so the unread count stays consistent.
-- Optimistic "mark as read", rolled back on error.`,
+      answer: `I'd split it into **transport**, **state** and **UI**.
+
+**Transport.** One **WebSocket** (or SSE, since updates are mostly server → client) per browser tab, opened once in a top-level provider and **authenticated in the handshake**. It reconnects with **exponential backoff and jitter**, and on reconnect fetches anything missed with \`GET /notifications?after=<lastId>\`, so a dropped connection never loses notifications. Optionally, one tab owns the socket and shares events with the others through a \`BroadcastChannel\`.
+
+**State.** The REST endpoint is the source of truth, cached with **TanStack Query** (paginated list + unread count). Socket events **update that cache** (\`setQueryData\`) rather than a separate store, so the badge, dropdown and full page always agree. **Mark as read** is optimistic with rollback on error, and "mark all read" sends the last seen id.
+
+**UI.** A bell with an unread badge (capped at "99+"), a dropdown with the latest items and a link to a full **virtualised, infinite-scroll** list. Toasts for high-priority types only, an \`aria-live="polite"\` region for screen readers, and **dedupe by notification id** since an event can arrive via both the socket and a refetch.`,
       analogy: `One radio per household tuned to your personal channel: it reconnects if the signal drops, and when it comes back it asks "what did I miss since message #42?".`,
       quickRevision: [
-        'One socket per app (context provider), auth in handshake',
-        'Reconnect with backoff; refetch since last ID',
-        'Socket events update the TanStack Query cache',
+        'One socket/SSE per app, auth in handshake',
+        'Reconnect with backoff + refetch since last id',
+        'TanStack Query cache is the single state; socket updates it',
         'Optimistic mark-as-read with rollback',
+        'Dedupe by id; virtualised list; aria-live',
       ],
       followUps: [
         'How do you keep the unread badge consistent across tabs?',
         'What happens to notifications sent while offline?',
+        'WebSocket vs SSE vs polling here?',
       ],
     },
   ],

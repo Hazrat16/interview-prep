@@ -37,7 +37,7 @@ The rule: keep state **as close as possible to where it's used**, and only lift 
     },
     {
       id: 'why-redux-toolkit',
-      question: 'Why Redux Toolkit?',
+      question: 'Why use Redux Toolkit instead of plain Redux?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
@@ -69,7 +69,7 @@ I used Redux at SmartCrowd for complex shared client state across investment and
     },
     {
       id: 'redux-data-flow',
-      question: 'Redux data flow?',
+      question: 'Explain the Redux data flow.',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -99,7 +99,7 @@ This predictability makes state changes easy to trace in DevTools (time-travel d
     },
     {
       id: 'tanstack-query-staletime-vs-gctime',
-      question: 'TanStack Query `staleTime` vs `gcTime`?',
+      question: 'In TanStack Query, what is the difference between `staleTime` and `gcTime`?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'medium',
@@ -125,7 +125,7 @@ So a list might have \`staleTime: 30_000\` to avoid refetching on every navigati
     },
     {
       id: 'optimistic-updates',
-      question: 'Optimistic updates?',
+      question: 'What are optimistic updates, and how do you implement them safely?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',

@@ -6,7 +6,7 @@ export default defineGuide({
   questions: [
     {
       id: 'container-vs-vm',
-      question: 'Container vs VM?',
+      question: 'What is the difference between a container and a virtual machine?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'very-high',
@@ -64,7 +64,7 @@ Other good practices: \`.dockerignore\` (node_modules, .git, .env), run as a **n
     },
     {
       id: 'reduce-image-size',
-      question: 'Reduce image size?',
+      question: 'How do you reduce the size of a Docker image?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -95,7 +95,7 @@ I check the result with \`docker images\` and \`dive\`, and scan it with **Trivy
     },
     {
       id: 'layer-caching',
-      question: 'Layer caching?',
+      question: 'How does Docker layer caching work, and how do you make builds faster?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -128,7 +128,7 @@ That way a code change doesn't reinstall all dependencies. In CI I also enable *
     },
     {
       id: 'cmd-vs-entrypoint',
-      question: '`CMD` vs `ENTRYPOINT`?',
+      question: 'What is the difference between `CMD` and `ENTRYPOINT` in a Dockerfile?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'medium',
@@ -156,7 +156,7 @@ Use the **exec (JSON array) form** so the process runs as PID 1 and **receives s
     },
     {
       id: 'copy-vs-add',
-      question: '`COPY` vs `ADD`?',
+      question: 'What is the difference between `COPY` and `ADD` in a Dockerfile?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'medium',
@@ -180,7 +180,7 @@ Best practice is to **use \`COPY\`** for normal files and only use \`ADD\` when 
     },
     {
       id: 'run-as-non-root',
-      question: 'Run as non-root?',
+      question: 'Why and how should a container run as a non-root user?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -205,7 +205,7 @@ So I set \`USER node\` (the official Node images include that user) after instal
     },
     {
       id: 'docker-compose',
-      question: 'Docker Compose?',
+      question: 'What is Docker Compose, and when do you use it?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -236,7 +236,7 @@ For production at scale I'd use ECS or Kubernetes.`,
     },
     {
       id: 'volumes-vs-bind-mounts',
-      question: 'Volumes vs bind mounts?',
+      question: 'What is the difference between Docker volumes and bind mounts?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'medium',

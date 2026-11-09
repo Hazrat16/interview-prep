@@ -70,7 +70,7 @@ The trade-offs: every index **slows writes** (it must be updated on each insert 
     },
     {
       id: 'aggregation-pipeline',
-      question: 'Aggregation pipeline?',
+      question: 'What is the MongoDB aggregation pipeline? Give an example.',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -103,7 +103,7 @@ I've used it for **dashboards and analytics**: totals per currency and month, in
     },
     {
       id: 'transactions-in-mongodb',
-      question: 'Transactions in MongoDB?',
+      question: 'Does MongoDB support transactions, and when do you need them?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
@@ -128,7 +128,7 @@ I use them when **several documents must change together**, such as money moveme
     },
     {
       id: 'mongoose-lean',
-      question: 'Mongoose `lean()`?',
+      question: 'What does Mongoose `lean()` do, and when should you use it?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -185,7 +185,7 @@ Detect it by logging query counts per request, or with APM traces that show many
     },
     {
       id: 'money-storage',
-      question: 'Money storage?',
+      question: 'How should you store money values in MongoDB (or any database)?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',

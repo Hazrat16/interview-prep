@@ -57,7 +57,7 @@ Use a **stable unique ID** from the data (\`todo.id\`). The index is acceptable 
     },
     {
       id: 'state-versus-props',
-      question: 'State versus props?',
+      question: 'What is the difference between state and props in React?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'very-high',
@@ -138,7 +138,7 @@ Good-form checklist: show errors after blur or submit (not while the user is sti
     },
     {
       id: 'lifting-state-up',
-      question: 'Lifting state up?',
+      question: 'What does "lifting state up" mean, and when do you do it?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -163,7 +163,7 @@ The trade-off: lifting too high causes **unnecessary re-renders** and prop drill
     },
     {
       id: 'prop-drilling-and-how-to-avoid-it',
-      question: 'Prop drilling, and how to avoid it?',
+      question: 'What is prop drilling, and how do you avoid it?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -194,7 +194,7 @@ A little drilling (two or three levels) is fine and explicit.`,
     },
     {
       id: 'fragments',
-      question: 'Fragments?',
+      question: 'What are React Fragments, and why use them?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -240,7 +240,7 @@ A little drilling (two or three levels) is fine and explicit.`,
     },
     {
       id: 'react-1819-features',
-      question: 'React 18/19 features?',
+      question: 'What are the most important features in React 18 and 19?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -279,7 +279,7 @@ In practice I use transitions for heavy filtering and TanStack Query for most da
     },
     {
       id: 'strictmode-double-invoke',
-      question: 'StrictMode double invoke?',
+      question: 'Why does React StrictMode render components and run effects twice in development?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',

@@ -97,7 +97,7 @@ Common causes and fixes:
     },
     {
       id: 'app-router-data-fetching',
-      question: 'App Router data fetching?',
+      question: 'How does data fetching and caching work in the Next.js App Router?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -125,7 +125,7 @@ Common causes and fixes:
     },
     {
       id: 'middleware-in-nextjs',
-      question: 'Middleware in Next.js?',
+      question: 'What is middleware in Next.js, and what would you use it for?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',

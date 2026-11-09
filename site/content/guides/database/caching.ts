@@ -10,65 +10,70 @@ export default defineGuide({
   questions: [
     {
       id: 'why-not-cache-all-data',
-      question: 'Why not cache all data?',
+      question: 'Why not just cache all of your data?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
       tags: ['caching'],
-      answer: `- RAM is limited and expensive
-- Invalidation becomes complex (“cache consistency nightmare”)
-- Low-value / rare data doesn’t benefit
-- Some data must always be fresh (balances, payments, critical inventory)`,
+      answer: `Because a cache is only a win when it's **cheap to hold, likely to be read again, and acceptable if slightly stale**. Caching everything breaks all three:
+
+- **Memory is limited and expensive.** Redis keeps data in RAM. Filling it with rarely read rows evicts the hot keys that actually help, lowering the **hit rate**.
+- **Low-value data doesn't benefit.** A record read once a month gains nothing from caching, but still costs memory and invalidation logic.
+- **Invalidation grows with what you cache.** Every cached item is something a write must remember to update or delete. More cached shapes means more places to miss, and more stale-data bugs.
+- **Some data must always be fresh**: account balances, payment status, inventory during checkout, permissions. Serving those from a cache can cause real harm, so they're read from the database (sometimes with a lock).
+- **Consistency and security.** Cached per-user data can leak between users with a wrong cache key.
+
+So I cache **hot, expensive, read-heavy** data with a measured hit rate, and leave the rest to a well-indexed database.`,
       analogy: `You don't keep your whole wardrobe on the chair by the bed; only the clothes you wear every day. The rest stays in the cupboard (database).`,
       quickRevision: [
-        'Memory is limited and costly',
-        'Every cached item needs invalidation',
-        'Cache only hot, expensive, shared reads',
-        'Correctness-critical data stays in the DB',
+        'RAM is limited; cold data evicts hot data',
+        'Rarely read data gains nothing',
+        'More cached data → more invalidation bugs',
+        'Never cache: balances, payments, checkout inventory, permissions',
+        'Measure hit rate; cache hot + expensive data only',
       ],
       followUps: [
-        'How do you decide what is "hot"?',
+        'How do you measure whether a cache is worth it?',
         'What eviction policy would you choose?',
       ],
     },
     {
       id: 'what-is-caching',
-      question: 'What is caching?',
+      question: 'What is caching, where can you cache in a web app, and what problems does it bring?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'very-high',
       tags: ['caching'],
-      answer: `> Caching stores previously fetched or computed results in fast storage like memory or Redis so repeated requests can be served without hitting the database every time. It reduces latency and database load.`,
+      answer: `Caching means **keeping a copy of data or a computed result in faster storage**, so repeated requests don't redo the expensive work: a database query, an API call, a rendered page. It cuts **latency** and **load** on the database.
+
+There are layers, from closest to the user:
+
+- **Browser cache** via HTTP headers (\`Cache-Control\`, \`ETag\`).
+- **CDN** for static assets and cacheable pages.
+- **Application cache** in a shared store like **Redis**: query results, sessions, rate-limit counters.
+- **In-process memory** (an LRU map): fastest, but not shared between instances.
+- The **database's own buffer cache**.
+
+The problems it brings:
+
+- **Stale data**: the database changed but the cache still serves the old value until it's invalidated or expires.
+- **Invalidation complexity**: knowing which keys a write affects.
+- **Stampedes**: a hot key expires and thousands of requests hit the database at once.
+- **Consistency** across instances.
+
+So I cache **read-heavy, expensive, tolerant-of-slight-staleness** data, always with a **TTL**, and invalidate on writes.`,
       analogy: `Keeping the most-asked-for books on the librarian's desk instead of walking to the archive every time someone asks.`,
       quickRevision: [
-        'Store computed/fetched results in fast storage',
-        'Memory / Redis / CDN / browser',
-        'Reduces latency and DB load',
-        'Trade-off: possible stale data',
+        'Copy of data/results in faster storage → less latency and DB load',
+        'Layers: browser, CDN, Redis, in-process, DB buffer',
+        'Problems: stale data, invalidation, stampedes',
+        'Cache read-heavy, expensive, staleness-tolerant data',
+        'Always a TTL + invalidate on write',
       ],
       followUps: [
-        'Where can you cache in a web app (layers)?',
         'What is cache-aside?',
-      ],
-    },
-    {
-      id: 'what-problem-can-caching-create-when-data-changes-often',
-      question: 'What problem can caching create when data changes often?',
-      perspective: 'concept',
-      difficulty: 'easy',
-      frequency: 'high',
-      tags: ['caching'],
-      answer: `> Stale cache. The database may already have newer data, but the application still serves an old cached value until the cache is invalidated or expires. This creates temporary data inconsistency.`,
-      analogy: `A printed price list in the shop window: if prices change and nobody reprints it, customers see the old price (stale cache).`,
-      quickRevision: [
-        'Stale data: DB updated, cache not',
-        'Temporary inconsistency',
-        'Fix with invalidation and TTL',
-        'Fast-changing data is a poor cache candidate',
-      ],
-      followUps: [
-        'How stale is acceptable for a dashboard vs a balance?',
-        'How do you invalidate a list cache?',
+        'How do you prevent a cache stampede?',
+        'What data should never be cached?',
       ],
     },
     {
@@ -106,22 +111,33 @@ Measure the hit rate and latency before and after to show it helped.`,
     },
     {
       id: 'why-use-caching-even-if-indexes-already-exist',
-      question: 'Why use caching even if indexes already exist?',
+      question: 'If the database already has good indexes, why would you still add a cache?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
       tags: ['sql', 'caching'],
-      answer: `> Because even optimized database queries are still slower and more expensive than memory lookups. Caching avoids repeated query planning, storage engine work, network calls, and concurrency overhead, which matters under high traffic.`,
+      answer: `Because an indexed query is **fast, but not free**, and under high traffic the cost adds up.
+
+Even an index lookup involves a **network round trip** to the database, **query parsing and planning**, **disk or buffer reads**, and holding a **connection** from a limited pool. A Redis \`GET\` is a sub-millisecond in-memory lookup, and an in-process cache doesn't even touch the network.
+
+That matters when:
+
+- The result is **expensive to compute**, not just to look up: joins across several tables, aggregates, or a product page assembled from many queries. An index helps find rows; it doesn't avoid the computation.
+- The same data is read **thousands of times per second**. The database's connection pool and CPU become the bottleneck even when each query is fast.
+- You need to **protect the database** from traffic spikes.
+
+So indexes make each query efficient; caching makes **repeated** queries unnecessary. They're complementary. I'd still fix queries with indexes first, then cache the hot, expensive results.`,
       analogy: `An index is a well-organised library catalogue that helps you find the book quickly; a cache is having the book already in your hand, so you skip the trip entirely.`,
       quickRevision: [
-        'Indexed queries still cost DB work + network',
-        'Cache avoids the query entirely',
-        'Matters under high traffic',
-        'Use both: index for queries, cache for hot reads',
+        'Indexed query still costs round trip, planning, I/O, a connection',
+        'Redis GET: sub-millisecond; in-process: no network',
+        'Caches avoid the computation, not just the lookup',
+        'High read volume → pool/CPU become the bottleneck',
+        'Indexes first, cache hot expensive results second',
       ],
       followUps: [
-        'When is caching not worth it?',
-        'What would you cache for a dashboard?',
+        'What is the difference between an index and a cache?',
+        'Where would you cache a product page?',
       ],
     },
   ],

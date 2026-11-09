@@ -45,7 +45,7 @@ Interview tip: tie it to a real number, e.g. "I cut response times 25–35% by a
     },
     {
       id: 'upload-a-1gb-file',
-      question: 'Upload a 1GB file.',
+      question: 'How would you let users upload a 1 GB file?',
       perspective: 'scenario',
       difficulty: 'medium',
       frequency: 'high',
@@ -76,7 +76,7 @@ If it really must go through the server, **stream** it to S3 with backpressure a
     },
     {
       id: 'send-100k-emails',
-      question: 'Send 100k emails.',
+      question: 'How would you send 100,000 emails without overloading your system?',
       perspective: 'scenario',
       difficulty: 'medium',
       frequency: 'medium',
@@ -106,7 +106,7 @@ If it really must go through the server, **stream** it to S3 with backpressure a
     },
     {
       id: 'a-third-party-api-is-down',
-      question: 'A third-party API is down.',
+      question: 'A third-party API you depend on is down. How do you handle it?',
       perspective: 'scenario',
       difficulty: 'medium',
       frequency: 'high',

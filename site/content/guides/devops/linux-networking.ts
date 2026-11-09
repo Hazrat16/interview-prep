@@ -10,7 +10,7 @@ export default defineGuide({
   questions: [
     {
       id: 'http-vs-https',
-      question: 'HTTP vs HTTPS?',
+      question: 'What is the difference between HTTP and HTTPS?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'high',
@@ -68,7 +68,7 @@ It's required for cookies with \`Secure\`, HTTP/2 in browsers, service workers a
     },
     {
       id: 'http11-vs-http2',
-      question: 'HTTP/1.1 vs HTTP/2?',
+      question: 'What changed from HTTP/1.1 to HTTP/2 (and HTTP/3)?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'medium',
@@ -93,7 +93,7 @@ It's required for cookies with \`Secure\`, HTTP/2 in browsers, service workers a
     },
     {
       id: 'tcp-vs-udp',
-      question: 'TCP vs UDP?',
+      question: 'What is the difference between TCP and UDP?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'medium',
@@ -117,7 +117,7 @@ It's required for cookies with \`Secure\`, HTTP/2 in browsers, service workers a
     },
     {
       id: 'nginx-as-a-reverse-proxy',
-      question: 'Nginx as a reverse proxy?',
+      question: 'What does Nginx do as a reverse proxy?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -149,7 +149,7 @@ I configured environment-specific Nginx for **staging and production at Firmwide
     },
     {
       id: 'nginx-config-for-websockets',
-      question: 'Nginx config for WebSockets?',
+      question: 'How do you configure Nginx to proxy WebSockets?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'medium',
@@ -185,7 +185,7 @@ With several app instances, add **sticky sessions** (\`ip_hash\`) if long-pollin
     },
     {
       id: 'check-running-processes-resources',
-      question: 'Check running processes / resources?',
+      question: 'How do you check running processes and resource usage on a Linux server?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -217,7 +217,7 @@ With several app instances, add **sticky sessions** (\`ip_hash\`) if long-pollin
     },
     {
       id: 'which-process-is-using-a-port',
-      question: 'Which process is using a port?',
+      question: 'How do you find which process is using a port?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -240,7 +240,7 @@ With several app instances, add **sticky sessions** (\`ip_hash\`) if long-pollin
     },
     {
       id: 'view-logs',
-      question: 'View logs?',
+      question: 'How do you view and search logs on a Linux server?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -268,7 +268,7 @@ I filter by **request ID** or a timestamp around the incident.`,
     },
     {
       id: 'manage-services',
-      question: 'Manage services?',
+      question: 'How do you manage services with systemd?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -293,7 +293,7 @@ A custom unit file for a Node app defines \`ExecStart\`, \`User\`, \`Restart=alw
     },
     {
       id: 'file-permissions',
-      question: 'File permissions?',
+      question: 'How do Linux file permissions work (`chmod`, `chown`)?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -323,7 +323,7 @@ In containers I make sure app files are owned by the non-root \`node\` user.`,
     },
     {
       id: 'find-text-in-files',
-      question: 'Find text in files?',
+      question: 'How do you find text inside files on Linux?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -346,7 +346,7 @@ In containers I make sure app files are owned by the non-root \`node\` user.`,
     },
     {
       id: 'debug-the-server-is-down',
-      question: 'Debug "the server is down"',
+      question: 'Someone says "the server is down". How do you debug it?',
       perspective: 'debugging',
       difficulty: 'medium',
       frequency: 'very-high',
@@ -380,7 +380,7 @@ Then fix it, verify, communicate, and write a short postmortem with an alert or 
     },
     {
       id: 'metrics-vs-logs-vs-traces',
-      question: 'Metrics vs logs vs traces?',
+      question: 'What is the difference between metrics, logs and traces?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',
@@ -409,7 +409,7 @@ In SmartJobHub I used **Prometheus and Grafana** for metrics, **Loki** for logs,
     },
     {
       id: 'the-4-golden-signals',
-      question: 'The 4 golden signals?',
+      question: 'What are the four golden signals of monitoring?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
@@ -439,7 +439,7 @@ I build dashboards and alerts around these rather than around every possible met
     },
     {
       id: 'what-alerts-would-you-set-up',
-      question: 'What alerts would you set up?',
+      question: 'What alerts would you set up for a production service?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -473,7 +473,7 @@ Alerts go to Slack or email (SNS) with a link to a runbook. In SmartJobHub Cloud
     },
     {
       id: 'what-is-load-average',
-      question: 'What is load average?',
+      question: 'What is load average on Linux, and how do you read it?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
@@ -498,7 +498,7 @@ Compare it with the **number of CPU cores**: a load of 4 on a 4-core machine mea
     },
     {
       id: 'what-is-dns-ttl',
-      question: 'What is DNS TTL?',
+      question: 'What is a DNS TTL, and why does it matter during a migration?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',

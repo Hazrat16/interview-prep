@@ -6,7 +6,7 @@ export default defineGuide({
   questions: [
     {
       id: 'pod-deployment-service',
-      question: 'Pod / Deployment / Service?',
+      question: 'Explain Pods, Deployments and Services in Kubernetes.',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -33,7 +33,7 @@ My EKS project deployed a two-tier app with namespace, Deployment and Service ma
     },
     {
       id: 'ingress',
-      question: 'Ingress?',
+      question: 'What is a Kubernetes Ingress?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
@@ -58,7 +58,7 @@ It lets **one load balancer** front many services instead of one LoadBalancer Se
     },
     {
       id: 'configmap-vs-secret',
-      question: 'ConfigMap vs Secret?',
+      question: 'What is the difference between a ConfigMap and a Secret?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'medium',
@@ -86,7 +86,7 @@ Changes to env-var config usually need a **pod restart** to take effect.`,
     },
     {
       id: 'liveness-vs-readiness-probe',
-      question: 'Liveness vs readiness probe?',
+      question: 'What is the difference between liveness and readiness probes?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',
@@ -113,7 +113,7 @@ A common mistake is making **liveness depend on the database**: if the DB blips,
     },
     {
       id: 'how-do-you-scale',
-      question: 'How do you scale?',
+      question: 'How do you scale an application in Kubernetes?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',

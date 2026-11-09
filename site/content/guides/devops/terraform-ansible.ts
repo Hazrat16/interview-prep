@@ -6,7 +6,7 @@ export default defineGuide({
   questions: [
     {
       id: 'what-is-iac-and-why',
-      question: 'What is IaC and why?',
+      question: 'What is Infrastructure as Code, and why use it?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -37,7 +37,7 @@ In SmartJobHub the whole AWS platform (VPC, ALB, ECS, ElastiCache, Secrets Manag
     },
     {
       id: 'terraform-state',
-      question: 'Terraform state?',
+      question: 'What is Terraform state, and how do you manage it in a team?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -68,7 +68,7 @@ Best practices:
     },
     {
       id: 'plan-vs-apply',
-      question: '`plan` vs `apply`?',
+      question: 'What is the difference between `terraform plan` and `terraform apply`?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'medium',
@@ -94,7 +94,7 @@ In a team workflow, CI runs **plan on the PR** and posts the output for review. 
     },
     {
       id: 'modules',
-      question: 'Modules?',
+      question: 'What are Terraform modules, and why use them?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
@@ -119,7 +119,7 @@ Each environment calls the same modules with **different inputs** (instance size
     },
     {
       id: 'managing-staging-vs-production',
-      question: 'Managing staging vs production?',
+      question: 'How do you manage staging and production environments with Terraform?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'medium',
@@ -149,7 +149,7 @@ Additionally:
     },
     {
       id: 'drift',
-      question: 'Drift?',
+      question: 'What is infrastructure drift, and how do you detect and fix it?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -174,7 +174,7 @@ To fix it, either **update the code** to match (if the change was right) or **ap
     },
     {
       id: 'terraform-vs-ansible',
-      question: 'Terraform vs Ansible?',
+      question: 'Terraform vs Ansible: what is each for?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',

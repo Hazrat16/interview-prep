@@ -32,7 +32,7 @@ One gotcha: in Express 4, a **rejected promise in an async handler isn't caught 
     },
     {
       id: 'ressend-vs-resjson-vs-resend',
-      question: '`res.send` vs `res.json` vs `res.end`?',
+      question: 'What is the difference between `res.send`, `res.json` and `res.end` in Express?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'high',
@@ -97,7 +97,7 @@ At Firmwide I group these **by domain** (enquiries, proposals, invoices), each w
     },
     {
       id: 'validation',
-      question: 'Validation?',
+      question: 'How do you validate request input in an Express API?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -127,7 +127,7 @@ Business rules that need the database (unique email, valid state transition) bel
     },
     {
       id: 'express-4-vs-5',
-      question: 'Express 4 vs 5?',
+      question: 'What changed between Express 4 and Express 5?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'medium',
@@ -152,7 +152,7 @@ Other changes: removal of deprecated APIs (\`res.send(status, body)\`, \`req.par
     },
     {
       id: 'why-fastify',
-      question: 'Why Fastify?',
+      question: 'Why would you choose Fastify over Express?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',

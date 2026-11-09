@@ -6,7 +6,7 @@ export default defineGuide({
   questions: [
     {
       id: 'rules-of-hooks',
-      question: 'Rules of hooks?',
+      question: 'What are the rules of hooks, and why do they exist?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'very-high',
@@ -65,7 +65,7 @@ I also avoid effects that only derive state from props. That's just a calculatio
     },
     {
       id: 'useeffect-vs-uselayouteffect',
-      question: '`useEffect` vs `useLayoutEffect`?',
+      question: 'What is the difference between `useEffect` and `useLayoutEffect`?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',
@@ -125,7 +125,7 @@ Don't add them everywhere. They have a cost (memory, comparisons, harder-to-read
     },
     {
       id: 'useref-uses',
-      question: '`useRef` uses?',
+      question: 'What is `useRef` used for, and how is it different from state?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -154,7 +154,7 @@ Don't read or write \`ref.current\` during render for things that affect output.
     },
     {
       id: 'usereducer-vs-usestate',
-      question: '`useReducer` vs `useState`?',
+      question: 'When would you use `useReducer` instead of `useState`?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',
@@ -183,7 +183,7 @@ A reducer also helps avoid impossible states, like \`loading: true\` together wi
     },
     {
       id: 'stale-closure-in-hooks',
-      question: 'Stale closure in hooks?',
+      question: 'What is a stale closure in hooks, and how do you fix it?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'very-high',
@@ -212,7 +212,7 @@ Fixes:
     },
     {
       id: 'custom-hook-example',
-      question: 'Custom hook example?',
+      question: 'What is a custom hook? Give an example you have written.',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'high',
@@ -269,7 +269,7 @@ Better options: **TanStack Query** (caching, refetching, dedupe, retries) on the
     },
     {
       id: 'usecontext-performance-issue',
-      question: '`useContext` performance issue?',
+      question: 'Why can `useContext` cause performance problems, and how do you avoid them?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',

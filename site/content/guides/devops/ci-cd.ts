@@ -6,7 +6,7 @@ export default defineGuide({
   questions: [
     {
       id: 'ci-vs-cd-delivery-vs-deployment',
-      question: 'CI vs CD (delivery vs deployment)?',
+      question: 'What is the difference between CI, continuous delivery and continuous deployment?',
       perspective: 'trade-off',
       difficulty: 'easy',
       frequency: 'very-high',
@@ -65,7 +65,7 @@ My SmartJobHub pipeline is continuous **delivery**: it deploys to staging automa
     },
     {
       id: 'secrets-in-ci',
-      question: 'Secrets in CI?',
+      question: 'How do you handle secrets in a CI/CD pipeline?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -91,7 +91,7 @@ My SmartJobHub pipeline is continuous **delivery**: it deploys to staging automa
     },
     {
       id: 'staging-to-production-promotion',
-      question: 'Staging-to-production promotion?',
+      question: 'How do you promote a build from staging to production?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -116,7 +116,7 @@ Flow: merge → build and push \`app:<sha>\` → deploy to **staging** → migra
     },
     {
       id: 'rollback',
-      question: 'Rollback?',
+      question: 'How do you roll back a bad deployment?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -146,7 +146,7 @@ After rolling back, investigate and write a short postmortem.`,
     },
     {
       id: 'deployment-strategies',
-      question: 'Deployment strategies?',
+      question: 'What deployment strategies do you know (rolling, blue-green, canary)?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -172,7 +172,7 @@ After rolling back, investigate and write a short postmortem.`,
     },
     {
       id: 'speed-up-slow-pipelines',
-      question: 'Speed up slow pipelines?',
+      question: 'How do you speed up a slow CI pipeline?',
       perspective: 'debugging',
       difficulty: 'medium',
       frequency: 'medium',

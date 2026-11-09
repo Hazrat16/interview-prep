@@ -6,7 +6,7 @@ export default defineGuide({
   questions: [
     {
       id: 'vpc-basics',
-      question: 'VPC basics?',
+      question: 'What is a VPC, and how do public and private subnets work?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -36,7 +36,7 @@ My SmartJobHub Terraform builds exactly this: ALB in public subnets, ECS Fargate
     },
     {
       id: 'security-group-vs-nacl',
-      question: 'Security group vs NACL?',
+      question: 'What is the difference between a security group and a network ACL?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',
@@ -60,7 +60,7 @@ My SmartJobHub Terraform builds exactly this: ALB in public subnets, ECS Fargate
     },
     {
       id: 'ecs-vs-eks-vs-ec2-vs-lambda',
-      question: 'ECS vs EKS vs EC2 vs Lambda?',
+      question: 'How do you choose between ECS, EKS, EC2 and Lambda?',
       perspective: 'trade-off',
       difficulty: 'medium',
       frequency: 'high',
@@ -86,7 +86,7 @@ My SmartJobHub Terraform builds exactly this: ALB in public subnets, ECS Fargate
     },
     {
       id: 'why-fargate',
-      question: 'Why Fargate?',
+      question: 'Why would you run containers on Fargate?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -111,7 +111,7 @@ Trade-offs: **higher cost per vCPU/GB** than well-utilised EC2, **less control**
     },
     {
       id: 'alb',
-      question: 'ALB?',
+      question: 'What does an Application Load Balancer (ALB) do?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -143,7 +143,7 @@ It spreads traffic across instances in multiple AZs. For raw TCP or UDP and very
     },
     {
       id: 'iam-best-practice',
-      question: 'IAM best practice?',
+      question: 'What are IAM best practices?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -170,7 +170,7 @@ It spreads traffic across instances in multiple AZs. For raw TCP or UDP and very
     },
     {
       id: 's3-cloudfront',
-      question: 'S3 + CloudFront?',
+      question: 'How do you host a frontend with S3 and CloudFront?',
       perspective: 'concept',
       difficulty: 'easy',
       frequency: 'medium',
@@ -200,7 +200,7 @@ It spreads traffic across instances in multiple AZs. For raw TCP or UDP and very
     },
     {
       id: 'scaling',
-      question: 'Scaling?',
+      question: 'How do you scale an application on AWS?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'high',
@@ -229,7 +229,7 @@ Also scale **workers** separately on **queue depth**.`,
     },
     {
       id: 'cost-control',
-      question: 'Cost control?',
+      question: 'How do you keep AWS costs under control?',
       perspective: 'concept',
       difficulty: 'medium',
       frequency: 'medium',
