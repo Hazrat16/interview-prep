@@ -3,17 +3,18 @@ import { Icon, type IconName } from './Icons';
 export type Tone = 'answer' | 'analogy' | 'revise' | 'follow' | 'variant' | 'avoid' | 'deep' | 'neutral';
 
 // Literal class strings so Tailwind can see them.
-const TONES: Record<Tone, { box: string; head: string; badge: string; body: string }> = {
-  answer: { box: 'border-answer/25', head: 'bg-answer-soft text-answer', badge: 'bg-answer text-white dark:text-black', body: '' },
-  analogy: { box: 'border-analogy/30', head: 'text-analogy', badge: 'bg-analogy text-white dark:text-black', body: 'bg-analogy-soft' },
-  revise: { box: 'border-revise/25', head: 'bg-revise-soft text-revise', badge: 'bg-revise text-white dark:text-black', body: '' },
-  follow: { box: 'border-follow/25', head: 'bg-follow-soft text-follow', badge: 'bg-follow text-white dark:text-black', body: '' },
-  variant: { box: 'border-variant/25', head: 'bg-variant-soft text-variant', badge: 'bg-variant text-white dark:text-black', body: '' },
-  avoid: { box: 'border-avoid/25', head: 'bg-avoid-soft text-avoid', badge: 'bg-avoid text-white dark:text-black', body: '' },
-  deep: { box: 'border-line', head: 'bg-deep-soft text-deep', badge: 'bg-deep text-white dark:text-black', body: '' },
-  neutral: { box: 'border-line', head: 'bg-surface-2 text-muted', badge: 'bg-muted text-white dark:text-black', body: '' },
+const TONES: Record<Tone, { mark: string; text: string; body: string }> = {
+  answer: { mark: 'bg-answer', text: 'text-answer', body: 'border-l-[3px] border-answer/70 pl-4 sm:pl-5' },
+  analogy: { mark: 'bg-analogy', text: 'text-analogy', body: 'rounded-md bg-analogy-soft px-4 py-3.5 sm:px-5' },
+  revise: { mark: 'bg-revise', text: 'text-revise', body: '' },
+  follow: { mark: 'bg-follow', text: 'text-follow', body: '' },
+  variant: { mark: 'bg-variant', text: 'text-variant', body: '' },
+  avoid: { mark: 'bg-avoid', text: 'text-avoid', body: '' },
+  deep: { mark: 'bg-deep', text: 'text-deep', body: '' },
+  neutral: { mark: 'bg-muted', text: 'text-muted', body: '' },
 };
 
+/** A ruled notebook section: monospace "§ TITLE" label, then the content. */
 export function Block({
   id,
   tone,
@@ -33,30 +34,30 @@ export function Block({
 }) {
   const t = TONES[tone];
   return (
-    <section id={id} className={`scroll-mt-32 overflow-hidden rounded-2xl border bg-surface shadow-[0_1px_2px_rgba(0,0,0,0.04)] lg:scroll-mt-20 ${t.box} ${t.body}`}>
-      <header className={`flex items-center gap-2.5 px-4 py-2.5 sm:px-5 ${t.head}`}>
-        <span className={`grid size-6 shrink-0 place-items-center rounded-full ${t.badge}`}>
-          <Icon name={icon} size={14} strokeWidth={2.2} />
+    <section id={id} className="scroll-mt-32 border-t border-dashed border-rule pt-4 first:border-t-0 first:pt-0 lg:scroll-mt-20">
+      <header className="mb-3 flex items-center gap-2.5">
+        <span className={`grid size-5 shrink-0 place-items-center rounded-[3px] text-white dark:text-black ${t.mark}`}>
+          <Icon name={icon} size={12} strokeWidth={2.4} />
         </span>
-        <h2 className="text-[13px] font-semibold uppercase tracking-wider">{title}</h2>
-        {hint && <span className="hidden truncate text-xs font-normal text-muted sm:inline">· {hint}</span>}
+        <h2 className={`eyebrow ${t.text}`} style={{ fontFamily: 'var(--font-mono)' }}>
+          § {title}
+        </h2>
+        {hint && <span className="hidden truncate font-display text-[13px] italic text-muted sm:inline">— {hint}</span>}
         {aside && <span className="ml-auto">{aside}</span>}
       </header>
-      <div className="px-4 py-4 sm:px-5 sm:py-5">{children}</div>
+      <div className={t.body}>{children}</div>
     </section>
   );
 }
 
 /** Numbered rows used for revision points and follow-ups. */
 export function NumberedList({ items, tone }: { items: string[]; tone: 'revise' | 'follow' | 'avoid' }) {
-  const dot = { revise: 'bg-revise-soft text-revise', follow: 'bg-follow-soft text-follow', avoid: 'bg-avoid-soft text-avoid' }[tone];
+  const dot = { revise: 'text-revise', follow: 'text-follow', avoid: 'text-avoid' }[tone];
   return (
     <ol className="space-y-2.5">
       {items.map((html, i) => (
         <li key={i} className="flex gap-3">
-          <span className={`mt-0.5 grid size-6 shrink-0 place-items-center rounded-full text-xs font-semibold ${dot}`}>
-            {tone === 'avoid' ? '✕' : i + 1}
-          </span>
+          <span className={`mt-[3px] w-6 shrink-0 font-mono text-[13px] font-semibold tabular-nums ${dot}`}>{tone === 'avoid' ? '✕' : String(i + 1).padStart(2, '0')}</span>
           <span className="md min-w-0 flex-1 text-[15px] leading-relaxed sm:text-base" dangerouslySetInnerHTML={{ __html: html }} />
         </li>
       ))}

@@ -14,7 +14,7 @@ export function PracticeToggle() {
       aria-pressed={on}
       onClick={() => setOn(!on)}
       title="Practice mode hides answers until you tap them"
-      className={`press inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
+      className={`press inline-flex h-9 items-center gap-1.5 rounded-md border px-3 text-sm font-medium ${
         on ? 'border-accent bg-accent text-white' : 'border-line text-muted hover:text-ink'
       }`}
     >
@@ -37,7 +37,7 @@ export function Reveal({ children, label = 'Say your answer out loud, then tap t
       </div>
       {hidden && (
         <button type="button" onClick={() => setShown(true)} className="absolute inset-0 flex flex-col items-center justify-center gap-1 rounded-xl text-sm font-medium text-ink">
-          <span className="grid size-10 place-items-center rounded-full bg-accent text-white shadow-lg">
+          <span className="grid size-10 place-items-center rounded-md bg-accent text-white shadow-lg">
             <Icon name="eye" size={20} />
           </span>
           <span className="rounded-full bg-surface/90 px-3 py-1 shadow-sm">{label}</span>
@@ -59,7 +59,7 @@ export function VariantTabs({ variants }: { variants: { label: string; html: str
             type="button"
             aria-selected={i === idx}
             onClick={() => setI(idx)}
-            className={`h-9 shrink-0 rounded-full border px-3.5 text-sm transition-colors ${
+            className={`h-9 shrink-0 rounded-md border px-3.5 text-sm transition-colors ${
               i === idx ? 'border-variant bg-variant text-white dark:text-black' : 'border-line text-muted hover:text-ink'
             }`}
           >
@@ -94,7 +94,7 @@ export function BookmarkButton({ id, compact }: { id: string; compact?: boolean 
       className={
         compact
           ? `press grid size-9 shrink-0 place-items-center rounded-full ${on ? 'text-accent' : 'text-muted hover:bg-surface-2 hover:text-ink'}`
-          : `press inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
+          : `press inline-flex h-9 items-center gap-1.5 rounded-md border px-3 text-sm font-medium ${
               on ? 'border-accent/40 bg-accent-soft text-accent' : 'border-line text-muted hover:text-ink'
             }`
       }
@@ -114,7 +114,7 @@ export function KnownButton({ id }: { id: string }) {
       type="button"
       onClick={() => set(id, !on)}
       aria-pressed={on}
-      className={`press inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
+      className={`press inline-flex h-9 items-center gap-1.5 rounded-md border px-3 text-sm font-medium ${
         on ? 'border-easy/40 bg-easy/10 text-easy' : 'border-line text-muted hover:text-ink'
       }`}
     >
@@ -134,7 +134,7 @@ export function ReviewButton({ id }: { id: string }) {
       onClick={() => (on ? remove(id) : add(id))}
       aria-pressed={on}
       title={on ? 'Remove from your review queue' : 'Add to your spaced-repetition review queue'}
-      className={`press inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
+      className={`press inline-flex h-9 items-center gap-1.5 rounded-md border px-3 text-sm font-medium ${
         on ? 'border-follow/40 bg-follow-soft text-follow' : 'border-line text-muted hover:text-ink'
       }`}
     >
@@ -181,10 +181,10 @@ export function GuideShell({ guideKey, children }: { guideKey: string; children:
     <ExpandCtx.Provider value={state}>
       <div ref={ref}>
         <div className="mb-3 flex justify-end gap-2 text-sm">
-          <button type="button" className="press rounded-full px-3 py-1 text-muted hover:bg-surface-2 hover:text-ink" onClick={() => setState((s) => ({ version: s.version + 1, open: true }))}>
+          <button type="button" className="press rounded-md px-3 py-1 text-muted hover:bg-surface-2 hover:text-ink" onClick={() => setState((s) => ({ version: s.version + 1, open: true }))}>
             Expand all
           </button>
-          <button type="button" className="press rounded-full px-3 py-1 text-muted hover:bg-surface-2 hover:text-ink" onClick={() => setState((s) => ({ version: s.version + 1, open: false }))}>
+          <button type="button" className="press rounded-md px-3 py-1 text-muted hover:bg-surface-2 hover:text-ink" onClick={() => setState((s) => ({ version: s.version + 1, open: false }))}>
             Collapse all
           </button>
         </div>
@@ -229,7 +229,7 @@ export function QuestionShell({
   }, [fromHash]);
 
   return (
-    <article ref={ref} id={id} data-question data-title={title} className="scroll-mt-20 rounded-2xl border border-line bg-surface">
+    <article ref={ref} id={id} data-question data-title={title} className="ink-card scroll-mt-20 rounded-2xl border border-line bg-surface">
       <button
         type="button"
         aria-expanded={open}
@@ -241,7 +241,7 @@ export function QuestionShell({
       </button>
       <div className="expander" data-open={open} inert={!open}>
         <div>
-          <div className="border-t border-line px-3 pb-4 pt-4 sm:px-5">{children}</div>
+          <div className="border-t border-line px-4 pb-5 pt-5 sm:px-5 sm:pl-[4.25rem]">{children}</div>
         </div>
       </div>
     </article>

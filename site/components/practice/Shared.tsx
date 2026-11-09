@@ -29,7 +29,7 @@ export function useGuideTitles(catalog: Catalog) {
 }
 
 export function Loading() {
-  return <div className="h-80 animate-pulse rounded-3xl bg-surface-2" />;
+  return <div className="h-80 animate-pulse rounded-md border border-dashed border-rule bg-surface-2/60" />;
 }
 
 /** Topic + guide pickers. "" = all. */
@@ -86,7 +86,7 @@ export function ProgressBar({ value, total }: { value: number; total: number }) 
   return (
     <div className="mb-3 flex items-center gap-3 text-xs text-muted">
       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
-        <div className="h-full rounded-full bg-accent transition-all duration-500 ease-out" style={{ width: `${(Math.min(value, total) / (total || 1)) * 100}%` }} />
+        <div className="h-full rounded-md bg-accent transition-all duration-500 ease-out" style={{ width: `${(Math.min(value, total) / (total || 1)) * 100}%` }} />
       </div>
       <span className="tabular-nums">
         {Math.min(value + 1, total)} / {total}
@@ -115,15 +115,15 @@ export function FlipCard({
   const [full, setFull] = useState(false);
   useEffect(() => setFull(false), [card.k]);
   return (
-    <div className="anim-card overflow-hidden rounded-3xl border border-line bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-      <div className="flex items-center gap-2 border-b border-line px-4 py-2.5 text-xs text-muted sm:px-6">
+    <div className="anim-card ink-card index-card overflow-hidden rounded-md border border-line bg-surface">
+      <div className="eyebrow flex items-center gap-2 border-b-2 border-accent/70 px-4 py-2.5 text-[10px] text-muted sm:px-6">
         <span className="min-w-0 flex-1 truncate">{context}</span>
         <DifficultyBadge difficulty={card.d} />
         <Badge>{PERSPECTIVE_LABELS[card.p]}</Badge>
         <BookmarkButton id={card.k} compact />
       </div>
       <button type="button" onClick={onFlip} className="block w-full px-5 py-8 text-left sm:px-8 sm:py-10" aria-label={flipped ? 'Show the question' : 'Show the answer'}>
-        <div className="text-[1.2rem] font-semibold leading-snug tracking-tight text-balance sm:text-2xl" dangerouslySetInnerHTML={{ __html: card.t }} />
+        <div className="font-display text-[1.35rem] font-semibold leading-snug text-balance sm:text-[1.75rem]" dangerouslySetInnerHTML={{ __html: card.t }} />
         {card.s && <div className="md prose prose-sm mt-4 max-w-none" dangerouslySetInnerHTML={{ __html: card.s }} />}
         {!flipped && (
           <div className="mt-8 inline-flex items-center gap-2 text-sm text-muted">
@@ -132,13 +132,13 @@ export function FlipCard({
         )}
       </button>
       {flipped && (
-        <div className="anim-reveal space-y-4 border-t border-line bg-bg/40 px-5 py-5 sm:px-8">
+        <div className="anim-reveal space-y-4 border-t border-dashed border-rule px-5 py-5 sm:px-8">
           <div>
-            <div className="mb-2 text-[12px] font-semibold uppercase tracking-wider text-revise">Quick revision</div>
+            <div className="eyebrow mb-2 text-revise">§ Quick revision</div>
             <ol className="space-y-2">
               {card.r.map((h, i) => (
                 <li key={i} className="flex gap-3">
-                  <span className="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-revise-soft text-xs font-semibold text-revise">{i + 1}</span>
+                  <span className="mt-[3px] w-6 shrink-0 font-mono text-[13px] font-semibold tabular-nums text-revise">{String(i + 1).padStart(2, '0')}</span>
                   <span className="md min-w-0 flex-1 text-[15px] leading-relaxed" dangerouslySetInnerHTML={{ __html: h }} />
                 </li>
               ))}
@@ -146,7 +146,7 @@ export function FlipCard({
           </div>
           {!revisionOnly || full ? (
             <div>
-              <div className="mb-2 text-[12px] font-semibold uppercase tracking-wider text-answer">Interview answer</div>
+              <div className="eyebrow mb-2 text-answer">§ Interview answer</div>
               <div className="md prose prose-sm max-w-none sm:prose-base" dangerouslySetInnerHTML={{ __html: card.a }} />
             </div>
           ) : (
@@ -185,7 +185,7 @@ export function GradeBar({ prev, onGrade }: { prev?: SrsItem; onGrade: (g: Grade
       <p className="mb-2 text-center text-xs text-muted">How well did you know it?</p>
       <div className="grid grid-cols-4 gap-2">
         {GRADES.map((g) => (
-          <button key={g.grade} type="button" onClick={() => onGrade(g.grade)} className={`press anim-reveal flex flex-col items-center rounded-2xl border bg-surface py-2.5 text-sm font-semibold ${tone[g.grade]}`}>
+          <button key={g.grade} type="button" onClick={() => onGrade(g.grade)} className={`press anim-reveal ink-card flex flex-col items-center rounded-md border bg-surface py-2.5 text-sm font-semibold ${tone[g.grade]}`}>
             {g.label}
             <span className="text-[11px] font-normal text-muted">
               {nextLabel(prev, g.grade)} <kbd className="hidden sm:inline">· {g.key}</kbd>
@@ -216,17 +216,17 @@ export function useFlipKey(flip: () => void, enabled = true) {
 
 export function Done({ icon = 'trophy', title, children }: { icon?: 'trophy' | 'check'; title: string; children?: React.ReactNode }) {
   return (
-    <div className="anim-scale rounded-3xl border border-line bg-surface px-6 py-12 text-center">
+    <div className="anim-scale ink-card rounded-md border border-line bg-surface px-6 py-12 text-center">
       <span className="anim-pop mx-auto grid size-14 place-items-center rounded-full bg-accent-soft text-accent [animation-delay:120ms]">
         <Icon name={icon} size={26} />
       </span>
-      <h2 className="mt-4 text-xl font-semibold">{title}</h2>
+      <h2 className="mt-4 text-3xl font-semibold">{title}</h2>
       <div className="mt-2 text-muted">{children}</div>
     </div>
   );
 }
 
-export const btn = 'press inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium';
+export const btn = 'press inline-flex h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-medium';
 export const btnPrimary = `${btn} bg-accent text-white`;
 export const btnGhost = `${btn} border border-line hover:border-accent`;
 

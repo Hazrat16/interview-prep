@@ -113,7 +113,7 @@ export function Interview({ catalog }: { catalog: Catalog }) {
 
   // ---- setup ------------------------------------------------------------------
   if (phase === 'setup') {
-    const chip = (on: boolean) => `press h-9 rounded-full border px-3.5 text-sm transition-colors ${on ? 'border-accent bg-accent-soft font-medium text-accent' : 'border-line text-muted hover:text-ink'}`;
+    const chip = (on: boolean) => `press h-9 rounded-md border px-3.5 text-sm transition-colors ${on ? 'border-accent bg-accent-soft font-medium text-accent' : 'border-line text-muted hover:text-ink'}`;
     const label = 'mb-2 block text-[12px] font-semibold uppercase tracking-wider text-muted';
     const guideTitle = guide ? catalog.guides.find((g) => g.key === guide)?.title : '';
     return (
@@ -122,7 +122,7 @@ export function Interview({ catalog }: { catalog: Catalog }) {
           <span className={label}>Topics</span>
           {guide ? (
             <div className="flex items-center gap-2 text-sm">
-              <span className="rounded-full bg-accent-soft px-3 py-1.5 font-medium text-accent">Only: {guideTitle}</span>
+              <span className="rounded-md bg-accent-soft px-3 py-1.5 font-medium text-accent">Only: {guideTitle}</span>
               <button type="button" className="text-muted hover:text-ink" onClick={() => setGuide('')}>
                 Clear
               </button>
@@ -247,7 +247,7 @@ export function Interview({ catalog }: { catalog: Catalog }) {
     <div ref={top} className="scroll-mt-20">
       <div className="mb-3 flex items-center gap-4">
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
-          <div className="h-full rounded-full bg-accent transition-all duration-500 ease-out" style={{ width: `${(pos / deck.length) * 100}%` }} />
+          <div className="h-full rounded-md bg-accent transition-all duration-500 ease-out" style={{ width: `${(pos / deck.length) * 100}%` }} />
         </div>
         <span className="text-sm tabular-nums text-muted">
           {pos + 1} / {deck.length}

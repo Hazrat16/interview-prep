@@ -1,12 +1,13 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, JetBrains_Mono } from 'next/font/google';
+import { Fraunces, Instrument_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Sidebar, MobileTopBar, BottomTabs } from '@/components/Nav';
 import { SearchDialog } from '@/components/SearchDialog';
 import { themeScript } from '@/components/ThemeToggle';
 import { topics } from '@/lib/data';
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const body = Instrument_Sans({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
+const display = Fraunces({ subsets: ['latin'], variable: '--font-fraunces', display: 'swap', axes: ['opsz', 'SOFT'], style: ['normal', 'italic'] });
 const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains', display: 'swap' });
 
 export const metadata: Metadata = {
@@ -19,15 +20,15 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
-    { media: '(prefers-color-scheme: dark)', color: '#1a1a1d' },
+    { media: '(prefers-color-scheme: light)', color: '#f1ece1' },
+    { media: '(prefers-color-scheme: dark)', color: '#15140f' },
   ],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const nav = topics().map((t) => ({ slug: t.slug, label: t.label, icon: t.icon, guides: t.guides.map((g) => ({ slug: g.slug, title: g.title })) }));
   return (
-    <html lang="en" suppressHydrationWarning className={`${inter.variable} ${mono.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${body.variable} ${display.variable} ${mono.variable}`}>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>

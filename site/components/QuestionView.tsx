@@ -8,9 +8,9 @@ import { BookmarkButton, KnownButton, KnownDot, QuestionShell, Reveal, ReviewBut
 export function QuestionHeader({ q, n }: { q: QuestionData; n: number }) {
   return (
     <span className="flex gap-3">
-      <span className="mt-0.5 grid size-7 shrink-0 place-items-center rounded-full bg-surface-2 text-xs font-semibold tabular-nums text-muted">{n}</span>
+      <span className="mt-1 w-9 shrink-0 font-mono text-xs font-semibold tabular-nums text-accent">Q.{String(n).padStart(2, '0')}</span>
       <span className="min-w-0 flex-1">
-        <span className="block text-[16px] font-semibold leading-snug sm:text-[17px]">
+        <span className="block font-display text-[17px] font-semibold leading-snug sm:text-[19px]">
           <span className="md-inline" dangerouslySetInnerHTML={{ __html: q.titleHtml }} />
           <KnownDot id={q.key} />
         </span>
@@ -27,7 +27,7 @@ export function QuestionHeader({ q, n }: { q: QuestionData; n: number }) {
 /** The answer sections: Answer → Versions → Analogy → Quick revision → Go deeper → Don't say → Follow-ups. */
 export function QuestionBody({ q, career }: { q: QuestionData; career?: boolean }) {
   return (
-    <div className="space-y-4">
+    <div className="space-y-5">
       {q.snippetHtml && <Html html={q.snippetHtml} className="-my-2" />}
       <Block tone="answer" icon="mic" title={career ? 'Your answer' : 'Interview answer'} hint="say this in your own words">
         <Reveal>

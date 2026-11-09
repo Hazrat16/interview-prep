@@ -3,72 +3,81 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Editorial study-notebook palette: warm paper, ink rules, one vermilion accent. */
 :root {
-  --bg: #f7f7f5;
-  --surface: #ffffff;
-  --surface-2: #f0f0ed;
-  --border: #e3e3df;
-  --text: #1c1c1a;
-  --muted: #6b6b66;
-  --accent: #2f5bd3;
-  --accent-soft: #e8eefc;
-  --curated: #7a4bd1;
-  --curated-soft: #f1ebfb;
-  --collected: #157a5a;
-  --collected-soft: #e4f4ee;
-  --easy: #157a5a;
-  --medium: #a86400;
-  --hard: #c0362c;
-  --code-bg: #f6f6f3;
-  /* section tones */
-  --answer: #2f5bd3;
-  --answer-soft: #f3f6ff;
-  --analogy: #b45309;
-  --analogy-soft: #fff8eb;
-  --revise: #15803d;
-  --revise-soft: #effaf2;
-  --follow: #6d3fd0;
-  --follow-soft: #f5f1ff;
-  --variant: #0f766e;
-  --variant-soft: #ecfaf8;
-  --avoid: #be123c;
-  --avoid-soft: #fff1f3;
-  --deep: #475569;
-  --deep-soft: #f4f6f9;
+  --bg: #f1ece1;
+  --surface: #fbf8f2;
+  --surface-2: #e9e2d3;
+  --border: #2a261f;
+  --rule: #d6cdbb;
+  --shadow: #2a261f;
+  --dot: #d3c9b5;
+  --marker: #f6d84a;
+  --text: #1c1a15;
+  --muted: #6f6758;
+  --accent: #d23f1f;
+  --accent-soft: #f8ddd2;
+  --curated: #6b3fa0;
+  --curated-soft: #efe6f5;
+  --collected: #2f6b3a;
+  --collected-soft: #e3eedd;
+  --easy: #2f7a3b;
+  --medium: #a35a00;
+  --hard: #c0292d;
+  --code-bg: #f5f0e5;
+  /* section tones, printed-ink flavoured */
+  --answer: #1f4fa8;
+  --answer-soft: #e6ebf4;
+  --analogy: #a3550a;
+  --analogy-soft: #fbefcf;
+  --revise: #2f7a3b;
+  --revise-soft: #e3eedd;
+  --follow: #6b3fa0;
+  --follow-soft: #efe6f5;
+  --variant: #0d6e66;
+  --variant-soft: #ddefeb;
+  --avoid: #b8233a;
+  --avoid-soft: #f8e0e2;
+  --deep: #4a4f5c;
+  --deep-soft: #e8e6e0;
   color-scheme: light;
 }
 
 .dark {
-  --bg: #121214;
-  --surface: #1a1a1d;
-  --surface-2: #232327;
-  --border: #2e2e33;
-  --text: #ececea;
-  --muted: #9a9a95;
-  --accent: #7ea2ff;
-  --accent-soft: #1f2a44;
-  --curated: #b597f2;
-  --curated-soft: #2a2140;
-  --collected: #5fcca4;
-  --collected-soft: #17322a;
-  --easy: #5fcca4;
+  --bg: #15140f;
+  --surface: #1d1b15;
+  --surface-2: #29261e;
+  --border: #5b5444;
+  --rule: #38342a;
+  --shadow: #48412f;
+  --dot: #2b281f;
+  --marker: #e7c63a;
+  --text: #efe9dc;
+  --muted: #a39a87;
+  --accent: #ff6a45;
+  --accent-soft: #3a1f16;
+  --curated: #c9a6f0;
+  --curated-soft: #2a2138;
+  --collected: #8fd19a;
+  --collected-soft: #1b2a1c;
+  --easy: #8fd19a;
   --medium: #f0b45a;
   --hard: #ff8a80;
-  --code-bg: #17181c;
+  --code-bg: #191812;
   --answer: #8fb0ff;
-  --answer-soft: #182033;
-  --analogy: #f6c066;
-  --analogy-soft: #2a2215;
-  --revise: #6ee7a0;
-  --revise-soft: #142a1d;
-  --follow: #c4a7ff;
-  --follow-soft: #231c38;
-  --variant: #5eead4;
-  --variant-soft: #12292a;
-  --avoid: #fda4af;
-  --avoid-soft: #2e171c;
-  --deep: #a5b4c8;
-  --deep-soft: #1d2129;
+  --answer-soft: #1b2133;
+  --analogy: #f2c063;
+  --analogy-soft: #2c2414;
+  --revise: #8fd19a;
+  --revise-soft: #1b2a1c;
+  --follow: #c9a6f0;
+  --follow-soft: #2a2138;
+  --variant: #6fe0cf;
+  --variant-soft: #142a27;
+  --avoid: #ff9aa8;
+  --avoid-soft: #301a1d;
+  --deep: #b3b0a6;
+  --deep-soft: #24221c;
   color-scheme: dark;
 }
 
@@ -102,7 +111,15 @@
   --color-avoid-soft: var(--avoid-soft);
   --color-deep: var(--deep);
   --color-deep-soft: var(--deep-soft);
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
+  --color-rule: var(--rule);
+  --color-marker: var(--marker);
+  --font-display: var(--font-fraunces), ui-serif, Georgia, 'Times New Roman', serif;
+  --radius-md: 3px;
+  --radius-lg: 4px;
+  --radius-xl: 5px;
+  --radius-2xl: 6px;
+  --radius-3xl: 8px;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', 'Helvetica Neue', Arial, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, 'SF Mono', 'Cascadia Code', 'JetBrains Mono', Menlo, Consolas, monospace;
 }
 
@@ -111,9 +128,23 @@ html {
   scroll-padding-top: 4.5rem;
 }
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+  background-size: 22px 22px;
   color: var(--text);
   -webkit-tap-highlight-color: transparent;
+}
+
+@layer base {
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    letter-spacing: -0.015em;
+  }
+  ::selection {
+    background: var(--marker);
+    color: #1c1a15;
+  }
 }
 
 /* ---- Markdown content ---------------------------------------------------- */
@@ -127,9 +158,9 @@ body {
   --tw-prose-code: var(--text);
   --tw-prose-bullets: var(--muted);
   --tw-prose-counters: var(--muted);
-  --tw-prose-hr: var(--border);
+  --tw-prose-hr: var(--rule);
   --tw-prose-th-borders: var(--border);
-  --tw-prose-td-borders: var(--border);
+  --tw-prose-td-borders: var(--rule);
   --tw-prose-captions: var(--muted);
   max-width: none;
   overflow-wrap: break-word;
@@ -171,8 +202,8 @@ mark.ph {
 }
 .md :where(:not(pre) > code) {
   background: var(--surface-2);
-  border: 1px solid var(--border);
-  border-radius: 0.3rem;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
   padding: 0.05rem 0.3rem;
   font-weight: 500;
   font-size: 0.875em;
@@ -304,12 +335,13 @@ mark.ph {
 
 /* Cards lift on hover; anything pressable presses in. */
 .lift {
+  box-shadow: 3px 3px 0 var(--shadow);
   transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), border-color 0.2s;
 }
 @media (hover: hover) {
   .lift:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.18);
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--shadow);
   }
 }
 .press { transition: transform 0.12s var(--ease-out), background-color 0.15s, border-color 0.15s, color 0.15s; }
@@ -336,7 +368,7 @@ html { scroll-behavior: smooth; }
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
   }
-  .lift:hover, .press:active { transform: none; }
+  .lift:hover, .press:active, .press.bg-accent:active { transform: none; }
 }
 
 /* ---- Select boxes: custom chevron with room to breathe ------------------------------ */
@@ -354,4 +386,41 @@ select {
 select option {
   background-color: var(--surface);
   color: var(--text);
+}
+
+/* ---- Editorial details ------------------------------------------------------ */
+/* Paper card with a printed, offset shadow. */
+.ink-card {
+  box-shadow: 3px 3px 0 var(--shadow);
+}
+/* Primary buttons sit on a hard shadow and press flat into the page. */
+.press.bg-accent {
+  box-shadow: 2px 2px 0 var(--shadow);
+  border: 1px solid var(--border);
+}
+.press.bg-accent:active {
+  transform: translate(2px, 2px);
+  box-shadow: 0 0 0 var(--shadow);
+}
+/* Small caps-style monospace label. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+/* Highlighter stroke behind a phrase. */
+.marker {
+  background: linear-gradient(transparent 58%, color-mix(in oklab, var(--marker) 85%, transparent) 58%, color-mix(in oklab, var(--marker) 85%, transparent) 92%, transparent 92%);
+  padding: 0 0.1em;
+}
+.dark .marker {
+  background: linear-gradient(transparent 62%, color-mix(in oklab, var(--marker) 35%, transparent) 62%, color-mix(in oklab, var(--marker) 35%, transparent) 94%, transparent 94%);
+}
+.md pre { border-radius: 4px; }
+/* Flashcards read like ruled index cards. */
+.index-card {
+  background-image: repeating-linear-gradient(transparent 0 31px, color-mix(in oklab, var(--answer) 10%, transparent) 31px 32px);
+  background-position: 0 44px;
 }

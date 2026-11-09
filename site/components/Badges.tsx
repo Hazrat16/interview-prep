@@ -1,6 +1,6 @@
 import type { Difficulty } from '@/lib/content/schema';
 
-const base = 'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium leading-5 whitespace-nowrap';
+const base = 'inline-flex items-center gap-1 rounded-[3px] px-1.5 font-mono text-[10.5px] font-medium uppercase leading-5 tracking-wider whitespace-nowrap';
 
 export function DifficultyBadge({ difficulty }: { difficulty?: Difficulty }) {
   if (!difficulty) return null;

@@ -42,10 +42,10 @@ export default async function TopicPage({ params }: Props) {
           <TopicProgress prefix={t.slug} total={t.count} />
         </div>
         <div className="mt-5 flex flex-wrap gap-2">
-          <Link href={`/quiz/?topic=${t.slug}`} className="press inline-flex h-10 items-center gap-2 rounded-full bg-accent px-4 text-sm font-medium text-white">
+          <Link href={`/quiz/?topic=${t.slug}`} className="press inline-flex h-10 items-center gap-2 rounded-md bg-accent px-4 text-sm font-medium text-white">
             <Icon name="cards" size={16} /> Quiz this topic
           </Link>
-          <Link href={`/interview/?topic=${t.slug}`} className="press inline-flex h-10 items-center gap-2 rounded-full border border-line px-4 text-sm font-medium hover:border-accent">
+          <Link href={`/interview/?topic=${t.slug}`} className="press inline-flex h-10 items-center gap-2 rounded-md border border-line px-4 text-sm font-medium hover:border-accent">
             <Icon name="timer" size={16} /> Mock interview
           </Link>
         </div>

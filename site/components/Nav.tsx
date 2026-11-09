@@ -46,7 +46,7 @@ function NavLink({ href, label, icon, active, onClick }: { href: string; label: 
       href={href}
       onClick={onClick}
       aria-current={active ? 'page' : undefined}
-      className={`flex h-9 items-center gap-3 rounded-xl px-3 text-sm ${active ? 'bg-accent-soft font-medium text-accent' : 'text-muted hover:bg-surface-2 hover:text-ink'}`}
+      className={`flex h-9 items-center gap-3 rounded-xl px-3 text-sm ${active ? 'bg-ink font-medium text-bg' : 'text-muted hover:bg-surface-2 hover:text-ink'}`}
     >
       <Icon name={icon} size={17} />
       <span className="truncate">{label}</span>
@@ -60,7 +60,7 @@ function NavContent({ topics, onNavigate }: { topics: NavTopic[]; onNavigate?: (
   const [openTopic, setOpenTopic] = useState<string | null>(null);
   const current = path.split('/')[1];
   useEffect(() => setOpenTopic(topics.some((t) => t.slug === current) ? current : null), [current, topics]);
-  const heading = 'mb-1 mt-5 px-3 text-[11px] font-semibold uppercase tracking-wider text-muted/80';
+  const heading = 'eyebrow mb-1.5 mt-6 px-3 text-muted';
   return (
     <>
       <NavLink href="/" label="Home" icon="home" active={path === '/'} onClick={onNavigate} />
@@ -82,7 +82,7 @@ function NavContent({ topics, onNavigate }: { topics: NavTopic[]; onNavigate?: (
                 href={`/${t.slug}/`}
                 onClick={onNavigate}
                 className={`flex h-9 min-w-0 flex-1 items-center gap-3 rounded-xl px-3 text-sm ${
-                  path === `/${t.slug}/` ? 'bg-accent-soft font-medium text-accent' : current === t.slug ? 'font-medium text-ink' : 'text-muted hover:bg-surface-2 hover:text-ink'
+                  path === `/${t.slug}/` ? 'bg-ink font-medium text-bg' : current === t.slug ? 'font-medium text-ink' : 'text-muted hover:bg-surface-2 hover:text-ink'
                 }`}
               >
                 <Icon name={t.icon as IconName} size={17} />
@@ -107,7 +107,7 @@ function NavContent({ topics, onNavigate }: { topics: NavTopic[]; onNavigate?: (
                       key={g.slug}
                       href={href}
                       onClick={onNavigate}
-                      className={`block truncate rounded-lg px-2.5 py-1.5 text-[13px] ${path === href ? 'bg-accent-soft font-medium text-accent' : 'text-muted hover:bg-surface-2 hover:text-ink'}`}
+                      className={`block truncate rounded-lg px-2.5 py-1.5 text-[13px] ${path === href ? 'bg-marker/70 font-medium text-ink dark:bg-marker/25' : 'text-muted hover:bg-surface-2 hover:text-ink'}`}
                     >
                       {g.title}
                     </Link>
@@ -124,9 +124,9 @@ function NavContent({ topics, onNavigate }: { topics: NavTopic[]; onNavigate?: (
 
 export function Sidebar({ topics }: { topics: NavTopic[] }) {
   return (
-    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-line bg-surface lg:flex">
+    <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-line bg-surface/80 backdrop-blur lg:flex">
       <div className="px-3 pt-4">
-        <Link href="/" className="mb-4 flex items-center gap-2 px-2 text-[15px] font-semibold tracking-tight">
+        <Link href="/" className="mb-5 flex items-center gap-2.5 px-2 font-display text-[19px] font-semibold tracking-tight">
           <Logo />
           Interview Prep
         </Link>
@@ -136,7 +136,7 @@ export function Sidebar({ topics }: { topics: NavTopic[] }) {
         <NavContent topics={topics} />
       </nav>
       <div className="flex items-center justify-between border-t border-line px-4 py-2">
-        <span className="text-xs text-muted">Free · runs in your browser</span>
+        <span className="eyebrow text-[10px] text-muted">Free · no account</span>
         <ThemeToggle />
       </div>
     </aside>
@@ -145,8 +145,8 @@ export function Sidebar({ topics }: { topics: NavTopic[] }) {
 
 export function Logo() {
   return (
-    <span className="grid size-7 place-items-center rounded-lg bg-accent text-white">
-      <Icon name="cards" size={16} strokeWidth={2.2} />
+    <span className="grid size-7 place-items-center rounded-[4px] border border-line bg-accent font-display text-[17px] font-bold italic leading-none text-white shadow-[2px_2px_0_var(--shadow)]">
+      Q
     </span>
   );
 }
@@ -161,7 +161,7 @@ export function MobileTopBar({ topics }: { topics: NavTopic[] }) {
         <button type="button" aria-label="Open menu" onClick={() => setMenu(true)} className="grid size-10 place-items-center rounded-full text-muted hover:bg-surface-2">
           <Icon name="menu" />
         </button>
-        <Link href="/" className="flex flex-1 items-center gap-2 truncate text-[15px] font-semibold tracking-tight">
+        <Link href="/" className="flex flex-1 items-center gap-2 truncate font-display text-[17px] font-semibold tracking-tight">
           <Logo />
           Interview Prep
         </Link>
@@ -171,9 +171,9 @@ export function MobileTopBar({ topics }: { topics: NavTopic[] }) {
       {menu && (
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
           <div className="anim-fade absolute inset-0 bg-black/40" onClick={() => setMenu(false)} />
-          <nav className="anim-drawer absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto bg-surface p-3 shadow-xl">
+          <nav className="anim-drawer absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto border-r border-line bg-surface p-3 shadow-[6px_0_0_var(--shadow)]">
             <div className="mb-2 flex items-center justify-between px-2">
-              <span className="font-semibold">Menu</span>
+              <span className="eyebrow text-muted">Menu</span>
               <button type="button" aria-label="Close menu" onClick={() => setMenu(false)} className="grid size-10 place-items-center rounded-full hover:bg-surface-2">
                 <Icon name="x" />
               </button>
@@ -197,8 +197,8 @@ export function BottomTabs() {
         {TABS.map((n) => {
           const active = isActive(n.href);
           return (
-            <Link key={n.href} href={n.href} aria-current={active ? 'page' : undefined} className={`flex h-16 flex-col items-center justify-center gap-1 text-[11px] ${active ? 'font-semibold text-accent' : 'text-muted'}`}>
-              <span className={`relative grid h-7 w-14 place-items-center rounded-full transition-all duration-300 ${active ? 'scale-100' : 'scale-90'} ${active ? 'bg-accent-soft' : ''}`}>
+            <Link key={n.href} href={n.href} aria-current={active ? 'page' : undefined} className={`flex h-16 flex-col items-center justify-center gap-1 text-[11px] ${active ? 'font-semibold text-ink' : 'text-muted'}`}>
+              <span className={`relative grid h-7 w-14 place-items-center rounded-full transition-all duration-300 ${active ? 'scale-100 bg-ink text-bg' : 'scale-90'}`}>
                 <Icon name={n.icon} size={20} filled={active && n.icon === 'bookmark'} strokeWidth={active ? 2.2 : 1.8} />
               </span>
               {n.label}

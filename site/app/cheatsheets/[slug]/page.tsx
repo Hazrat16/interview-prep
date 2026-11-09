@@ -35,7 +35,7 @@ export default async function CheatSheetPage({ params }: Props) {
         {toc.length > 2 && (
           <div className="no-scrollbar -mx-4 mt-4 flex gap-1.5 overflow-x-auto px-4 xl:hidden">
             {toc.map((h) => (
-              <a key={h.id} href={`#${h.id}`} className="h-8 shrink-0 rounded-full border border-line px-3 text-[13px] leading-8 text-muted hover:text-ink">
+              <a key={h.id} href={`#${h.id}`} className="h-8 shrink-0 rounded-md border border-line px-3 text-[13px] leading-8 text-muted hover:text-ink">
                 {h.text}
               </a>
             ))}

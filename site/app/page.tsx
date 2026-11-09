@@ -24,42 +24,55 @@ export default function Home() {
 
   return (
     <>
-      <section className="stagger mb-8">
-        <p className="mb-2 text-sm font-medium text-accent">Interview prep for full-stack developers</p>
-        <h1 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-balance sm:text-4xl">
-          Read a topic, test yourself on it, and come back to what you missed.
+      <section className="stagger mb-12">
+        <div className="eyebrow mb-6 flex items-center gap-3 border-y border-line py-2 text-muted">
+          <span className="text-accent">No. 01</span>
+          <span className="h-3 w-px bg-line" />
+          <span className="truncate">The full-stack interview notebook</span>
+          <span className="ml-auto hidden sm:inline">Free · offline-friendly</span>
+        </div>
+        <h1 className="max-w-3xl text-[2.6rem] font-semibold leading-[0.98] text-balance sm:text-6xl lg:text-7xl">
+          Read it. <em className="font-normal italic text-accent">Say it</em> out loud. Come back to <span className="marker">what you missed.</span>
         </h1>
-        <p className="mt-3 max-w-2xl text-[15px] text-muted">
-          {s.guides.length} guides and {total} interview questions across {ts.length} topics, from JavaScript and React to system design. Every answer comes with an analogy,
-          quick-revision hooks and likely follow-ups. Free, no account, and your progress stays in your browser.
+        <p className="mt-5 max-w-2xl text-[15px] text-muted sm:text-base">
+          Every answer comes with an analogy, quick-revision hooks and the follow-ups interviewers ask next. No account: your progress stays in this browser.
         </p>
-        <div className="mt-5 flex flex-wrap gap-2">
-          <Link href={`/${s.guides[0].key}/`} className="press inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-medium text-white">
+        <dl className="mt-6 grid max-w-xl grid-cols-3 border-y border-line">
+          {[
+            [ts.length, 'topics'],
+            [s.guides.length, 'guides'],
+            [total, 'questions'],
+          ].map(([n, l], i) => (
+            <div key={l} className={`py-3 ${i ? 'border-l border-line pl-4' : ''}`}>
+              <dt className="eyebrow text-muted">{l}</dt>
+              <dd className="font-display text-3xl font-semibold tabular-nums sm:text-4xl">{n}</dd>
+            </div>
+          ))}
+        </dl>
+        <div className="mt-6 flex flex-wrap gap-3">
+          <Link href={`/${s.guides[0].key}/`} className="press inline-flex h-11 items-center gap-2 rounded-md bg-accent px-5 text-sm font-medium text-white">
             Start studying <Icon name="right" size={16} />
           </Link>
-          <RandomGuide keys={s.guides.map((g) => g.key)} className="press inline-flex h-11 items-center gap-2 rounded-full border border-line bg-surface px-5 text-sm font-medium hover:border-accent" />
+          <RandomGuide keys={s.guides.map((g) => g.key)} className="press inline-flex h-11 items-center gap-2 rounded-md border border-line bg-surface px-5 text-sm font-medium hover:border-accent" />
         </div>
-        <SearchButton className="mt-4 flex h-12 w-full items-center gap-3 rounded-2xl border border-line bg-surface px-4 text-[15px] text-muted shadow-sm hover:border-accent lg:hidden" />
+        <SearchButton className="mt-4 flex h-12 w-full items-center gap-3 rounded-md border border-line bg-surface px-4 text-[15px] text-muted hover:border-accent lg:hidden" />
       </section>
 
-      <section className="mb-10">
-        <h2 className="mb-3 text-lg font-semibold tracking-tight">Your progress</h2>
+      <section className="mb-14">
+        <SectionHead n="01" title="Your progress" />
         <HomeProgress catalog={catalog()} />
       </section>
 
-      <section className="mb-10">
-        <div className="mb-3">
-          <h2 className="text-lg font-semibold tracking-tight">Practice</h2>
-          <p className="text-sm text-muted">Reading is half of it. These make you answer.</p>
-        </div>
+      <section className="mb-14">
+        <SectionHead n="02" title="Practice" note="Reading is half of it. These make you answer." />
         <div className="stagger grid gap-3 sm:grid-cols-2">
           {MODES.map((m) => (
             <Link key={m.href} href={m.href} className="lift group flex items-start gap-4 rounded-2xl border border-line bg-surface p-4 hover:border-accent">
-              <span className={`grid size-11 shrink-0 place-items-center rounded-xl ${m.tone}`}>
+              <span className={`grid size-11 shrink-0 place-items-center rounded-md border border-current/30 ${m.tone}`}>
                 <Icon name={m.icon} size={22} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block font-semibold group-hover:text-accent">{m.title}</span>
+                <span className="block font-display text-lg font-semibold leading-tight group-hover:text-accent">{m.title}</span>
                 <span className="block text-sm text-muted">{m.blurb}</span>
               </span>
               <Icon name="right" size={18} className="mt-1 shrink-0 text-muted transition-transform group-hover:translate-x-0.5" />
@@ -69,48 +82,41 @@ export default function Home() {
       </section>
 
       {teaser && (
-        <section className="mb-10">
-          <h2 className="mb-3 text-lg font-semibold tracking-tight">What does this return?</h2>
+        <section className="mb-14">
+          <SectionHead n="03" title="What does this return?" />
           <Teaser href={`/javascript/output-prediction/#${teaser.id}`} question={<><p className="mb-3 font-semibold" dangerouslySetInnerHTML={{ __html: teaser.titleHtml }} />{teaser.snippetHtml && <Html html={teaser.snippetHtml} />}</>} answer={<Html html={teaser.answerHtml} />} />
         </section>
       )}
 
-      <section className="mb-10">
-        <div className="mb-3 flex items-end justify-between">
-          <div>
-            <h2 className="text-lg font-semibold tracking-tight">Topics</h2>
-            <p className="text-sm text-muted">~{hours} hours of reading in total.</p>
-          </div>
-          <Link href="/topics/" className="text-sm text-accent">
-            All topics →
-          </Link>
-        </div>
+      <section className="mb-14">
+        <SectionHead n="04" title="Topics" note={`~${hours} hours of reading in total.`} href="/topics/" link="All topics" />
         <div className="stagger grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-          {ts.map((t) => (
-            <div key={t.slug} className="lift flex flex-col rounded-2xl border border-line bg-surface p-4 hover:border-accent">
+          {ts.map((t, i) => (
+            <div key={t.slug} className="lift relative flex flex-col rounded-2xl border border-line bg-surface p-4 hover:border-accent">
+              <span className="pointer-events-none absolute right-4 top-3 font-display text-4xl font-semibold italic leading-none text-rule tabular-nums">{String(i + 1).padStart(2, '0')}</span>
               <Link href={`/${t.slug}/`} className="group flex items-center gap-3">
-                <span className="grid size-10 place-items-center rounded-xl bg-accent-soft text-accent">
+                <span className="grid size-10 place-items-center rounded-md border border-line bg-bg text-ink">
                   <Icon name={t.icon as IconName} size={20} />
                 </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block font-semibold group-hover:text-accent">{t.label}</span>
-                  <span className="block text-xs text-muted">
+                <span className="min-w-0 flex-1 pr-10">
+                  <span className="block font-display text-lg font-semibold leading-tight group-hover:text-accent">{t.label}</span>
+                  <span className="eyebrow block text-[10px] text-muted">
                     {t.guides.length} guides · {t.count} questions
                   </span>
                 </span>
               </Link>
-              <ul className="mt-3 space-y-0.5 text-sm">
+              <ul className="mt-3 divide-y divide-dashed divide-rule border-t border-dashed border-rule text-sm">
                 {t.guides.slice(0, 4).map((g) => (
                   <li key={g.key}>
-                    <Link href={`/${g.key}/`} className="flex items-center gap-2 rounded-lg px-1 py-1 text-muted hover:text-ink">
+                    <Link href={`/${g.key}/`} className="flex items-center gap-2 px-0.5 py-1.5 text-muted hover:text-ink">
                       <span className="min-w-0 flex-1 truncate">{g.title}</span>
-                      <span className="shrink-0 text-xs tabular-nums">{g.count}</span>
+                      <span className="shrink-0 font-mono text-[11px] tabular-nums">{g.count}</span>
                     </Link>
                   </li>
                 ))}
               </ul>
               {t.guides.length > 4 && (
-                <Link href={`/${t.slug}/`} className="mt-auto pt-2 text-xs font-medium text-accent">
+                <Link href={`/${t.slug}/`} className="eyebrow mt-auto pt-3 text-[10px] text-accent">
                   Show all {t.guides.length} guides
                 </Link>
               )}
@@ -120,27 +126,36 @@ export default function Home() {
       </section>
 
       {sheets.length > 0 && (
-        <section className="mb-10">
-          <div className="mb-3 flex items-end justify-between">
-            <div>
-              <h2 className="text-lg font-semibold tracking-tight">Cheat sheets</h2>
-              <p className="text-sm text-muted">{sheets.length} one-page references for the last hour before an interview.</p>
-            </div>
-            <Link href="/cheatsheets/" className="text-sm text-accent">
-              All cheat sheets →
-            </Link>
-          </div>
+        <section className="mb-14">
+          <SectionHead n="05" title="Cheat sheets" note={`${sheets.length} one-page references for the last hour before an interview.`} href="/cheatsheets/" link="All cheat sheets" />
           <div className="stagger no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 xl:grid-cols-4">
             {sheets.map((c) => (
               <Link key={c.slug} href={`/cheatsheets/${c.slug}/`} className="lift group w-44 shrink-0 rounded-2xl border border-line bg-surface p-4 hover:border-accent sm:w-auto">
                 <Icon name={c.icon as IconName} size={20} className="text-accent" />
-                <span className="mt-2 block text-sm font-semibold group-hover:text-accent">{c.title}</span>
-                <span className="block text-xs text-muted">{minutes(c.minutes)} read</span>
+                <span className="mt-3 block font-display text-[15px] font-semibold leading-snug group-hover:text-accent">{c.title}</span>
+                <span className="eyebrow mt-1 block text-[10px] text-muted">{minutes(c.minutes)} read</span>
               </Link>
             ))}
           </div>
         </section>
       )}
     </>
+  );
+}
+
+function SectionHead({ n, title, note, href, link }: { n: string; title: string; note?: string; href?: string; link?: string }) {
+  return (
+    <div className="mb-4 flex items-start gap-4 border-b border-line pb-2">
+      <span className="eyebrow pt-3 text-accent">§{n}</span>
+      <div className="min-w-0 flex-1">
+        <h2 className="text-2xl font-semibold leading-tight sm:text-[1.75rem]">{title}</h2>
+        {note && <p className="text-sm text-muted">{note}</p>}
+      </div>
+      {href && (
+        <Link href={href} className="eyebrow shrink-0 self-end pb-1.5 text-ink hover:text-accent">
+          {link} →
+        </Link>
+      )}
+    </div>
   );
 }

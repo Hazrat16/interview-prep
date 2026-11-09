@@ -6,9 +6,9 @@ import { Icon } from './Icons';
 export function Teaser({ question, answer, href }: { question: React.ReactNode; answer: React.ReactNode; href: string }) {
   const [shown, setShown] = useState(false);
   return (
-    <div className="overflow-hidden rounded-2xl border border-line bg-surface">
+    <div className="ink-card overflow-hidden rounded-2xl border border-line bg-surface">
       <div className="px-4 py-4 sm:px-5">{question}</div>
-      <div className="border-t border-line bg-bg/40 px-4 py-3 sm:px-5">
+      <div className="border-t border-dashed border-rule px-4 py-3 sm:px-5">
         {shown ? (
           <div className="anim-reveal">
             {answer}

@@ -10,17 +10,18 @@ export const metadata: Metadata = { title: 'Topics' };
 export default function TopicsPage() {
   return (
     <>
-      <PageHeader title="Topics" description="Pick a topic, read a guide, then test yourself on it." />
+      <PageHeader eyebrow="Index" title="Topics" description="Pick a topic, read a guide, then test yourself on it." />
       <div className="stagger grid gap-3 sm:grid-cols-2">
-        {topics().map((t) => (
-          <Link key={t.slug} href={`/${t.slug}/`} className="lift group rounded-2xl border border-line bg-surface p-4 hover:border-accent">
+        {topics().map((t, i) => (
+          <Link key={t.slug} href={`/${t.slug}/`} className="lift group relative rounded-2xl border border-line bg-surface p-4 hover:border-accent">
+            <span className="pointer-events-none absolute right-4 top-3 font-display text-4xl font-semibold italic leading-none text-rule tabular-nums">{String(i + 1).padStart(2, '0')}</span>
             <div className="flex items-center gap-3">
-              <span className="grid size-10 place-items-center rounded-xl bg-accent-soft text-accent">
+              <span className="grid size-10 place-items-center rounded-md border border-line bg-bg text-ink">
                 <Icon name={t.icon as IconName} size={20} />
               </span>
-              <div className="min-w-0 flex-1">
-                <h2 className="font-semibold group-hover:text-accent">{t.label}</h2>
-                <p className="text-xs text-muted">
+              <div className="min-w-0 flex-1 pr-10">
+                <h2 className="text-xl font-semibold leading-tight group-hover:text-accent">{t.label}</h2>
+                <p className="eyebrow text-[10px] text-muted">
                   {t.guides.length} guides · {t.count} questions
                 </p>
               </div>

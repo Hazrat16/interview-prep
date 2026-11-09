@@ -68,7 +68,7 @@ export function HomeProgress({ catalog }: { catalog: Catalog }) {
         {stats.map((s) => {
           const inner = (
             <>
-              <div className="text-2xl font-semibold tabular-nums">{s.value}</div>
+              <div className="font-display text-3xl font-semibold tabular-nums">{s.value}</div>
               <div className="text-sm text-ink">{s.label}</div>
               <div className="text-xs text-muted">{s.sub}</div>
             </>

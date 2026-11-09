@@ -45,17 +45,17 @@ export default async function GuidePage({ params }: Props) {
   return (
     <div className="xl:grid xl:grid-cols-[minmax(0,1fr)_14rem] xl:gap-8">
       <article className="min-w-0">
-        <header className="mb-6">
-          <nav className="mb-3 flex items-center gap-1 text-sm text-muted">
-            <Link href={`/${t.slug}/`} className="hover:text-accent">
+        <header className="mb-8">
+          <nav className="eyebrow mb-4 flex items-center gap-1.5 text-muted">
+            <Link href={`/${t.slug}/`} className="text-accent hover:underline">
               {t.label}
             </Link>
-            <span aria-hidden>›</span>
+            <span aria-hidden>/</span>
             <span className="truncate">{g.title}</span>
           </nav>
-          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{g.title}</h1>
-          <p className="mt-1.5 max-w-2xl text-[15px] text-muted">{g.description}</p>
-          <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted">
+          <h1 className="text-3xl font-semibold leading-[1.05] text-balance sm:text-5xl">{g.title}</h1>
+          <p className="mt-3 max-w-2xl text-[15px] text-muted sm:text-base">{g.description}</p>
+          <div className="eyebrow mt-5 flex flex-wrap items-center gap-x-5 gap-y-1 border-y border-line py-2.5 text-muted">
             <span className="inline-flex items-center gap-1.5">
               <Icon name="list" size={15} /> {g.count} questions
             </span>
@@ -70,10 +70,10 @@ export default async function GuidePage({ params }: Props) {
             <GuideProgress keys={g.questions.map((q) => q.key)} />
           </div>
           <div className="mt-5 flex flex-wrap gap-2">
-            <Link href={`/quiz/?guide=${g.key}`} className="press inline-flex h-9 items-center gap-1.5 rounded-full bg-accent px-3.5 text-sm font-medium text-white">
+            <Link href={`/quiz/?guide=${g.key}`} className="press inline-flex h-9 items-center gap-1.5 rounded-md bg-accent px-3.5 text-sm font-medium text-white">
               <Icon name="cards" size={16} /> Quiz this guide
             </Link>
-            <Link href={`/interview/?guide=${g.key}`} className="press inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-3.5 text-sm font-medium hover:border-accent">
+            <Link href={`/interview/?guide=${g.key}`} className="press inline-flex h-9 items-center gap-1.5 rounded-md border border-line px-3.5 text-sm font-medium hover:border-accent">
               <Icon name="timer" size={16} /> Mock interview
             </Link>
             <PracticeToggle />
@@ -84,7 +84,7 @@ export default async function GuidePage({ params }: Props) {
           <div className="space-y-6">
             {sections.map((s, i) => (
               <section key={i} className="stagger space-y-3">
-                {s.section && <h2 className="px-1 pt-2 text-[13px] font-semibold uppercase tracking-wider text-muted">{s.section}</h2>}
+                {s.section && <h2 className="border-b border-line px-1 pb-1.5 pt-4 text-xl font-semibold italic">{s.section}</h2>}
                 {s.items.map(({ q, n }) => (
                   <QuestionItem key={q.id} q={q} n={n} defaultOpen={n === 1} career={career} />
                 ))}
@@ -95,7 +95,7 @@ export default async function GuidePage({ params }: Props) {
 
         {g.alsoAsked.length > 0 && (
           <section className="mt-8">
-            <h2 className="mb-1 px-1 text-[13px] font-semibold uppercase tracking-wider text-muted">Also asked here</h2>
+            <h2 className="mb-1 px-1 text-xl font-semibold">Also asked here</h2>
             <p className="mb-3 px-1 text-sm text-muted">These come up in this context too. Their full answers live in other guides.</p>
             <ul className="space-y-2">
               {g.alsoAsked.map((a) => (
@@ -117,7 +117,7 @@ export default async function GuidePage({ params }: Props) {
               <span className="flex items-center gap-1 text-xs text-muted">
                 <Icon name="left" size={13} /> Previous guide
               </span>
-              <span className="mt-1 line-clamp-2 block font-medium">{prev.title}</span>
+              <span className="mt-1 line-clamp-2 block font-display text-lg font-semibold leading-snug">{prev.title}</span>
             </Link>
           ) : (
             <span />
@@ -127,7 +127,7 @@ export default async function GuidePage({ params }: Props) {
               <span className="flex items-center justify-end gap-1 text-xs text-muted">
                 Next guide <Icon name="right" size={13} />
               </span>
-              <span className="mt-1 line-clamp-2 block font-medium">{next.title}</span>
+              <span className="mt-1 line-clamp-2 block font-display text-lg font-semibold leading-snug">{next.title}</span>
             </Link>
           ) : (
             <span />
@@ -137,12 +137,12 @@ export default async function GuidePage({ params }: Props) {
 
       <aside className="hidden xl:block">
         <div className="no-scrollbar sticky top-10 max-h-[calc(100dvh-5rem)] overflow-y-auto">
-          <h2 className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-muted">In this guide</h2>
+          <h2 className="eyebrow mb-3 text-muted">In this guide</h2>
           <ol className="space-y-0.5 border-l border-line text-[13px]">
             {g.questions.map((q, i) => (
               <li key={q.id}>
                 <a href={`#${q.id}`} className="-ml-px block border-l border-transparent py-1 pl-3 leading-snug text-muted hover:border-accent hover:text-ink">
-                  <span className="tabular-nums">{i + 1}.</span> {q.titleText}
+                  <span className="font-mono text-[11px] tabular-nums text-accent">{String(i + 1).padStart(2, '0')}</span> {q.titleText}
                 </a>
               </li>
             ))}
