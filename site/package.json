@@ -7,7 +7,6 @@
     "dev": "npm run content && next dev",
     "build": "npm run content && next build",
     "content": "tsx scripts/build-content.ts",
-    "content:report": "tsx scripts/build-content.ts --verbose",
     "preview": "npx serve out",
     "typecheck": "tsc --noEmit"
   },

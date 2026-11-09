@@ -2,7 +2,7 @@
 export const SEARCH_OPTIONS = {
   idField: 'id',
   fields: ['t', 'x', 'g', 'c'],
-  storeFields: ['t', 'k', 'o', 'y', 'c'],
+  storeFields: ['t', 'k', 'c'],
   searchOptions: {
     boost: { t: 4, g: 2, c: 1.5 },
     prefix: true,

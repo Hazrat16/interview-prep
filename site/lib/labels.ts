@@ -1,17 +1,4 @@
-import type { ContentType } from './content/types';
-import type { Perspective } from './content/curated-schema';
-export { tagLabel } from './content/tags';
-
-export const TYPE_LABELS: Record<ContentType, string> = {
-  'concept-qa': 'Concept',
-  'quick-answer': 'Quick answer',
-  scenario: 'Scenario',
-  coding: 'Coding',
-  'system-design': 'System design',
-  behavioral: 'Behavioral',
-  'company-log': 'Company interview',
-  note: 'Note',
-};
+import type { Frequency, Perspective } from './content/schema';
 
 export const PERSPECTIVE_LABELS: Record<Perspective, string> = {
   concept: 'Concept',
@@ -24,6 +11,6 @@ export const PERSPECTIVE_LABELS: Record<Perspective, string> = {
   behavioral: 'Behavioral',
 };
 
-export const FREQUENCY_LABELS = { 'very-high': 'Very common', high: 'Common', medium: 'Sometimes asked' } as const;
+export const FREQUENCY_LABELS: Record<Frequency, string> = { 'very-high': 'Very common', high: 'Common', medium: 'Sometimes asked' };
 
-export const ORIGIN_LABELS = { collected: 'My notes', curated: 'Curated FAQ' } as const;
+export const minutes = (m: number) => (m < 60 ? `${m} min` : `${Math.round((m / 60) * 10) / 10} h`);

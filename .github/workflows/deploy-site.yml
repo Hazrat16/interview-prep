@@ -22,8 +22,6 @@ jobs:
         working-directory: site
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # full history → "last updated" dates for each note
 
       - uses: actions/setup-node@v4
         with:
@@ -36,15 +34,12 @@ jobs:
 
       - run: npm ci
 
-      # Discovers every Markdown file in the repo, validates curated data,
-      # builds the search index and exports a fully static site to site/out.
+      # Validates content/guides + cheat sheets, builds the search index and
+      # exports a fully static site to site/out.
       - run: npm run build
         env:
           PAGES_BASE_PATH: ${{ steps.pages.outputs.base_path }}
           NEXT_TELEMETRY_DISABLED: 1
-
-      - name: Show parse summary
-        run: head -20 .generated/parse-report.md >> "$GITHUB_STEP_SUMMARY"
 
       - uses: actions/upload-pages-artifact@v3
         with:

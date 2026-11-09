@@ -1,19 +1,6 @@
-import Link from 'next/link';
-import type { Difficulty, ContentType } from '@/lib/content/types';
-import type { Origin } from '@/lib/content/site-types';
-import { ORIGIN_LABELS, TYPE_LABELS, tagLabel } from '@/lib/labels';
+import type { Difficulty } from '@/lib/content/schema';
 
 const base = 'inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium leading-5 whitespace-nowrap';
-
-export function OriginBadge({ origin }: { origin: Origin }) {
-  return (
-    <span
-      className={`${base} ${origin === 'curated' ? 'bg-curated-soft text-curated' : 'bg-collected-soft text-collected'}`}
-    >
-      {ORIGIN_LABELS[origin]}
-    </span>
-  );
-}
 
 export function DifficultyBadge({ difficulty }: { difficulty?: Difficulty }) {
   if (!difficulty) return null;
@@ -26,23 +13,19 @@ export function DifficultyBadge({ difficulty }: { difficulty?: Difficulty }) {
   );
 }
 
-export function TypeBadge({ type, label }: { type?: ContentType; label?: string }) {
-  if (!type && !label) return null;
-  return <span className={`${base} bg-surface-2 text-muted`}>{label ?? TYPE_LABELS[type!]}</span>;
-}
-
 export function Badge({ children, tone = 'muted' }: { children: React.ReactNode; tone?: 'muted' | 'accent' | 'warn' }) {
   const t = { muted: 'bg-surface-2 text-muted', accent: 'bg-accent-soft text-accent', warn: 'bg-surface-2 text-medium' }[tone];
   return <span className={`${base} ${t}`}>{children}</span>;
 }
 
-export function TagLink({ tag }: { tag: string }) {
+/** Stacked easy/medium/hard bar. */
+export function DifficultyBar({ mix }: { mix: Record<Difficulty, number> }) {
+  const total = mix.easy + mix.medium + mix.hard || 1;
   return (
-    <Link
-      href={`/tags/${tag}/`}
-      className="rounded-md border border-line px-2 py-0.5 text-xs text-muted hover:border-accent hover:text-accent"
-    >
-      {tagLabel(tag)}
-    </Link>
+    <div className="flex h-1.5 w-full overflow-hidden rounded-full bg-surface-2" title={`${mix.easy} easy · ${mix.medium} medium · ${mix.hard} hard`}>
+      <span className="bg-easy" style={{ width: `${(mix.easy / total) * 100}%` }} />
+      <span className="bg-medium" style={{ width: `${(mix.medium / total) * 100}%` }} />
+      <span className="bg-hard" style={{ width: `${(mix.hard / total) * 100}%` }} />
+    </div>
   );
 }

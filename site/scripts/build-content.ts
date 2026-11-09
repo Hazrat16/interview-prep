@@ -1,185 +1,168 @@
 /**
  * Build-time content pipeline.
- *   npm run content          → .generated/content.json + .generated/parse-report.md
- *   npm run content:report   → same, and prints every record to the console
+ *   npm run content   → .generated/site.json + public/data/{cards,search-index}.json
  *
- * Reads Markdown from the repo root; never writes outside site/.generated.
+ * Reads content/topics.ts, content/guides/<topic>/<guide>.ts and
+ * content/cheatsheets/*.md. Fails the build on schema errors, unknown or
+ * unlisted guides, duplicate ids and broken alsoAsked references.
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import config from '../content.config';
-import { buildContentIndex } from '../lib/content/build';
-import { loadCurated, loadEnrichments } from '../lib/content/curated';
-import { buildSite } from '../lib/content/site-build';
-import type { CollectedRecord, ContentIndex } from '../lib/content/types';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import matter from 'gray-matter';
+import MiniSearch from 'minisearch';
+import topics from '../content/topics';
+import { GuideSchema, type Guide } from '../lib/content/schema';
+import { createRenderer, headingsOf, markdownToText } from '../lib/content/render';
+import type { Card, CheatSheet, GuideData, QuestionData, SearchDoc, SiteData, TopicData } from '../lib/content/types';
+import { SEARCH_OPTIONS } from '../lib/search-options';
 
 const siteDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const root = path.resolve(siteDir, config.contentRoot);
+const contentDir = path.join(siteDir, 'content');
+const errors: string[] = [];
+const r = createRenderer();
+const WPM = 180;
+const minutesOf = (words: number) => Math.max(1, Math.round(words / WPM));
+const words = (s: string) => s.split(/\s+/).filter(Boolean).length;
+
+// ---- guides -------------------------------------------------------------------
+const raw = new Map<string, Guide>();
+for (const t of topics) {
+  const dir = path.join(contentDir, 'guides', t.slug);
+  const files = fs.existsSync(dir) ? fs.readdirSync(dir).filter((f) => f.endsWith('.ts')).map((f) => f.slice(0, -3)) : [];
+  for (const f of files) if (!t.guides.includes(f)) errors.push(`content/guides/${t.slug}/${f}.ts is not listed in content/topics.ts`);
+  for (const g of t.guides) {
+    if (!files.includes(g)) {
+      errors.push(`content/topics.ts lists "${t.slug}/${g}" but content/guides/${t.slug}/${g}.ts is missing`);
+      continue;
+    }
+    const mod = await import(pathToFileURL(path.join(dir, `${g}.ts`)).href);
+    const res = GuideSchema.safeParse(mod.default);
+    if (!res.success) {
+      for (const i of res.error.issues) errors.push(`content/guides/${t.slug}/${g}.ts ${i.path.join('.')}: ${i.message}`);
+      continue;
+    }
+    const ids = new Set<string>();
+    for (const q of res.data.questions) {
+      if (ids.has(q.id)) errors.push(`content/guides/${t.slug}/${g}.ts: duplicate question id "${q.id}"`);
+      ids.add(q.id);
+    }
+    raw.set(`${t.slug}/${g}`, res.data);
+  }
+}
+for (const d of fs.readdirSync(path.join(contentDir, 'guides')))
+  if (!topics.some((t) => t.slug === d)) errors.push(`content/guides/${d}/ is not a topic in content/topics.ts`);
+
+const allKeys = new Set([...raw].flatMap(([gk, g]) => g.questions.map((q) => `${gk}/${q.id}`)));
+for (const [gk, g] of raw)
+  for (const ref of g.alsoAsked ?? []) if (!allKeys.has(ref)) errors.push(`content/guides/${gk}.ts alsoAsked: "${ref}" doesn't exist`);
+fail();
+
+const guides: GuideData[] = [];
+const cards: Card[] = [];
+const search: SearchDoc[] = [];
+const topicData: TopicData[] = [];
+const titleText = (md: string) => markdownToText(md);
+
+for (const t of topics) {
+  const metas = [];
+  for (const slug of t.guides) {
+    const key = `${t.slug}/${slug}`;
+    const g = raw.get(key)!;
+    const questions: QuestionData[] = [];
+    let wc = 0;
+    for (const q of g.questions) {
+      const qd: QuestionData = {
+        key: `${key}/${q.id}`,
+        id: q.id,
+        titleHtml: await r.inline(q.question),
+        titleText: titleText(q.question),
+        snippetHtml: q.snippet ? await r.block(q.snippet) : undefined,
+        section: q.section,
+        perspective: q.perspective,
+        difficulty: q.difficulty,
+        frequency: q.frequency,
+        tags: q.tags,
+        answerHtml: await r.block(q.answer),
+        variants: q.variants ? await Promise.all(q.variants.map(async (v) => ({ label: v.label, html: await r.block(v.answer) }))) : undefined,
+        analogyHtml: await r.block(q.analogy),
+        quickRevisionHtml: await Promise.all(q.quickRevision.map((x) => r.inline(x))),
+        deepDiveHtml: q.deepDive ? await r.block(q.deepDive) : undefined,
+        avoidHtml: q.avoid ? await Promise.all(q.avoid.map((x) => r.inline(x))) : undefined,
+        followUpsHtml: await Promise.all(q.followUps.map((x) => r.inline(x))),
+      };
+      questions.push(qd);
+      const text = [q.answer, q.analogy, ...q.quickRevision, q.deepDive ?? ''].map(markdownToText).join(' ');
+      wc += words(qd.titleText) + words(text);
+      cards.push({ k: qd.key, g: key, t: qd.titleHtml, s: qd.snippetHtml, d: q.difficulty, f: q.frequency, p: q.perspective, a: qd.answerHtml, r: qd.quickRevisionHtml });
+      search.push({ id: qd.key, t: qd.titleText, x: text, g: q.tags.join(' '), c: `${t.label} › ${g.title}`, k: 'question' });
+    }
+    const difficulty = { easy: 0, medium: 0, hard: 0 };
+    for (const q of g.questions) difficulty[q.difficulty]++;
+    const meta = { key, topic: t.slug, slug, title: g.title, description: g.description, count: questions.length, minutes: minutesOf(wc), difficulty };
+    guides.push({ ...meta, questions, alsoAsked: [] });
+    metas.push(meta);
+    search.push({ id: `guide:${key}`, t: g.title, x: g.description, g: '', c: t.label, k: 'guide' });
+  }
+  topicData.push({ slug: t.slug, label: t.label, description: t.description, icon: t.icon, guides: metas, count: metas.reduce((n, m) => n + m.count, 0) });
+}
+const byKey = new Map(guides.flatMap((g) => g.questions.map((q) => [q.key, { q, g }] as const)));
+for (const g of guides)
+  g.alsoAsked = (raw.get(g.key)!.alsoAsked ?? []).map((k) => ({ key: k, titleText: byKey.get(k)!.q.titleText, guideTitle: byKey.get(k)!.g.title }));
+
+// ---- cheat sheets -------------------------------------------------------------
+const sheetDir = path.join(contentDir, 'cheatsheets');
+const sheets: (CheatSheet & { order: number })[] = [];
+if (fs.existsSync(sheetDir)) {
+  for (const f of fs.readdirSync(sheetDir).filter((f) => f.endsWith('.md'))) {
+    const { data, content } = matter(fs.readFileSync(path.join(sheetDir, f), 'utf8'));
+    const slug = f.slice(0, -3);
+    if (!data.title || !data.description) {
+      errors.push(`content/cheatsheets/${f}: frontmatter needs title and description`);
+      continue;
+    }
+    const html = await r.block(content);
+    sheets.push({
+      slug,
+      title: data.title,
+      description: data.description,
+      icon: data.icon ?? 'file',
+      order: data.order ?? 100,
+      html,
+      headings: headingsOf(html),
+      minutes: minutesOf(words(markdownToText(content))),
+    });
+    search.push({ id: `sheet:${slug}`, t: data.title, x: markdownToText(content), g: '', c: 'Cheat sheet', k: 'sheet' });
+  }
+}
+sheets.sort((a, b) => a.order - b.order || a.title.localeCompare(b.title));
+fail();
+
+// ---- write --------------------------------------------------------------------
+const site: SiteData = {
+  generatedAt: new Date().toISOString(),
+  topics: topicData,
+  guides,
+  cheatsheets: sheets.map(({ order, ...s }) => s),
+};
 const outDir = path.join(siteDir, '.generated');
-const verbose = process.argv.includes('--verbose');
-
-const basePath = (process.env.PAGES_BASE_PATH ?? '').replace(/\/$/, '');
-
-const { index, nearDuplicates } = buildContentIndex(root, config);
-const curated = await loadCurated(siteDir); // throws → build fails on invalid curated data
-const enrichments = await loadEnrichments(siteDir, new Set(index.records.filter((r) => r.kind === 'question').map((r) => r.id)), curated);
-const { site, summaries, cards, searchIndex, warnings } = await buildSite({ index, curated, enrichments, config, basePath });
-warnings.push(...enrichments.warnings);
-
-fs.mkdirSync(outDir, { recursive: true });
-fs.writeFileSync(path.join(outDir, 'site.json'), JSON.stringify(site));
 const publicData = path.join(siteDir, 'public', 'data');
+fs.mkdirSync(outDir, { recursive: true });
 fs.mkdirSync(publicData, { recursive: true });
-fs.writeFileSync(path.join(publicData, 'questions.json'), JSON.stringify(summaries));
-fs.writeFileSync(path.join(publicData, 'revision.json'), JSON.stringify(cards));
-fs.writeFileSync(path.join(publicData, 'search-index.json'), searchIndex);
+fs.writeFileSync(path.join(outDir, 'site.json'), JSON.stringify(site));
+fs.writeFileSync(path.join(publicData, 'cards.json'), JSON.stringify(cards));
+const ms = new MiniSearch<SearchDoc>(SEARCH_OPTIONS);
+ms.addAll(search);
+fs.writeFileSync(path.join(publicData, 'search-index.json'), JSON.stringify(ms));
 
-let report = renderReport(index, nearDuplicates);
-report += `\n\n## Curated questions\n\n- ${curated.length} questions from ${new Set(curated.map((q) => q.file)).size} files\n`;
-for (const w of warnings) report += `- ⚠️ ${w}\n`;
-{
-  const qs = index.records.filter((r) => r.kind === 'question');
-  const done = qs.filter((r) => enrichments.byId.has(r.id)).length;
-  report += `\n## Enrichment coverage (curated-style sections for my notes)\n\n${done} of ${qs.length} collected questions enriched.\n\n| File | Enriched |\n|---|--:|\n`;
-  const byFile = new Map<string, [number, number]>();
-  for (const r of qs) {
-    const c = byFile.get(r.source.path) ?? [0, 0];
-    c[1]++;
-    if (enrichments.byId.has(r.id)) c[0]++;
-    byFile.set(r.source.path, c);
-  }
-  for (const [f, [d, t]] of byFile) report += `| ${f} | ${d}/${t}${d === t ? ' ✅' : ''} |\n`;
-}
-fs.writeFileSync(path.join(outDir, 'parse-report.md'), report);
-
-// ---- console summary --------------------------------------------------------
-const count = (pred: (r: CollectedRecord) => boolean) => index.records.filter(pred).length;
+const kb = (f: string) => `${Math.round(fs.statSync(path.join(publicData, f)).size / 1024)} KB`;
 console.log(
-  `content: ${index.documents.length} files, ${count((r) => r.kind === 'question')} questions, ` +
-    `${count((r) => r.kind === 'note')} notes, ${count((r) => r.kind === 'revision')} revision sets, ` +
-    `${index.duplicateGroups.length} duplicate groups, ${index.excludedFiles.length} excluded files`,
+  `content: ${topicData.length} topics, ${guides.length} guides, ${cards.length} questions, ${sheets.length} cheat sheets ` +
+    `(cards.json ${kb('cards.json')}, search ${kb('search-index.json')})`,
 );
-console.log(
-  `site:    ${curated.length} curated questions, ${summaries.length} questions total, ${cards.length} revision cards, ` +
-    `${site.duplicateGroups.length} duplicate groups (collected + curated)`,
-);
-{
-  const total = index.records.filter((r) => r.kind === 'question').length;
-  const done = index.records.filter((r) => r.kind === 'question' && enrichments.byId.has(r.id)).length;
-  console.log(`enrich:  ${done}/${total} collected questions have curated-style sections (${enrichments.files} files)`);
-}
-for (const w of warnings) console.warn(`warning: ${w}`);
-console.log(`report:  ${path.relative(process.cwd(), path.join(outDir, 'parse-report.md'))}`);
-if (verbose) console.log('\n' + report);
 
-// ---- report -----------------------------------------------------------------
-function renderReport(ix: ContentIndex, near: [string, string, number][]) {
-  const L: string[] = [];
-  const recs = ix.records;
-  const byId = new Map(recs.map((r) => [r.id, r]));
-  const tally = (key: (r: CollectedRecord) => string | undefined, list = recs) => {
-    const m = new Map<string, number>();
-    for (const r of list) {
-      const k = key(r) ?? '—';
-      m.set(k, (m.get(k) ?? 0) + 1);
-    }
-    return [...m.entries()].sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k}: ${v}`).join(' · ');
-  };
-  const questions = recs.filter((r) => r.kind === 'question');
-
-  L.push('# Parse report', '', `Generated ${ix.generatedAt}`, '');
-  L.push('## Summary', '');
-  L.push(`- Files discovered: **${ix.documents.length + ix.excludedFiles.length}** (included ${ix.documents.length}, excluded ${ix.excludedFiles.length})`);
-  L.push(`- Records: ${tally((r) => r.kind)}`);
-  L.push(`- Questions by detector: ${tally((r) => r.detector, questions)}`);
-  L.push(`- Questions by content type: ${tally((r) => r.contentType, questions)}`);
-  L.push(`- Questions by category: ${tally((r) => r.category, questions)}`);
-  L.push(`- Questions by difficulty: ${tally((r) => r.difficulty ?? 'unrated', questions)}`);
-  L.push(`- Quick-revision eligible: ${questions.filter((r) => r.revisionEligible).length} questions + ${recs.filter((r) => r.kind === 'revision').reduce((n, r) => n + (r.revisionItems?.length ?? 0), 0)} takeaway lines`);
-  L.push(`- Exact duplicate groups: ${ix.duplicateGroups.length} · near-duplicate links: ${near.length}`);
-  L.push('');
-
-  L.push('## Excluded files (not read, not published)', '');
-  for (const f of ix.excludedFiles) L.push(`- ${f}`);
-  L.push('');
-
-  L.push('## Files', '');
-  L.push('| File | Q | Notes | Rev | Detectors | Uncovered lines | Privacy flags |');
-  L.push('|---|--:|--:|--:|---|--:|--:|');
-  for (const d of ix.documents) {
-    const rs = recs.filter((r) => r.source.path === d.path);
-    const dets = [...new Set(rs.map((r) => r.detector))].join(', ') || (d.isIndex ? '(category index)' : '—');
-    const unc = d.uncovered.reduce((n, u) => n + (u.endLine - u.startLine + 1), 0);
-    L.push(
-      `| ${d.path} | ${rs.filter((r) => r.kind === 'question').length} | ${rs.filter((r) => r.kind === 'note').length} | ${rs.filter((r) => r.kind === 'revision').length} | ${dets} | ${unc} | ${d.privacyFlags.length} |`,
-    );
-  }
-  L.push('');
-
-  L.push('## Records per file', '');
-  L.push('Format: `line` [detector · type · difficulty] title — tags', '');
-  for (const d of ix.documents) {
-    if (d.isIndex) continue;
-    L.push(`### ${d.path}`, '');
-    for (const r of recs.filter((x) => x.source.path === d.path)) {
-      const meta = [r.detector, r.contentType, r.difficulty].filter(Boolean).join(' · ');
-      const extra =
-        r.kind === 'revision'
-          ? ` (${r.revisionItems?.length} cards)`
-          : r.kind === 'note'
-            ? ' (whole document)'
-            : '';
-      L.push(`- \`L${r.source.startLine}\` [${meta}] ${r.titleText}${extra}${r.tags.length ? ` — _${r.tags.join(', ')}_` : ''}`);
-    }
-    if (d.uncovered.length) {
-      L.push('', '  Not turned into records (still shown in the full-document view):');
-      for (const u of d.uncovered) L.push(`  - \`L${u.startLine}–${u.endLine}\` under “${u.heading}”`);
-    }
-    L.push('');
-  }
-
-  L.push('## Duplicates', '', '### Exact (same question after normalising — all answers kept and shown together)', '');
-  if (!ix.duplicateGroups.length) L.push('_None._');
-  for (const g of ix.duplicateGroups) {
-    L.push(`- **${byId.get(g.recordIds[0])?.titleText}**`);
-    for (const id of g.recordIds) {
-      const r = byId.get(id)!;
-      L.push(`  - ${r.source.path}:${r.source.startLine} — “${r.titleText}”`);
-    }
-  }
-  L.push('', '### Near duplicates (linked as “Also covered in”)', '');
-  if (!near.length) L.push('_None._');
-  for (const [a, b, s] of near.sort((x, y) => y[2] - x[2])) {
-    const ra = byId.get(a)!, rb = byId.get(b)!;
-    L.push(`- ${s.toFixed(2)} · “${ra.titleText}” (${ra.source.path}:${ra.source.startLine}) ↔ “${rb.titleText}” (${rb.source.path}:${rb.source.startLine})`);
-  }
-  L.push('');
-
-  L.push('## Quality checks', '');
-  const warnings: string[] = [];
-  for (const r of recs) {
-    if (!r.bodyMarkdown && r.hasAnswer) warnings.push(`- Empty body: ${r.source.path}:${r.source.startLine} “${r.titleText}”`);
-    if (r.titleText.length > 140) warnings.push(`- Very long title (${r.titleText.length} chars): ${r.source.path}:${r.source.startLine}`);
-    if (r.kind === 'question' && r.tags.length === 0) warnings.push(`- No technology tags: ${r.source.path}:${r.source.startLine} “${r.titleText}”`);
-  }
-  L.push(...(warnings.length ? warnings : ['_No issues._']), '');
-  const prompts = recs.filter((r) => !r.hasAnswer);
-  L.push('### Practice prompts without a written answer', '');
-  L.push('Shown in All Questions with a “no answer yet” badge; excluded from Quick Revision.', '');
-  L.push(...(prompts.length ? prompts.map((r) => `- ${r.source.path}:${r.source.startLine} “${r.titleText}”`) : ['_None._']), '');
-
-  L.push('## Privacy audit (included files only)', '');
-  L.push('Flags are for review only — nothing is changed or hidden automatically. Use `exclude` in `site/content.config.ts` or `publish: false` frontmatter to keep a file off the site.', '');
-  for (const d of ix.documents) {
-    if (!d.privacyFlags.length) continue;
-    L.push(`### ${d.path}`, '');
-    const byLine = new Map<number, typeof d.privacyFlags>();
-    for (const f of d.privacyFlags) byLine.set(f.line, [...(byLine.get(f.line) ?? []), f]);
-    for (const [line, fs_] of byLine) {
-      L.push(`- \`L${line}\` [${[...new Set(fs_.map((f) => f.rule))].join(', ')}] ${fs_[0].excerpt.replace(/\|/g, '\\|')}`);
-    }
-    L.push('');
-  }
-  return L.join('\n');
+function fail() {
+  if (!errors.length) return;
+  console.error(`Content validation failed:\n  ${errors.join('\n  ')}`);
+  process.exit(1);
 }

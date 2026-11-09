@@ -5,8 +5,9 @@ import MiniSearch from 'minisearch';
 import { SEARCH_OPTIONS } from '@/lib/search-options';
 import { loadSearchIndexText } from '@/lib/client/data';
 import { Icon } from './Icons';
+import { questionHref } from '@/lib/paths';
 
-type Hit = { id: string; t: string; k: 'question' | 'note' | 'doc'; o?: 'collected' | 'curated'; y?: string; c: string };
+type Hit = { id: string; t: string; k: 'question' | 'guide' | 'sheet'; c: string };
 
 let indexPromise: Promise<MiniSearch> | null = null;
 function getIndex() {
@@ -15,7 +16,7 @@ function getIndex() {
 }
 
 export function openSearch() {
-  window.dispatchEvent(new Event('ip:search'));
+  window.dispatchEvent(new Event('ph:search'));
 }
 
 export function SearchButton({ className = '', label = true }: { className?: string; label?: boolean }) {
@@ -38,7 +39,7 @@ export function SearchButton({ className = '', label = true }: { className?: str
   );
 }
 
-const hrefFor = (h: Hit) => (h.k === 'doc' ? `/source/${h.id.slice(4)}/` : `/q/${h.id}/`);
+const hrefFor = (h: Hit) => (h.k === 'guide' ? `/${h.id.slice(6)}/` : h.k === 'sheet' ? `/cheatsheets/${h.id.slice(6)}/` : questionHref(h.id));
 
 export function SearchDialog() {
   const router = useRouter();
@@ -65,10 +66,10 @@ export function SearchDialog() {
         setOpen(true);
       }
     };
-    window.addEventListener('ip:search', onOpen);
+    window.addEventListener('ph:search', onOpen);
     window.addEventListener('keydown', onKey);
     return () => {
-      window.removeEventListener('ip:search', onOpen);
+      window.removeEventListener('ph:search', onOpen);
       window.removeEventListener('keydown', onKey);
     };
   }, []);
@@ -112,8 +113,8 @@ export function SearchDialog() {
   };
 
   const counts = useMemo(() => {
-    const c = { curated: 0, collected: 0, doc: 0 };
-    for (const h of hits) h.k === 'doc' ? c.doc++ : h.o === 'curated' ? c.curated++ : c.collected++;
+    const c = { question: 0, guide: 0, sheet: 0 };
+    for (const h of hits) c[h.k]++;
     return c;
   }, [hits]);
 
@@ -139,7 +140,7 @@ export function SearchDialog() {
                 setActive((a) => Math.max(a - 1, 0));
               } else if (e.key === 'Enter' && hits[active]) go(hits[active]);
             }}
-            placeholder="Search questions, answers, notes…"
+            placeholder="Search guides, questions, cheat sheets…"
             className="h-12 min-w-0 flex-1 bg-transparent text-base outline-none placeholder:text-muted"
             enterKeyHint="search"
             autoComplete="off"
@@ -156,9 +157,9 @@ export function SearchDialog() {
         {q.trim() && (
           <div className="flex gap-3 border-b border-line px-4 py-2 text-xs text-muted">
             <span>{hits.length} results</span>
-            {counts.curated > 0 && <span className="text-curated">{counts.curated} curated</span>}
-            {counts.collected > 0 && <span className="text-collected">{counts.collected} from my notes</span>}
-            {counts.doc > 0 && <span>{counts.doc} files</span>}
+            {counts.guide > 0 && <span>{counts.guide} guides</span>}
+            {counts.question > 0 && <span>{counts.question} questions</span>}
+            {counts.sheet > 0 && <span>{counts.sheet} cheat sheets</span>}
           </div>
         )}
 
@@ -180,15 +181,11 @@ export function SearchDialog() {
                 onMouseMove={() => setActive(i)}
                 className={`flex w-full items-start gap-3 rounded-xl px-3 py-2.5 text-left ${i === active ? 'bg-surface-2' : ''}`}
               >
-                <span
-                  className={`mt-1.5 size-2 shrink-0 rounded-full ${
-                    h.k === 'doc' ? 'bg-muted' : h.o === 'curated' ? 'bg-curated' : 'bg-collected'
-                  }`}
-                />
+                <Icon name={h.k === 'guide' ? 'book' : h.k === 'sheet' ? 'sheet' : 'chat'} size={16} className="mt-0.5 shrink-0 text-muted" />
                 <span className="min-w-0 flex-1">
                   <span className="block text-[15px] leading-snug">{h.t}</span>
                   <span className="mt-0.5 block text-xs text-muted">
-                    {h.k === 'doc' ? 'Full note' : h.o === 'curated' ? 'Curated FAQ' : 'My notes'} · {h.c}
+                    {h.k === 'guide' ? `Guide · ${h.c}` : h.c}
                   </span>
                 </span>
               </button>

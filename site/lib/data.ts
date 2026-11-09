@@ -1,8 +1,7 @@
-/** Server-only access to the build-time content index. */
+/** Server-only access to the build-time content (.generated/site.json). */
 import fs from 'node:fs';
 import path from 'node:path';
-import type { SiteData, SiteQuestion, SiteDocument } from './content/site-types';
-import { toSummary } from './summary';
+import type { GuideData, SiteData, TopicData } from './content/types';
 
 let cache: SiteData | undefined;
 
@@ -15,45 +14,27 @@ export function site(): SiteData {
   return cache;
 }
 
-const byIdCache = new Map<string, SiteQuestion>();
-export function question(id: string) {
-  if (!byIdCache.size) for (const q of site().questions) byIdCache.set(q.id, q);
-  return byIdCache.get(id);
+export const topics = (): TopicData[] => site().topics;
+export const topic = (slug: string) => site().topics.find((t) => t.slug === slug);
+export const guide = (key: string): GuideData | undefined => site().guides.find((g) => g.key === key);
+export const cheatsheets = () => site().cheatsheets;
+export const cheatsheet = (slug: string) => site().cheatsheets.find((s) => s.slug === slug);
+
+/** Lightweight catalog for client components (no question bodies). */
+export interface Catalog {
+  topics: { slug: string; label: string; icon: string }[];
+  guides: { key: string; topic: string; title: string; count: number; minutes: number }[];
+}
+export function catalog(): Catalog {
+  return {
+    topics: site().topics.map((t) => ({ slug: t.slug, label: t.label, icon: t.icon })),
+    guides: site().guides.map((g) => ({ key: g.key, topic: g.topic, title: g.title, count: g.count, minutes: g.minutes })),
+  };
 }
 
-export function questions(filter?: (q: SiteQuestion) => boolean) {
-  return site().questions.filter((q) => q.kind === 'question' && (!filter || filter(q)));
+/** Guides in reading order across all topics (for prev/next). */
+export function neighbours(key: string) {
+  const list = site().topics.flatMap((t) => t.guides);
+  const i = list.findIndex((g) => g.key === key);
+  return { prev: list[i - 1], next: list[i + 1] };
 }
-
-export function summaries(filter?: (q: SiteQuestion) => boolean) {
-  const sizes = new Map(site().duplicateGroups.map((g) => [g.id, g.recordIds.length]));
-  return questions(filter).map((q) => toSummary(q, q.duplicateGroup ? sizes.get(q.duplicateGroup) : 1));
-}
-
-export function documentBySlug(slug: string): SiteDocument | undefined {
-  return site().documents.find((d) => d.slug === slug);
-}
-
-export function documentByPath(p: string): SiteDocument | undefined {
-  return site().documents.find((d) => d.path === p);
-}
-
-export function categoryLabels(): Record<string, string> {
-  return Object.fromEntries(site().categories.map((c) => [c.slug, c.label]));
-}
-
-export function category(slug: string) {
-  return site().categories.find((c) => c.slug === slug);
-}
-
-export function duplicateSiblings(q: SiteQuestion) {
-  if (!q.duplicateGroup) return [];
-  const g = site().duplicateGroups.find((x) => x.id === q.duplicateGroup);
-  return (g?.recordIds ?? []).filter((id) => id !== q.id).map((id) => question(id)!).filter(Boolean);
-}
-
-/** Questions in a category, plus questions from other folders tagged with the same slug. */
-export const inCategory = (slug: string) => {
-  const includeTagged = !!category(slug)?.includeTagged;
-  return (q: SiteQuestion) => q.category === slug || (includeTagged && q.tags.includes(slug));
-};

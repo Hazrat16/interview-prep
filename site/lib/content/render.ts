@@ -1,9 +1,7 @@
 /**
  * Markdown → HTML at build time (no Markdown or highlighting JS ships to the
- * browser). Relative links between your .md files are rewritten to site
- * routes; links to files that aren't published point to GitHub instead.
+ * browser). External links open in a new tab.
  */
-import path from 'node:path';
 import { unified, type Processor } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
@@ -15,79 +13,26 @@ import { visit } from 'unist-util-visit';
 import { toString as mdToString } from 'mdast-util-to-string';
 import type { Element, Root as HastRoot } from 'hast';
 
-export interface LinkContext {
-  basePath: string;
-  githubBlob: string; // https://github.com/<repo>/blob/<branch>
-  publishedDocs: Set<string>; // repo-relative .md paths that have a page
-  categories: Set<string>;
-}
-
-interface FileData {
-  fromPath?: string;
-  isFragment?: boolean;
-}
-
-function rehypeRewriteLinks(ctx: LinkContext) {
-  return (tree: HastRoot, vfile: { data: unknown }) => {
-    const file = vfile as { data: FileData };
-    const from = file.data.fromPath;
+function rehypeLinks() {
+  return (tree: HastRoot) => {
     visit(tree, 'element', (node: Element) => {
-      if (node.tagName === 'a' && typeof node.properties?.href === 'string') {
-        const href = node.properties.href;
-        if (/^(https?:|mailto:)/i.test(href)) {
-          node.properties.target = '_blank';
-          node.properties.rel = ['noopener', 'noreferrer'];
-          return;
-        }
-        if (href.startsWith('#')) {
-          // In-file anchor: from an extracted answer, point at the full document.
-          if (from && file.data.isFragment) node.properties.href = docUrl(ctx, from) + href;
-          return;
-        }
-        if (!from) return;
-        node.properties.href = resolveRelative(ctx, from, href);
+      const href = node.properties?.href;
+      if (node.tagName === 'a' && typeof href === 'string' && /^(https?:|mailto:)/i.test(href)) {
+        node.properties.target = '_blank';
+        node.properties.rel = ['noopener', 'noreferrer'];
       }
-      if (node.tagName === 'img' && typeof node.properties?.src === 'string' && from) {
-        const src = node.properties.src;
-        if (!/^(https?:|data:)/i.test(src)) {
-          const target = path.posix.normalize(path.posix.join(path.posix.dirname(from), src));
-          node.properties.src = `${ctx.githubBlob.replace('/blob/', '/raw/')}/${target}`;
-        }
-        node.properties.loading = 'lazy';
-      }
+      if (node.tagName === 'img') node.properties.loading = 'lazy';
     });
   };
 }
 
-export function docSlug(mdPath: string) {
-  return mdPath.replace(/\.(md|markdown)$/i, '');
-}
-
-function docUrl(ctx: LinkContext, mdPath: string) {
-  return `${ctx.basePath}/source/${docSlug(mdPath)}/`;
-}
-
-function resolveRelative(ctx: LinkContext, from: string, href: string) {
-  const [rawTarget, hash] = href.split('#');
-  const target = path.posix.normalize(path.posix.join(path.posix.dirname(from), rawTarget));
-  const anchor = hash ? `#${hash}` : '';
-  if (/\.(md|markdown)$/i.test(target)) {
-    return ctx.publishedDocs.has(target)
-      ? docUrl(ctx, target) + anchor
-      : `${ctx.githubBlob}/${target}${anchor}`;
-  }
-  const folder = target.replace(/\/$/, '');
-  if (ctx.categories.has(folder)) return `${ctx.basePath}/categories/${folder}/`;
-  return `${ctx.githubBlob}/${target}${anchor}`;
-}
-
-export function createRenderer(ctx: LinkContext) {
+export function createRenderer() {
   const block = unified()
     .use(remarkParse)
     .use(remarkGfm)
     .use(remarkRehype)
     .use(rehypeSlug)
-    .use(rehypeRewriteLinks, ctx)
+    .use(rehypeLinks)
     .use(rehypePrettyCode, {
       theme: { light: 'github-light', dark: 'github-dark-dimmed' },
       keepBackground: false,
@@ -96,37 +41,45 @@ export function createRenderer(ctx: LinkContext) {
     })
     .use(rehypeStringify) as unknown as Processor;
 
-  const inline = unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkRehype)
-    .use(rehypeRewriteLinks, ctx)
-    .use(rehypeStringify) as unknown as Processor;
+  const inline = unified().use(remarkParse).use(remarkGfm).use(remarkRehype).use(rehypeLinks).use(rehypeStringify) as unknown as Processor;
 
   const cache = new Map<string, string>();
 
   return {
-    /** Full Markdown block (answers, documents). */
-    async block(md: string, fromPath?: string, isFragment = false): Promise<string> {
+    /** Full Markdown block (answers, cheat sheets). */
+    async block(md: string): Promise<string> {
       if (!md.trim()) return '';
-      const key = `${fromPath}|${isFragment}|${md}`;
-      const hit = cache.get(key);
+      const hit = cache.get(md);
       if (hit) return hit;
-      const file = await block.process({ value: md, data: { fromPath, isFragment } });
-      const html = String(file);
-      cache.set(key, html);
+      const html = String(await block.process(md));
+      cache.set(md, html);
       return html;
     },
     /** One line of inline Markdown (titles, bullet points) without the <p>. */
-    async inline(md: string, fromPath?: string): Promise<string> {
-      const file = await inline.process({ value: md, data: { fromPath, isFragment: true } });
-      return String(file).trim().replace(/^<p>([\s\S]*)<\/p>$/, '$1');
+    async inline(md: string): Promise<string> {
+      const html = String(await inline.process(md));
+      return html.trim().replace(/^<p>([\s\S]*)<\/p>$/, '$1');
     },
   };
 }
 
-/** Plain text for search indexing. */
+/** Plain text for search indexing and word counts. */
 export function markdownToText(md: string) {
   const tree = unified().use(remarkParse).use(remarkGfm).parse(md);
   return mdToString(tree).replace(/\s+/g, ' ').trim();
+}
+
+/** Heading list (h2/h3) for a cheat sheet's table of contents. */
+export function headingsOf(html: string) {
+  const out: { depth: number; text: string; id: string }[] = [];
+  for (const m of html.matchAll(/<h([23]) id="([^"]+)">([\s\S]*?)<\/h\1>/g))
+    out.push({ depth: Number(m[1]), id: m[2], text: decodeEntities(m[3].replace(/<[^>]+>/g, '')) });
+  return out;
+}
+
+function decodeEntities(s: string) {
+  const named: Record<string, string> = { amp: '&', lt: '<', gt: '>', quot: '"', apos: "'" };
+  return s.replace(/&(#x[0-9a-f]+|#\d+|[a-z]+);/gi, (m, e: string) =>
+    e[0] === '#' ? String.fromCodePoint(e[1].toLowerCase() === 'x' ? parseInt(e.slice(2), 16) : Number(e.slice(1))) : (named[e] ?? m),
+  );
 }

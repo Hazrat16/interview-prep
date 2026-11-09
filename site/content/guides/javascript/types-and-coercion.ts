@@ -1,0 +1,107 @@
+import { defineGuide } from '../../../lib/content/schema';
+
+export default defineGuide({
+  title: 'Types & Coercion',
+  description: `Primitive vs reference types, == vs ===, truthiness and the coercion rules interviewers love to test.`,
+  questions: [
+    {
+      id: 'primitive-vs-reference-types',
+      question: 'Primitive vs reference types?',
+      perspective: 'trade-off',
+      difficulty: 'easy',
+      frequency: 'high',
+      tags: ['javascript'],
+      answer: `> Primitives store the actual value and are copied by value. Objects store a reference to memory; assigning an object copies the reference, so changes through one variable can affect the other.`,
+      analogy: `Primitives are like writing a number on a sticky note and handing over a copy; objects are like sharing a Google Doc link, so everyone with the link edits the same document.`,
+      quickRevision: [
+        'Primitives: string, number, bigint, boolean, undefined, null, symbol',
+        'Primitives are immutable and copied by value',
+        'Objects/arrays/functions are shared by reference',
+        'Comparing objects compares references, not contents',
+      ],
+      followUps: [
+        'Why is `{} === {}` false?',
+        'How do you compare two objects by value?',
+      ],
+    },
+    {
+      id: 'difference-between-and',
+      question: 'Difference between `==` and `===`?',
+      perspective: 'trade-off',
+      difficulty: 'easy',
+      frequency: 'very-high',
+      tags: ['javascript'],
+      answer: `> \`===\` compares value and type with no coercion. \`==\` may convert types before comparing. In production code we usually use \`===\` to avoid unexpected coercion bugs.`,
+      analogy: `\`===\` checks the item and its label; \`==\` first tries to translate both into the same language, sometimes with surprising translations.`,
+      quickRevision: [
+        '`===` no type conversion; `==` converts first',
+        '`null == undefined` is true; nothing else equals them loosely',
+        '`0 == ""` and `[1] == "1"` are true',
+        'Always use `===`, except `x == null` as a shortcut',
+      ],
+      followUps: [
+        'What is `NaN === NaN`?',
+        'What does `Object.is` do differently?',
+      ],
+    },
+    {
+      id: 'why-is-typeof-null-object',
+      question: 'Why is `typeof null` `"object"`?',
+      perspective: 'concept',
+      difficulty: 'easy',
+      frequency: 'medium',
+      tags: ['javascript'],
+      answer: `> It’s a long-standing JavaScript quirk from early implementations. \`null\` is a primitive, but \`typeof null\` incorrectly returns \`"object"\`.`,
+      analogy: `A mislabelled box from the very first shipment that can't be relabelled now without breaking every warehouse that relies on it.`,
+      quickRevision: [
+        'A bug from the first JS implementation (type tag 0)',
+        'Kept for backward compatibility',
+        'Check null with `value === null`',
+      ],
+      followUps: [
+        'What is `typeof NaN`?',
+        'How do you reliably check for an array?',
+      ],
+    },
+    {
+      id: 'shallow-copy-vs-deep-copy',
+      question: 'Shallow copy vs deep copy?',
+      perspective: 'trade-off',
+      difficulty: 'medium',
+      frequency: 'very-high',
+      tags: ['javascript'],
+      answer: `> A shallow copy duplicates only the top level. Nested objects still point to the same memory. A deep copy recursively clones nested data so the original and copy are fully independent.`,
+      analogy: `A shallow copy photocopies the folder's cover page but the inner documents are still the originals; a deep copy photocopies every page inside too.`,
+      quickRevision: [
+        'Shallow: `{...obj}`, `[...arr]`, `Object.assign`',
+        'Nested objects are still shared in a shallow copy',
+        'Deep: `structuredClone(obj)` (handles Dates, Maps, cycles)',
+        '`JSON.parse(JSON.stringify())` loses Dates, undefined, functions',
+      ],
+      followUps: [
+        'Implement a deep clone.',
+        'Why does React state need new references?',
+      ],
+    },
+    {
+      id: 'pass-by-value-vs-pass-by-reference-in-js',
+      question: 'Pass by value vs pass by reference in JS?',
+      perspective: 'trade-off',
+      difficulty: 'medium',
+      frequency: 'high',
+      tags: ['javascript'],
+      answer: `> JavaScript always passes arguments by value. For objects, that value is a reference. So the function receives a copy of the reference and can mutate the same object, but reassigning the parameter doesn’t rebind the caller’s variable.`,
+      analogy: `JS hands you a copy of the address card, not the house: you can repaint the house (mutate), but writing a new address on your card doesn't move the caller's house.`,
+      quickRevision: [
+        'JS is always pass-by-value',
+        'For objects, the value is a reference',
+        'Mutating the object is visible to the caller',
+        'Reassigning the parameter is not',
+      ],
+      followUps: [
+        'Predict the output of a function that mutates then reassigns its argument.',
+        'How do you avoid accidental mutation?',
+      ],
+    },
+  ],
+});

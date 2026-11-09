@@ -1,154 +1,145 @@
 import Link from 'next/link';
-import { site, questions, categoryLabels } from '@/lib/data';
-import { PageHeader, Section } from '@/components/Page';
-import { Icon } from '@/components/Icons';
-import { DashboardProgress } from '@/components/DashboardProgress';
+import { catalog, cheatsheets, guide, site, topics } from '@/lib/data';
+import { Icon, type IconName } from '@/components/Icons';
 import { SearchButton } from '@/components/SearchDialog';
-import { DifficultyBadge, Badge } from '@/components/Badges';
-import { PERSPECTIVE_LABELS } from '@/lib/labels';
+import { HomeProgress, RandomGuide } from '@/components/ProgressClient';
+import { Teaser } from '@/components/Teaser';
+import { Html } from '@/components/Html';
+import { minutes } from '@/lib/labels';
 
-export default function Dashboard() {
+const MODES: { href: string; title: string; blurb: string; icon: IconName; tone: string }[] = [
+  { href: '/quiz/', title: 'Quiz', blurb: 'Answer questions from any guide, then compare with the written answer.', icon: 'cards', tone: 'bg-answer-soft text-answer' },
+  { href: '/interview/', title: 'Interview Simulator', blurb: 'A timed mock interview with random questions.', icon: 'timer', tone: 'bg-analogy-soft text-analogy' },
+  { href: '/last-minute/', title: 'Last-Minute Cards', blurb: 'The must-know questions with memory hooks, in minutes.', icon: 'bolt', tone: 'bg-revise-soft text-revise' },
+  { href: '/review/', title: 'Review', blurb: 'Spaced repetition brings back the questions you found hard.', icon: 'again', tone: 'bg-follow-soft text-follow' },
+];
+
+export default function Home() {
   const s = site();
-  const all = questions();
-  const curated = all.filter((q) => q.origin === 'curated');
-  const collected = all.filter((q) => q.origin === 'collected');
-  const cards = s.questions.filter((q) => q.revisionEligible).length;
-  const labels = categoryLabels();
-  const recentDocs = s.documents
-    .filter((d) => !d.isIndex && d.lastModified)
-    .sort((a, b) => (b.lastModified ?? '').localeCompare(a.lastModified ?? ''))
-    .slice(0, 5);
-  const mustKnow = curated.filter((q) => q.frequency === 'very-high' && q.category !== 'career').slice(0, 6);
-
-  const stats = [
-    { label: 'Questions', value: all.length, href: '/questions/' },
-    { label: 'From my notes', value: collected.length, href: '/collected/' },
-    { label: 'Curated FAQ', value: curated.length, href: '/faq/' },
-    { label: 'Revision cards', value: cards, href: '/revision/' },
-  ];
+  const ts = topics();
+  const total = s.guides.reduce((n, g) => n + g.count, 0);
+  const hours = Math.round(s.guides.reduce((n, g) => n + g.minutes, 0) / 60);
+  const sheets = cheatsheets();
+  const teaser = guide('javascript/output-prediction')?.questions[0];
 
   return (
     <>
-      <PageHeader title="Interview Prep" description="My own interview notes plus a curated set of frequently asked questions. Search everything, save favorites and drill with Quick Revision.">
-        <SearchButton className="mt-4 flex h-12 w-full items-center gap-3 rounded-2xl border border-line bg-surface px-4 text-[15px] text-muted shadow-sm hover:border-accent lg:hidden" />
-      </PageHeader>
-
-      <div className="mb-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {stats.map((st) => (
-          <Link key={st.label} href={st.href} className="rounded-2xl border border-line bg-surface p-4 hover:border-accent">
-            <div className="text-2xl font-semibold tabular-nums">{st.value}</div>
-            <div className="text-sm text-muted">{st.label}</div>
+      <section className="mb-8">
+        <p className="mb-2 text-sm font-medium text-accent">Interview prep for full-stack developers</p>
+        <h1 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-balance sm:text-4xl">
+          Read a topic, test yourself on it, and come back to what you missed.
+        </h1>
+        <p className="mt-3 max-w-2xl text-[15px] text-muted">
+          {s.guides.length} guides and {total} interview questions across {ts.length} topics, from JavaScript and React to system design. Every answer comes with an analogy,
+          quick-revision hooks and likely follow-ups. Free, no account, and your progress stays in your browser.
+        </p>
+        <div className="mt-5 flex flex-wrap gap-2">
+          <Link href={`/${s.guides[0].key}/`} className="inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-medium text-white">
+            Start studying <Icon name="right" size={16} />
           </Link>
-        ))}
-      </div>
+          <RandomGuide keys={s.guides.map((g) => g.key)} className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-surface px-5 text-sm font-medium hover:border-accent" />
+        </div>
+        <SearchButton className="mt-4 flex h-12 w-full items-center gap-3 rounded-2xl border border-line bg-surface px-4 text-[15px] text-muted shadow-sm hover:border-accent lg:hidden" />
+      </section>
 
-      <div className="mb-10 grid gap-3 sm:grid-cols-3">
-        <Link href="/revision/" className="group flex items-center gap-4 rounded-2xl bg-accent p-5 text-white">
-          <Icon name="bolt" size={28} />
-          <div className="flex-1">
-            <div className="font-semibold">Start Quick Revision</div>
-            <div className="text-sm opacity-85">Flashcards from curated points and my notes</div>
-          </div>
-          <Icon name="right" className="transition-transform group-hover:translate-x-0.5" />
-        </Link>
-        <Link href="/career/" className="group flex items-center gap-4 rounded-2xl border border-line bg-surface p-5 hover:border-accent">
-          <Icon name="briefcase" size={28} className="text-analogy" />
-          <div className="flex-1">
-            <div className="font-semibold">Career prep</div>
-            <div className="text-sm text-muted">Intro & HR answers for my situation</div>
-          </div>
-          <Icon name="right" className="text-muted transition-transform group-hover:translate-x-0.5" />
-        </Link>
-        <Link href="/faq/" className="group flex items-center gap-4 rounded-2xl border border-line bg-surface p-5 hover:border-accent">
-          <Icon name="faq" size={28} className="text-curated" />
-          <div className="flex-1">
-            <div className="font-semibold">Frequently asked</div>
-            <div className="text-sm text-muted">{curated.length} answers with analogies & follow-ups</div>
-          </div>
-          <Icon name="right" className="text-muted transition-transform group-hover:translate-x-0.5" />
-        </Link>
-      </div>
+      <section className="mb-10">
+        <h2 className="mb-3 text-lg font-semibold tracking-tight">Your progress</h2>
+        <HomeProgress catalog={catalog()} />
+      </section>
 
-      <div className="-mt-6 mb-10 grid grid-cols-2 gap-3">
-        {[
-          { slug: 'system-design', icon: 'layers' as const, blurb: 'Fundamentals + design walkthroughs' },
-          { slug: 'dsa', icon: 'code' as const, blurb: 'Patterns, problems & JS solutions' },
-        ].map((c) => {
-          const cat = s.categories.find((x) => x.slug === c.slug);
-          if (!cat) return null;
-          return (
-            <Link key={c.slug} href={`/categories/${c.slug}/`} className="group flex items-center gap-3 rounded-2xl border border-line bg-surface p-4 hover:border-accent">
-              <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent"><Icon name={c.icon} /></span>
-              <span className="min-w-0 flex-1">
-                <span className="block font-semibold">{cat.label}</span>
-                <span className="block truncate text-xs text-muted">{cat.questionCount} · {c.blurb}</span>
+      <section className="mb-10">
+        <div className="mb-3">
+          <h2 className="text-lg font-semibold tracking-tight">Practice</h2>
+          <p className="text-sm text-muted">Reading is half of it. These make you answer.</p>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {MODES.map((m) => (
+            <Link key={m.href} href={m.href} className="group flex items-start gap-4 rounded-2xl border border-line bg-surface p-4 hover:border-accent">
+              <span className={`grid size-11 shrink-0 place-items-center rounded-xl ${m.tone}`}>
+                <Icon name={m.icon} size={22} />
               </span>
-            </Link>
-          );
-        })}
-      </div>
-
-      <Section title="Your progress">
-        <DashboardProgress totalCards={cards} />
-      </Section>
-
-      <Section title="Must-know questions" action={<Link href="/faq/" className="text-sm text-accent">All FAQ →</Link>}>
-        <ul className="grid gap-3 sm:grid-cols-2">
-          {mustKnow.map((q) => (
-            <li key={q.id}>
-              <Link href={`/q/${q.id}/`} className="flex h-full flex-col rounded-2xl border border-line bg-surface p-4 hover:border-accent">
-                <span className="text-[15px] font-medium leading-snug">{q.titleText}</span>
-                <span className="mt-auto flex flex-wrap gap-1.5 pt-3">
-                  <Badge>{labels[q.category]}</Badge>
-                  {q.perspective && <Badge>{PERSPECTIVE_LABELS[q.perspective]}</Badge>}
-                  <DifficultyBadge difficulty={q.difficulty} />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </Section>
-
-      <Section title="Categories" action={<Link href="/categories/" className="text-sm text-accent">Browse →</Link>}>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {s.categories.map((c) => (
-            <Link key={c.slug} href={`/categories/${c.slug}/`} className="rounded-2xl border border-line bg-surface p-4 hover:border-accent">
-              <div className="font-medium">{c.label}</div>
-              <div className="mt-1 text-sm text-muted">
-                {c.questionCount} questions
-              </div>
-              <div className="mt-2 flex h-1.5 overflow-hidden rounded-full bg-surface-2">
-                <span className="bg-collected" style={{ width: `${(c.collectedCount / Math.max(c.questionCount, 1)) * 100}%` }} />
-                <span className="bg-curated" style={{ width: `${(c.curatedCount / Math.max(c.questionCount, 1)) * 100}%` }} />
-              </div>
+              <span className="min-w-0 flex-1">
+                <span className="block font-semibold group-hover:text-accent">{m.title}</span>
+                <span className="block text-sm text-muted">{m.blurb}</span>
+              </span>
+              <Icon name="right" size={18} className="mt-1 shrink-0 text-muted transition-transform group-hover:translate-x-0.5" />
             </Link>
           ))}
         </div>
-        <p className="mt-2 flex gap-4 text-xs text-muted">
-          <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-collected" />My notes</span>
-          <span className="flex items-center gap-1.5"><span className="size-2 rounded-full bg-curated" />Curated</span>
-        </p>
-      </Section>
+      </section>
 
-      {recentDocs.length > 0 && (
-        <Section title="Recently updated notes" action={<Link href="/collected/" className="text-sm text-accent">All notes →</Link>}>
-          <ul className="overflow-hidden rounded-2xl border border-line bg-surface">
-            {recentDocs.map((d) => (
-              <li key={d.path} className="border-b border-line last:border-0">
-                <Link href={`/source/${d.slug}/`} className="flex items-center gap-3 px-4 py-3 hover:bg-surface-2">
-                  <Icon name="file" size={18} className="shrink-0 text-muted" />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[15px]">{d.title}</span>
-                    <span className="block text-xs text-muted">{d.path}</span>
+      {teaser && (
+        <section className="mb-10">
+          <h2 className="mb-3 text-lg font-semibold tracking-tight">What does this return?</h2>
+          <Teaser href={`/javascript/output-prediction/#${teaser.id}`} question={<><p className="mb-3 font-semibold" dangerouslySetInnerHTML={{ __html: teaser.titleHtml }} />{teaser.snippetHtml && <Html html={teaser.snippetHtml} />}</>} answer={<Html html={teaser.answerHtml} />} />
+        </section>
+      )}
+
+      <section className="mb-10">
+        <div className="mb-3 flex items-end justify-between">
+          <div>
+            <h2 className="text-lg font-semibold tracking-tight">Topics</h2>
+            <p className="text-sm text-muted">~{hours} hours of reading in total.</p>
+          </div>
+          <Link href="/topics/" className="text-sm text-accent">
+            All topics →
+          </Link>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+          {ts.map((t) => (
+            <div key={t.slug} className="flex flex-col rounded-2xl border border-line bg-surface p-4">
+              <Link href={`/${t.slug}/`} className="group flex items-center gap-3">
+                <span className="grid size-10 place-items-center rounded-xl bg-accent-soft text-accent">
+                  <Icon name={t.icon as IconName} size={20} />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block font-semibold group-hover:text-accent">{t.label}</span>
+                  <span className="block text-xs text-muted">
+                    {t.guides.length} guides · {t.count} questions
                   </span>
-                  <time className="shrink-0 text-xs text-muted" dateTime={d.lastModified}>
-                    {new Date(d.lastModified!).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}
-                  </time>
+                </span>
+              </Link>
+              <ul className="mt-3 space-y-0.5 text-sm">
+                {t.guides.slice(0, 4).map((g) => (
+                  <li key={g.key}>
+                    <Link href={`/${g.key}/`} className="flex items-center gap-2 rounded-lg px-1 py-1 text-muted hover:text-ink">
+                      <span className="min-w-0 flex-1 truncate">{g.title}</span>
+                      <span className="shrink-0 text-xs tabular-nums">{g.count}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+              {t.guides.length > 4 && (
+                <Link href={`/${t.slug}/`} className="mt-auto pt-2 text-xs font-medium text-accent">
+                  Show all {t.guides.length} guides
                 </Link>
-              </li>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {sheets.length > 0 && (
+        <section className="mb-10">
+          <div className="mb-3 flex items-end justify-between">
+            <div>
+              <h2 className="text-lg font-semibold tracking-tight">Cheat sheets</h2>
+              <p className="text-sm text-muted">{sheets.length} one-page references for the last hour before an interview.</p>
+            </div>
+            <Link href="/cheatsheets/" className="text-sm text-accent">
+              All cheat sheets →
+            </Link>
+          </div>
+          <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 xl:grid-cols-4">
+            {sheets.map((c) => (
+              <Link key={c.slug} href={`/cheatsheets/${c.slug}/`} className="group w-44 shrink-0 rounded-2xl border border-line bg-surface p-4 hover:border-accent sm:w-auto">
+                <Icon name={c.icon as IconName} size={20} className="text-accent" />
+                <span className="mt-2 block text-sm font-semibold group-hover:text-accent">{c.title}</span>
+                <span className="block text-xs text-muted">{minutes(c.minutes)} read</span>
+              </Link>
             ))}
-          </ul>
-        </Section>
+          </div>
+        </section>
       )}
     </>
   );
