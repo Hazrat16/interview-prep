@@ -113,7 +113,7 @@ export function Interview({ catalog }: { catalog: Catalog }) {
 
   // ---- setup ------------------------------------------------------------------
   if (phase === 'setup') {
-    const chip = (on: boolean) => `h-9 rounded-full border px-3.5 text-sm transition-colors ${on ? 'border-accent bg-accent-soft font-medium text-accent' : 'border-line text-muted hover:text-ink'}`;
+    const chip = (on: boolean) => `press h-9 rounded-full border px-3.5 text-sm transition-colors ${on ? 'border-accent bg-accent-soft font-medium text-accent' : 'border-line text-muted hover:text-ink'}`;
     const label = 'mb-2 block text-[12px] font-semibold uppercase tracking-wider text-muted';
     const guideTitle = guide ? catalog.guides.find((g) => g.key === guide)?.title : '';
     return (
@@ -224,7 +224,7 @@ export function Interview({ catalog }: { catalog: Catalog }) {
             </Link>
           </div>
         </Done>
-        <ul className="space-y-2">
+        <ul className="stagger space-y-2">
           {deck.map((c) => (
             <li key={c.k}>
               <Link href={questionHref(c.k)} className="flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 hover:border-accent">
@@ -247,7 +247,7 @@ export function Interview({ catalog }: { catalog: Catalog }) {
     <div ref={top} className="scroll-mt-20">
       <div className="mb-3 flex items-center gap-4">
         <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
-          <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${(pos / deck.length) * 100}%` }} />
+          <div className="h-full rounded-full bg-accent transition-all duration-500 ease-out" style={{ width: `${(pos / deck.length) * 100}%` }} />
         </div>
         <span className="text-sm tabular-nums text-muted">
           {pos + 1} / {deck.length}
@@ -259,18 +259,18 @@ export function Interview({ catalog }: { catalog: Catalog }) {
       <div className="mb-3 h-1 overflow-hidden rounded-full bg-surface-2">
         <div className={`h-full rounded-full transition-[width] duration-1000 ease-linear ${urgent ? 'bg-hard' : 'bg-medium'}`} style={{ width: `${(Math.max(0, left) / seconds) * 100}%` }} />
       </div>
-      <FlipCard card={card} context={title(card.g)} flipped={revealed} onFlip={() => setRevealed(true)} />
+      <FlipCard key={card.k} card={card} context={title(card.g)} flipped={revealed} onFlip={() => setRevealed(true)} />
       {revealed ? (
         <div className="mt-4">
           <p className="mb-2 text-center text-xs text-muted">Be honest: how did your answer compare?</p>
           <div className="grid grid-cols-3 gap-2">
-            <button type="button" onClick={() => mark('missed')} className="rounded-2xl border border-hard/40 bg-surface py-3 text-sm font-semibold text-hard hover:bg-hard/10">
+            <button type="button" onClick={() => mark('missed')} className="press anim-reveal rounded-2xl border border-hard/40 bg-surface py-3 text-sm font-semibold text-hard hover:bg-hard/10">
               Missed it
             </button>
-            <button type="button" onClick={() => mark('partly')} className="rounded-2xl border border-medium/40 bg-surface py-3 text-sm font-semibold text-medium hover:bg-medium/10">
+            <button type="button" onClick={() => mark('partly')} className="press anim-reveal rounded-2xl border border-medium/40 bg-surface py-3 text-sm font-semibold text-medium hover:bg-medium/10">
               Partly
             </button>
-            <button type="button" onClick={() => mark('nailed')} className="rounded-2xl border border-easy/40 bg-surface py-3 text-sm font-semibold text-easy hover:bg-easy/10">
+            <button type="button" onClick={() => mark('nailed')} className="press anim-reveal rounded-2xl border border-easy/40 bg-surface py-3 text-sm font-semibold text-easy hover:bg-easy/10">
               Nailed it
             </button>
           </div>

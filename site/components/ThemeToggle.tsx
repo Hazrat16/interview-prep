@@ -9,7 +9,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
     <button
       type="button"
       aria-label="Toggle dark mode"
-      className={`grid size-10 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-ink ${className}`}
+      className={`press grid size-10 place-items-center rounded-full text-muted hover:bg-surface-2 hover:text-ink ${className}`}
       onClick={() => {
         const next = !document.documentElement.classList.contains('dark');
         document.documentElement.classList.toggle('dark', next);
@@ -19,7 +19,7 @@ export function ThemeToggle({ className = '' }: { className?: string }) {
         setDark(next);
       }}
     >
-      <Icon name={dark ? 'sun' : 'moon'} />
+      <Icon key={String(dark)} name={dark ? 'sun' : 'moon'} className="anim-pop" />
     </button>
   );
 }

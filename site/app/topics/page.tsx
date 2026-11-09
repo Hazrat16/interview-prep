@@ -11,9 +11,9 @@ export default function TopicsPage() {
   return (
     <>
       <PageHeader title="Topics" description="Pick a topic, read a guide, then test yourself on it." />
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="stagger grid gap-3 sm:grid-cols-2">
         {topics().map((t) => (
-          <Link key={t.slug} href={`/${t.slug}/`} className="group rounded-2xl border border-line bg-surface p-4 hover:border-accent">
+          <Link key={t.slug} href={`/${t.slug}/`} className="lift group rounded-2xl border border-line bg-surface p-4 hover:border-accent">
             <div className="flex items-center gap-3">
               <span className="grid size-10 place-items-center rounded-xl bg-accent-soft text-accent">
                 <Icon name={t.icon as IconName} size={20} />

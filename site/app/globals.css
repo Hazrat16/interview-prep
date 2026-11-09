@@ -243,3 +243,115 @@ mark.ph {
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
+/* ---- Motion ----------------------------------------------------------------
+   Small, quick and purposeful. Everything is disabled for prefers-reduced-motion. */
+:root {
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(28px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes drawer-in {
+  from { transform: translateX(-100%); }
+  to { transform: none; }
+}
+@keyframes pop {
+  0% { opacity: 0; transform: scale(0.5); }
+  70% { opacity: 1; transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+@keyframes drop-down {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+
+.anim-page { animation: fade-up 0.45s var(--ease-out) backwards; }
+.anim-fade { animation: fade-in 0.2s ease-out backwards; }
+.anim-scale { animation: scale-in 0.25s var(--ease-out) backwards; }
+.anim-card { animation: slide-in-right 0.35s var(--ease-out) backwards; }
+.anim-reveal { animation: fade-up 0.35s var(--ease-out) backwards; }
+.anim-drawer { animation: drawer-in 0.28s var(--ease-out) backwards; }
+.anim-pop { animation: pop 0.4s var(--ease-spring) backwards; }
+.anim-drop { animation: drop-down 0.22s var(--ease-out) backwards; }
+
+/* Children cascade in one after another. */
+.stagger > * { animation: fade-up 0.5s var(--ease-out) backwards; }
+.stagger > :nth-child(2) { animation-delay: 40ms; }
+.stagger > :nth-child(3) { animation-delay: 80ms; }
+.stagger > :nth-child(4) { animation-delay: 120ms; }
+.stagger > :nth-child(5) { animation-delay: 160ms; }
+.stagger > :nth-child(6) { animation-delay: 200ms; }
+.stagger > :nth-child(7) { animation-delay: 240ms; }
+.stagger > :nth-child(8) { animation-delay: 280ms; }
+.stagger > :nth-child(9) { animation-delay: 320ms; }
+.stagger > :nth-child(n + 10) { animation-delay: 360ms; }
+
+/* Cards lift on hover; anything pressable presses in. */
+.lift {
+  transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), border-color 0.2s;
+}
+@media (hover: hover) {
+  .lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -12px rgb(0 0 0 / 0.18);
+  }
+}
+.press { transition: transform 0.12s var(--ease-out), background-color 0.15s, border-color 0.15s, color 0.15s; }
+.press:active { transform: scale(0.97); }
+
+/* Collapsible: animates height without measuring (grid 0fr → 1fr). */
+.expander {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.32s var(--ease-out);
+}
+.expander[data-open='true'] { grid-template-rows: 1fr; }
+.expander > * { min-height: 0; overflow: hidden; }
+.expander > * > * { opacity: 0; transform: translateY(-4px); transition: opacity 0.25s ease-out, transform 0.3s var(--ease-out); }
+.expander[data-open='true'] > * > * { opacity: 1; transform: none; transition-delay: 0.05s; }
+
+html { scroll-behavior: smooth; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  .lift:hover, .press:active { transform: none; }
+}
+
+/* ---- Select boxes: custom chevron with room to breathe ------------------------------ */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 2.5rem;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a8a85' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.85rem center;
+  background-size: 16px 16px;
+}
+select option {
+  background-color: var(--surface);
+  color: var(--text);
+}

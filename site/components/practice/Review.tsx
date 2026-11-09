@@ -100,7 +100,7 @@ export function Review({ catalog }: { catalog: Catalog }) {
   return (
     <div ref={top} className="scroll-mt-20">
       <ProgressBar value={pos} total={queue.length} />
-      <FlipCard card={card} context={title(card.g)} flipped={flipped} onFlip={flip} />
+      <FlipCard key={card.k} card={card} context={title(card.g)} flipped={flipped} onFlip={flip} />
       {flipped ? (
         <GradeBar prev={srs[card.k]} onGrade={onGrade} />
       ) : (

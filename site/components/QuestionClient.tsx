@@ -14,7 +14,7 @@ export function PracticeToggle() {
       aria-pressed={on}
       onClick={() => setOn(!on)}
       title="Practice mode hides answers until you tap them"
-      className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
+      className={`press inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
         on ? 'border-accent bg-accent text-white' : 'border-line text-muted hover:text-ink'
       }`}
     >
@@ -93,13 +93,13 @@ export function BookmarkButton({ id, compact }: { id: string; compact?: boolean 
       title={on ? 'Remove bookmark' : 'Bookmark'}
       className={
         compact
-          ? `grid size-9 shrink-0 place-items-center rounded-full ${on ? 'text-accent' : 'text-muted hover:bg-surface-2 hover:text-ink'}`
-          : `inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
+          ? `press grid size-9 shrink-0 place-items-center rounded-full ${on ? 'text-accent' : 'text-muted hover:bg-surface-2 hover:text-ink'}`
+          : `press inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
               on ? 'border-accent/40 bg-accent-soft text-accent' : 'border-line text-muted hover:text-ink'
             }`
       }
     >
-      <Icon name="bookmark" size={compact ? 18 : 16} filled={on} />
+      <Icon name="bookmark" size={compact ? 18 : 16} filled={on} className={on ? 'anim-pop' : ''} />
       {!compact && (on ? 'Bookmarked' : 'Bookmark')}
     </button>
   );
@@ -114,11 +114,11 @@ export function KnownButton({ id }: { id: string }) {
       type="button"
       onClick={() => set(id, !on)}
       aria-pressed={on}
-      className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
+      className={`press inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
         on ? 'border-easy/40 bg-easy/10 text-easy' : 'border-line text-muted hover:text-ink'
       }`}
     >
-      <Icon name="check" size={16} strokeWidth={2.4} />
+      <Icon name="check" size={16} strokeWidth={2.4} className={on ? 'anim-pop' : ''} />
       {on ? 'I know this' : 'Mark as known'}
     </button>
   );
@@ -134,7 +134,7 @@ export function ReviewButton({ id }: { id: string }) {
       onClick={() => (on ? remove(id) : add(id))}
       aria-pressed={on}
       title={on ? 'Remove from your review queue' : 'Add to your spaced-repetition review queue'}
-      className={`inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
+      className={`press inline-flex h-9 items-center gap-1.5 rounded-full border px-3 text-sm font-medium ${
         on ? 'border-follow/40 bg-follow-soft text-follow' : 'border-line text-muted hover:text-ink'
       }`}
     >
@@ -181,10 +181,10 @@ export function GuideShell({ guideKey, children }: { guideKey: string; children:
     <ExpandCtx.Provider value={state}>
       <div ref={ref}>
         <div className="mb-3 flex justify-end gap-2 text-sm">
-          <button type="button" className="rounded-full px-3 py-1 text-muted hover:bg-surface-2 hover:text-ink" onClick={() => setState((s) => ({ version: s.version + 1, open: true }))}>
+          <button type="button" className="press rounded-full px-3 py-1 text-muted hover:bg-surface-2 hover:text-ink" onClick={() => setState((s) => ({ version: s.version + 1, open: true }))}>
             Expand all
           </button>
-          <button type="button" className="rounded-full px-3 py-1 text-muted hover:bg-surface-2 hover:text-ink" onClick={() => setState((s) => ({ version: s.version + 1, open: false }))}>
+          <button type="button" className="press rounded-full px-3 py-1 text-muted hover:bg-surface-2 hover:text-ink" onClick={() => setState((s) => ({ version: s.version + 1, open: false }))}>
             Collapse all
           </button>
         </div>
@@ -237,9 +237,13 @@ export function QuestionShell({
         className="flex w-full items-start gap-3 rounded-2xl px-4 py-4 text-left sm:px-5"
       >
         <span className="min-w-0 flex-1">{header}</span>
-        <Icon name="down" size={18} className={`mt-1 shrink-0 text-muted transition-transform ${open ? 'rotate-180' : ''}`} />
+        <Icon name="down" size={18} className={`mt-1 shrink-0 text-muted transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
       </button>
-      {open && <div className="border-t border-line px-3 pb-4 pt-4 sm:px-5">{children}</div>}
+      <div className="expander" data-open={open} inert={!open}>
+        <div>
+          <div className="border-t border-line px-3 pb-4 pt-4 sm:px-5">{children}</div>
+        </div>
+      </div>
     </article>
   );
 }
@@ -250,7 +254,7 @@ export function KnownDot({ id }: { id: string }) {
   const ready = useHydrated();
   if (!ready || !has(id)) return null;
   return (
-    <span className="ml-1.5 inline-grid size-5 place-items-center rounded-full bg-easy/15 align-[-3px] text-easy" title="You know this">
+    <span className="anim-pop ml-1.5 inline-grid size-5 place-items-center rounded-full bg-easy/15 align-[-3px] text-easy" title="You know this">
       <Icon name="check" size={12} strokeWidth={3} />
     </span>
   );
@@ -265,7 +269,7 @@ export function GuideProgress({ keys }: { keys: string[] }) {
   return (
     <div className="flex items-center gap-3 text-sm text-muted">
       <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-2">
-        <div className="h-full rounded-full bg-easy transition-all" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-easy transition-all duration-700 ease-out" style={{ width: `${pct}%` }} />
       </div>
       <span className="tabular-nums">
         {n}/{keys.length} known

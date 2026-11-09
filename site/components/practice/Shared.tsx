@@ -86,7 +86,7 @@ export function ProgressBar({ value, total }: { value: number; total: number }) 
   return (
     <div className="mb-3 flex items-center gap-3 text-xs text-muted">
       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-2">
-        <div className="h-full rounded-full bg-accent transition-all" style={{ width: `${(Math.min(value, total) / (total || 1)) * 100}%` }} />
+        <div className="h-full rounded-full bg-accent transition-all duration-500 ease-out" style={{ width: `${(Math.min(value, total) / (total || 1)) * 100}%` }} />
       </div>
       <span className="tabular-nums">
         {Math.min(value + 1, total)} / {total}
@@ -115,7 +115,7 @@ export function FlipCard({
   const [full, setFull] = useState(false);
   useEffect(() => setFull(false), [card.k]);
   return (
-    <div className="overflow-hidden rounded-3xl border border-line bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+    <div className="anim-card overflow-hidden rounded-3xl border border-line bg-surface shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
       <div className="flex items-center gap-2 border-b border-line px-4 py-2.5 text-xs text-muted sm:px-6">
         <span className="min-w-0 flex-1 truncate">{context}</span>
         <DifficultyBadge difficulty={card.d} />
@@ -132,7 +132,7 @@ export function FlipCard({
         )}
       </button>
       {flipped && (
-        <div className="space-y-4 border-t border-line bg-bg/40 px-5 py-5 sm:px-8">
+        <div className="anim-reveal space-y-4 border-t border-line bg-bg/40 px-5 py-5 sm:px-8">
           <div>
             <div className="mb-2 text-[12px] font-semibold uppercase tracking-wider text-revise">Quick revision</div>
             <ol className="space-y-2">
@@ -185,7 +185,7 @@ export function GradeBar({ prev, onGrade }: { prev?: SrsItem; onGrade: (g: Grade
       <p className="mb-2 text-center text-xs text-muted">How well did you know it?</p>
       <div className="grid grid-cols-4 gap-2">
         {GRADES.map((g) => (
-          <button key={g.grade} type="button" onClick={() => onGrade(g.grade)} className={`flex flex-col items-center rounded-2xl border bg-surface py-2.5 text-sm font-semibold ${tone[g.grade]}`}>
+          <button key={g.grade} type="button" onClick={() => onGrade(g.grade)} className={`press anim-reveal flex flex-col items-center rounded-2xl border bg-surface py-2.5 text-sm font-semibold ${tone[g.grade]}`}>
             {g.label}
             <span className="text-[11px] font-normal text-muted">
               {nextLabel(prev, g.grade)} <kbd className="hidden sm:inline">· {g.key}</kbd>
@@ -216,8 +216,8 @@ export function useFlipKey(flip: () => void, enabled = true) {
 
 export function Done({ icon = 'trophy', title, children }: { icon?: 'trophy' | 'check'; title: string; children?: React.ReactNode }) {
   return (
-    <div className="rounded-3xl border border-line bg-surface px-6 py-12 text-center">
-      <span className="mx-auto grid size-14 place-items-center rounded-full bg-accent-soft text-accent">
+    <div className="anim-scale rounded-3xl border border-line bg-surface px-6 py-12 text-center">
+      <span className="anim-pop mx-auto grid size-14 place-items-center rounded-full bg-accent-soft text-accent [animation-delay:120ms]">
         <Icon name={icon} size={26} />
       </span>
       <h2 className="mt-4 text-xl font-semibold">{title}</h2>
@@ -226,7 +226,7 @@ export function Done({ icon = 'trophy', title, children }: { icon?: 'trophy' | '
   );
 }
 
-export const btn = 'inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium';
+export const btn = 'press inline-flex h-10 items-center justify-center gap-2 rounded-full px-4 text-sm font-medium';
 export const btnPrimary = `${btn} bg-accent text-white`;
 export const btnGhost = `${btn} border border-line hover:border-accent`;
 

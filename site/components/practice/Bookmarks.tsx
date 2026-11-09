@@ -32,7 +32,7 @@ export function Bookmarks({ catalog }: { catalog: Catalog }) {
   for (const c of items) groups.set(guideOf(c.k), [...(groups.get(guideOf(c.k)) ?? []), c]);
 
   return (
-    <div className="space-y-6">
+    <div className="stagger space-y-6">
       <div className="flex flex-wrap gap-2">
         <Link href="/quiz/?bookmarks=1" className={btnPrimary}>
           <Icon name="cards" size={16} /> Quiz my bookmarks
@@ -43,7 +43,7 @@ export function Bookmarks({ catalog }: { catalog: Catalog }) {
           <h2 className="mb-2 px-1 text-[13px] font-semibold uppercase tracking-wider text-muted">{title(g)}</h2>
           <ul className="space-y-2">
             {cs.map((c) => (
-              <li key={c.k} className="flex items-center gap-2 rounded-2xl border border-line bg-surface pr-2 hover:border-accent">
+              <li key={c.k} className="lift flex items-center gap-2 rounded-2xl border border-line bg-surface pr-2 hover:border-accent">
                 <Link href={questionHref(c.k)} className="flex min-w-0 flex-1 items-center gap-3 px-4 py-3">
                   <span className="md-inline min-w-0 flex-1 text-[15px] leading-snug" dangerouslySetInnerHTML={{ __html: c.t }} />
                   <DifficultyBadge difficulty={c.d} />

@@ -122,8 +122,8 @@ export function SearchDialog() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center sm:p-6 sm:pt-[10vh]" role="dialog" aria-modal="true" aria-label="Search">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={close} />
-      <div className="relative flex h-dvh w-full flex-col overflow-hidden bg-surface shadow-2xl sm:h-auto sm:max-h-[75vh] sm:max-w-2xl sm:rounded-2xl sm:border sm:border-line">
+      <div className="anim-fade absolute inset-0 bg-black/40 backdrop-blur-[2px]" onClick={close} />
+      <div className="anim-scale relative flex h-dvh w-full flex-col overflow-hidden bg-surface shadow-2xl sm:h-auto sm:max-h-[75vh] sm:max-w-2xl sm:rounded-2xl sm:border sm:border-line">
         <div className="flex items-center gap-2 border-b border-line px-3 py-2">
           <Icon name="search" className="ml-1 shrink-0 text-muted" />
           <input

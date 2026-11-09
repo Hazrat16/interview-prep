@@ -37,7 +37,7 @@ function DueBadge() {
   const { due } = useSrs();
   const ready = useHydrated();
   if (!ready || !due.length) return null;
-  return <span className="ml-auto rounded-full bg-follow px-1.5 text-[11px] font-semibold leading-5 text-white tabular-nums dark:text-black">{due.length}</span>;
+  return <span className="anim-pop ml-auto rounded-full bg-follow px-1.5 text-[11px] font-semibold leading-5 text-white tabular-nums dark:text-black">{due.length}</span>;
 }
 
 function NavLink({ href, label, icon, active, onClick }: { href: string; label: string; icon: IconName; active: boolean; onClick?: () => void }) {
@@ -95,11 +95,11 @@ function NavContent({ topics, onNavigate }: { topics: NavTopic[]; onNavigate?: (
                 onClick={() => setOpenTopic(open ? null : t.slug)}
                 className="grid size-8 shrink-0 place-items-center rounded-lg text-muted hover:bg-surface-2"
               >
-                <Icon name="down" size={15} className={`transition-transform ${open ? 'rotate-180' : ''}`} />
+                <Icon name="down" size={15} className={`transition-transform duration-300 ${open ? 'rotate-180' : ''}`} />
               </button>
             </div>
             {open && (
-              <div className="mb-1 ml-[1.35rem] border-l border-line pl-2">
+              <div className="anim-drop mb-1 ml-[1.35rem] border-l border-line pl-2">
                 {t.guides.map((g) => {
                   const href = `/${t.slug}/${g.slug}/`;
                   return (
@@ -170,8 +170,8 @@ export function MobileTopBar({ topics }: { topics: NavTopic[] }) {
       </header>
       {menu && (
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
-          <div className="absolute inset-0 bg-black/40" onClick={() => setMenu(false)} />
-          <nav className="absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto bg-surface p-3 shadow-xl">
+          <div className="anim-fade absolute inset-0 bg-black/40" onClick={() => setMenu(false)} />
+          <nav className="anim-drawer absolute inset-y-0 left-0 flex w-72 max-w-[85vw] flex-col overflow-y-auto bg-surface p-3 shadow-xl">
             <div className="mb-2 flex items-center justify-between px-2">
               <span className="font-semibold">Menu</span>
               <button type="button" aria-label="Close menu" onClick={() => setMenu(false)} className="grid size-10 place-items-center rounded-full hover:bg-surface-2">
@@ -198,7 +198,7 @@ export function BottomTabs() {
           const active = isActive(n.href);
           return (
             <Link key={n.href} href={n.href} aria-current={active ? 'page' : undefined} className={`flex h-16 flex-col items-center justify-center gap-1 text-[11px] ${active ? 'font-semibold text-accent' : 'text-muted'}`}>
-              <span className={`relative grid h-7 w-14 place-items-center rounded-full transition-colors ${active ? 'bg-accent-soft' : ''}`}>
+              <span className={`relative grid h-7 w-14 place-items-center rounded-full transition-all duration-300 ${active ? 'scale-100' : 'scale-90'} ${active ? 'bg-accent-soft' : ''}`}>
                 <Icon name={n.icon} size={20} filled={active && n.icon === 'bookmark'} strokeWidth={active ? 2.2 : 1.8} />
               </span>
               {n.label}

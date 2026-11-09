@@ -122,7 +122,7 @@ export function Quiz({ catalog }: { catalog: Catalog }) {
       ) : (
         <>
           <ProgressBar value={pos} total={deck.length} />
-          <FlipCard card={card} context={title(card.g)} flipped={flipped} onFlip={flip} />
+          <FlipCard key={card.k} card={card} context={title(card.g)} flipped={flipped} onFlip={flip} />
           {flipped ? (
             <GradeBar prev={srs[card.k]} onGrade={onGrade} />
           ) : (

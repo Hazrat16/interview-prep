@@ -70,10 +70,10 @@ export default async function GuidePage({ params }: Props) {
             <GuideProgress keys={g.questions.map((q) => q.key)} />
           </div>
           <div className="mt-5 flex flex-wrap gap-2">
-            <Link href={`/quiz/?guide=${g.key}`} className="inline-flex h-9 items-center gap-1.5 rounded-full bg-accent px-3.5 text-sm font-medium text-white">
+            <Link href={`/quiz/?guide=${g.key}`} className="press inline-flex h-9 items-center gap-1.5 rounded-full bg-accent px-3.5 text-sm font-medium text-white">
               <Icon name="cards" size={16} /> Quiz this guide
             </Link>
-            <Link href={`/interview/?guide=${g.key}`} className="inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-3.5 text-sm font-medium hover:border-accent">
+            <Link href={`/interview/?guide=${g.key}`} className="press inline-flex h-9 items-center gap-1.5 rounded-full border border-line px-3.5 text-sm font-medium hover:border-accent">
               <Icon name="timer" size={16} /> Mock interview
             </Link>
             <PracticeToggle />
@@ -83,7 +83,7 @@ export default async function GuidePage({ params }: Props) {
         <GuideShell guideKey={g.key}>
           <div className="space-y-6">
             {sections.map((s, i) => (
-              <section key={i} className="space-y-3">
+              <section key={i} className="stagger space-y-3">
                 {s.section && <h2 className="px-1 pt-2 text-[13px] font-semibold uppercase tracking-wider text-muted">{s.section}</h2>}
                 {s.items.map(({ q, n }) => (
                   <QuestionItem key={q.id} q={q} n={n} defaultOpen={n === 1} career={career} />
@@ -100,7 +100,7 @@ export default async function GuidePage({ params }: Props) {
             <ul className="space-y-2">
               {g.alsoAsked.map((a) => (
                 <li key={a.key}>
-                  <Link href={questionHref(a.key)} className="flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 hover:border-accent">
+                  <Link href={questionHref(a.key)} className="lift flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 hover:border-accent">
                     <span className="min-w-0 flex-1 text-[15px] leading-snug">{a.titleText}</span>
                     <span className="hidden shrink-0 text-xs text-muted sm:inline">{a.guideTitle}</span>
                     <Icon name="right" size={16} className="shrink-0 text-muted" />
@@ -113,7 +113,7 @@ export default async function GuidePage({ params }: Props) {
 
         <nav className="mt-10 grid grid-cols-2 gap-3 border-t border-line pt-6 text-sm" aria-label="Neighbouring guides">
           {prev ? (
-            <Link href={`/${prev.key}/`} className="rounded-2xl border border-line bg-surface p-4 hover:border-accent">
+            <Link href={`/${prev.key}/`} className="lift rounded-2xl border border-line bg-surface p-4 hover:border-accent">
               <span className="flex items-center gap-1 text-xs text-muted">
                 <Icon name="left" size={13} /> Previous guide
               </span>
@@ -123,7 +123,7 @@ export default async function GuidePage({ params }: Props) {
             <span />
           )}
           {next ? (
-            <Link href={`/${next.key}/`} className="rounded-2xl border border-line bg-surface p-4 text-right hover:border-accent">
+            <Link href={`/${next.key}/`} className="lift rounded-2xl border border-line bg-surface p-4 text-right hover:border-accent">
               <span className="flex items-center justify-end gap-1 text-xs text-muted">
                 Next guide <Icon name="right" size={13} />
               </span>

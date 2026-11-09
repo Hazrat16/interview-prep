@@ -6,7 +6,7 @@ import { GuideCardProgress } from './ProgressClient';
 
 export function GuideCard({ g, n }: { g: GuideMeta; n?: number }) {
   return (
-    <Link href={`/${g.key}/`} className="group flex flex-col rounded-2xl border border-line bg-surface p-4 transition-colors hover:border-accent">
+    <Link href={`/${g.key}/`} className="lift group flex flex-col rounded-2xl border border-line bg-surface p-4 hover:border-accent">
       <div className="flex items-start gap-3">
         {n !== undefined && <span className="grid size-7 shrink-0 place-items-center rounded-lg bg-surface-2 text-xs font-semibold tabular-nums text-muted">{n}</span>}
         <div className="min-w-0 flex-1">
@@ -28,7 +28,7 @@ export function GuideCard({ g, n }: { g: GuideMeta; n?: number }) {
 
 export function GuideGrid({ guides, numbered }: { guides: GuideMeta[]; numbered?: boolean }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+    <div className="stagger grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
       {guides.map((g, i) => (
         <GuideCard key={g.key} g={g} n={numbered ? i + 1 : undefined} />
       ))}

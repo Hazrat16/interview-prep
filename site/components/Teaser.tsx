@@ -10,12 +10,12 @@ export function Teaser({ question, answer, href }: { question: React.ReactNode; 
       <div className="px-4 py-4 sm:px-5">{question}</div>
       <div className="border-t border-line bg-bg/40 px-4 py-3 sm:px-5">
         {shown ? (
-          <>
+          <div className="anim-reveal">
             {answer}
             <Link href={href} className="mt-3 inline-flex items-center gap-1 text-sm text-accent">
               More output-prediction questions <Icon name="right" size={14} />
             </Link>
-          </>
+          </div>
         ) : (
           <button type="button" onClick={() => setShown(true)} className="inline-flex items-center gap-2 text-sm font-medium text-accent">
             <Icon name="eye" size={16} /> Show the answer

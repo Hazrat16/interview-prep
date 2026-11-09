@@ -99,7 +99,7 @@ export function LastMinute({ catalog }: { catalog: Catalog }) {
       ) : (
         <>
           <ProgressBar value={pos} total={deck.length} />
-          <FlipCard card={card} context={title(card.g)} flipped={flipped} onFlip={flip} revisionOnly />
+          <FlipCard key={card.k} card={card} context={title(card.g)} flipped={flipped} onFlip={flip} revisionOnly />
           <div className="mt-4 flex items-center justify-between gap-2">
             <button type="button" aria-label="Previous card" className={btnGhost} disabled={pos === 0} onClick={() => go(-1)}>
               <Icon name="left" size={16} /> Prev

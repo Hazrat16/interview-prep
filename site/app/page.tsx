@@ -24,7 +24,7 @@ export default function Home() {
 
   return (
     <>
-      <section className="mb-8">
+      <section className="stagger mb-8">
         <p className="mb-2 text-sm font-medium text-accent">Interview prep for full-stack developers</p>
         <h1 className="max-w-2xl text-3xl font-semibold leading-tight tracking-tight text-balance sm:text-4xl">
           Read a topic, test yourself on it, and come back to what you missed.
@@ -34,10 +34,10 @@ export default function Home() {
           quick-revision hooks and likely follow-ups. Free, no account, and your progress stays in your browser.
         </p>
         <div className="mt-5 flex flex-wrap gap-2">
-          <Link href={`/${s.guides[0].key}/`} className="inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-medium text-white">
+          <Link href={`/${s.guides[0].key}/`} className="press inline-flex h-11 items-center gap-2 rounded-full bg-accent px-5 text-sm font-medium text-white">
             Start studying <Icon name="right" size={16} />
           </Link>
-          <RandomGuide keys={s.guides.map((g) => g.key)} className="inline-flex h-11 items-center gap-2 rounded-full border border-line bg-surface px-5 text-sm font-medium hover:border-accent" />
+          <RandomGuide keys={s.guides.map((g) => g.key)} className="press inline-flex h-11 items-center gap-2 rounded-full border border-line bg-surface px-5 text-sm font-medium hover:border-accent" />
         </div>
         <SearchButton className="mt-4 flex h-12 w-full items-center gap-3 rounded-2xl border border-line bg-surface px-4 text-[15px] text-muted shadow-sm hover:border-accent lg:hidden" />
       </section>
@@ -52,9 +52,9 @@ export default function Home() {
           <h2 className="text-lg font-semibold tracking-tight">Practice</h2>
           <p className="text-sm text-muted">Reading is half of it. These make you answer.</p>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2">
+        <div className="stagger grid gap-3 sm:grid-cols-2">
           {MODES.map((m) => (
-            <Link key={m.href} href={m.href} className="group flex items-start gap-4 rounded-2xl border border-line bg-surface p-4 hover:border-accent">
+            <Link key={m.href} href={m.href} className="lift group flex items-start gap-4 rounded-2xl border border-line bg-surface p-4 hover:border-accent">
               <span className={`grid size-11 shrink-0 place-items-center rounded-xl ${m.tone}`}>
                 <Icon name={m.icon} size={22} />
               </span>
@@ -85,9 +85,9 @@ export default function Home() {
             All topics →
           </Link>
         </div>
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="stagger grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {ts.map((t) => (
-            <div key={t.slug} className="flex flex-col rounded-2xl border border-line bg-surface p-4">
+            <div key={t.slug} className="lift flex flex-col rounded-2xl border border-line bg-surface p-4 hover:border-accent">
               <Link href={`/${t.slug}/`} className="group flex items-center gap-3">
                 <span className="grid size-10 place-items-center rounded-xl bg-accent-soft text-accent">
                   <Icon name={t.icon as IconName} size={20} />
@@ -130,9 +130,9 @@ export default function Home() {
               All cheat sheets →
             </Link>
           </div>
-          <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 xl:grid-cols-4">
+          <div className="stagger no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 xl:grid-cols-4">
             {sheets.map((c) => (
-              <Link key={c.slug} href={`/cheatsheets/${c.slug}/`} className="group w-44 shrink-0 rounded-2xl border border-line bg-surface p-4 hover:border-accent sm:w-auto">
+              <Link key={c.slug} href={`/cheatsheets/${c.slug}/`} className="lift group w-44 shrink-0 rounded-2xl border border-line bg-surface p-4 hover:border-accent sm:w-auto">
                 <Icon name={c.icon as IconName} size={20} className="text-accent" />
                 <span className="mt-2 block text-sm font-semibold group-hover:text-accent">{c.title}</span>
                 <span className="block text-xs text-muted">{minutes(c.minutes)} read</span>

@@ -29,7 +29,7 @@ export function TopicProgress({ prefix, total }: { prefix: string; total: number
   return (
     <div className="flex items-center gap-3 text-sm text-muted">
       <div className="h-2 flex-1 overflow-hidden rounded-full bg-surface-2">
-        <div className="h-full rounded-full bg-easy transition-all" style={{ width: `${pct}%` }} />
+        <div className="h-full rounded-full bg-easy transition-all duration-700 ease-out" style={{ width: `${pct}%` }} />
       </div>
       <span className="tabular-nums">{pct}%</span>
     </div>
@@ -64,7 +64,7 @@ export function HomeProgress({ catalog }: { catalog: Catalog }) {
   ];
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="stagger grid grid-cols-2 gap-3 sm:grid-cols-4">
         {stats.map((s) => {
           const inner = (
             <>
@@ -74,21 +74,21 @@ export function HomeProgress({ catalog }: { catalog: Catalog }) {
             </>
           );
           return s.href ? (
-            <Link key={s.label} href={s.href} className="rounded-2xl border border-line bg-surface p-4 hover:border-accent">{inner}</Link>
+            <Link key={s.label} href={s.href} className="lift rounded-2xl border border-line bg-surface p-4 hover:border-accent">{inner}</Link>
           ) : (
             <div key={s.label} className="rounded-2xl border border-line bg-surface p-4">{inner}</div>
           );
         })}
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-surface-2" aria-label={`${Math.round((knownN / total) * 100)}% known`}>
-        <div className="h-full rounded-full bg-easy transition-all" style={{ width: `${(knownN / (total || 1)) * 100}%` }} />
+        <div className="h-full rounded-full bg-easy transition-all duration-700 ease-out" style={{ width: `${(knownN / (total || 1)) * 100}%` }} />
       </div>
       {recent.length > 0 && (
         <div>
           <h2 className="mb-2 text-sm font-semibold text-muted">Continue where you left off</h2>
-          <div className="grid gap-2 sm:grid-cols-3">
+          <div className="stagger grid gap-2 sm:grid-cols-3">
             {recent.map(([k, c]) => (
-              <Link key={k} href={`/${k}/#${c.q}`} className="group flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 hover:border-accent">
+              <Link key={k} href={`/${k}/#${c.q}`} className="lift group flex items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3 hover:border-accent">
                 <Icon name="flag" size={18} className="shrink-0 text-accent" />
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-medium">{guideTitle(k)}</span>
