@@ -1,1 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#2f5bd3"/><text x="32" y="42" font-family="system-ui,-apple-system,Segoe UI,Arial,sans-serif" font-size="26" font-weight="700" text-anchor="middle" fill="#fff">IP</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect x="8.5" y="8.5" width="53" height="53" rx="8" fill="#2a261f"/>
+  <rect x="2.5" y="2.5" width="53" height="53" rx="8" fill="#d23f1f" stroke="#2a261f" stroke-width="3"/>
+  <circle cx="27.5" cy="27.5" r="12.5" fill="none" stroke="#fbf8f2" stroke-width="6.5"/>
+  <path d="M34 34 44.5 44.5" stroke="#fbf8f2" stroke-width="7" stroke-linecap="round"/>
+</svg>

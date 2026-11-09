@@ -127,8 +127,7 @@ export function Sidebar({ topics }: { topics: NavTopic[] }) {
     <aside className="sticky top-0 hidden h-dvh w-64 shrink-0 flex-col border-r border-line bg-surface/80 backdrop-blur lg:flex">
       <div className="px-3 pt-4">
         <Link href="/" className="mb-5 flex items-center gap-2.5 px-2 font-display text-[19px] font-semibold tracking-tight">
-          <Logo />
-          Interview Prep
+          <Wordmark />
         </Link>
         <SearchButton className="mb-2 flex h-10 w-full items-center gap-2 rounded-xl border border-line bg-bg px-3 text-sm text-muted hover:border-accent" />
       </div>
@@ -143,11 +142,27 @@ export function Sidebar({ topics }: { topics: NavTopic[] }) {
   );
 }
 
-export function Logo() {
+/** The mark: a vermilion index card on a printed shadow, with a Q that doubles as a magnifier. */
+export function Logo({ size = 28 }: { size?: number }) {
   return (
-    <span className="grid size-7 place-items-center rounded-[4px] border border-line bg-accent font-display text-[17px] font-bold italic leading-none text-white shadow-[2px_2px_0_var(--shadow)]">
-      Q
-    </span>
+    <svg width={size} height={size} viewBox="0 0 64 64" aria-hidden className="shrink-0">
+      <rect x="8.5" y="8.5" width="53" height="53" rx="8" fill="var(--shadow)" />
+      <rect x="2.5" y="2.5" width="53" height="53" rx="8" fill="var(--accent)" stroke="var(--border)" strokeWidth="3" />
+      <circle cx="27.5" cy="27.5" r="12.5" fill="none" stroke="var(--surface)" strokeWidth="6.5" />
+      <path d="M34 34 44.5 44.5" stroke="var(--surface)" strokeWidth="7" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+/** Logo + serif wordmark: "Interview" upright, "Prep" in accent italic. */
+export function Wordmark() {
+  return (
+    <>
+      <Logo />
+      <span className="truncate">
+        Interview <em className="font-normal italic text-accent">Prep</em>
+      </span>
+    </>
   );
 }
 
@@ -162,8 +177,7 @@ export function MobileTopBar({ topics }: { topics: NavTopic[] }) {
           <Icon name="menu" />
         </button>
         <Link href="/" className="flex flex-1 items-center gap-2 truncate font-display text-[17px] font-semibold tracking-tight">
-          <Logo />
-          Interview Prep
+          <Wordmark />
         </Link>
         <SearchButton label={false} className="grid size-10 place-items-center rounded-full text-muted hover:bg-surface-2" />
         <ThemeToggle />
